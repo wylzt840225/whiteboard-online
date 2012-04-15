@@ -23,8 +23,6 @@ public class ColorPicker extends ActionBarActivity {
 		color=mpaint.getColor();
 		RadioGroup rg=(RadioGroup) findViewById(R.id.colors);
 		rg.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-			
-			@Override
 			public void onCheckedChanged(RadioGroup group, int checkedId) {
 				switch(checkedId)
 				{
@@ -60,7 +58,6 @@ public class ColorPicker extends ActionBarActivity {
 		Button b=(Button) findViewById(R.id.yes);
 		b.setOnClickListener(new OnClickListener() {
 			
-			@Override
 			public void onClick(View v) {
 
 				GlobalS.getinstance().mPaint.setColor(color);
@@ -70,7 +67,6 @@ public class ColorPicker extends ActionBarActivity {
 		b=(Button) findViewById(R.id.cancel);
 		b.setOnClickListener(new OnClickListener() {
 			
-			@Override
 			public void onClick(View v) {
 				ColorPicker.this.finish();
 			}
