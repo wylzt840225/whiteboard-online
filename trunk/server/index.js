@@ -9,28 +9,59 @@ function log(s)
     _time=t;
 
 }
+function hasuser(name)
+{
+    if(storage[name])
+        return true;
+    return false;
+}
+function appendmsgforuser(name,msg)
+{
+    if(hasmsg(name))
+    {
+        storage[name].msg=storage[name].msg+","+msg;
+        return;
+    }
+    if(!hasuser(name))
+    {
+        storage[name]={};
+    }
+    storage[name].hasmsg=true
+    storage[name].msg=msg
+}
+function hasmsg(name)
+{
+    if(storage[name])
+        if(storage[name].hasmsg)
+            if(storage[name].hasmsg==true)
+                return true;
+    return false;
+}
+function outputmsg(name,r2)
+{
+    r2.write(storage[name].msg);
+    storage[name].hasmsg=false
+    storage[name].msg=null
+    r2.end();
+}
 function getmsg(r1,r2,querys,ttv)
 {
     if(ttv);
     else ttv=60;
     if(ttv===0)return;
-        if(storage[querys['name']])
-        {  r2.write(""+storage[querys['name']][querys['key']]);
-            storage[querys['name']]=undefined;
-            r2.end();
+        if(hasmsg(querys['name']))
+        {  
+            outputmsg(querys['name'],r2);
+            
             return;
         }
-    setTimeout(function(){getmsg(r1,r2,querys,ttv-1);},1000);   
+    setTimeout(function(){getmsg(r1,r2,querys,ttv-1);},3000);   
     
 }
 function savemsg(r1,r2,querys)
 {
-    r2.write('saving');
-    log("save");
-    storage[querys['name']]={};
-    storage[querys['name']][querys['key']]=querys['val'];
-    r2.write('ok');
-    log("saveover");
+    appendmsgforuser(querys['name'],querys['msg']);
+    r2.write('saved');
     r2.end();
 }
 http.createServer(function(request, response) {
