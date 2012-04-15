@@ -1,0 +1,16 @@
+#labels Featured
+#This page show how to upload Server Script
+
+= Server =
+
+We use node.js server provided by Aliyun.
+
+To get account information details to upload to the server. please Contact me.
+
+
+
+= Details =
+
+Upload script  index.js with ftp 
+
+ftp.ace.aliyun.com:2222
