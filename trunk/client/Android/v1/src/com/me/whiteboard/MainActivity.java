@@ -307,7 +307,6 @@ public class MainActivity extends ActionBarActivity {
 
 		dw.setOnTouchListener(new OnTouchListener() {
 
-			@Override
 			public boolean onTouch(View v, MotionEvent event) {
 
 				int a = event.getAction();
