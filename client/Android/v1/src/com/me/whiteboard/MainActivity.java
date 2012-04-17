@@ -174,14 +174,14 @@ public class MainActivity extends ActionBarActivity {
 		menu.findItem(R.id.colorss).setVisible(false);
 
 	}
-/*
+
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater menuInflater = getMenuInflater();
 		menuInflater.inflate(R.menu.main, menu);
 
 		return super.onCreateOptionsMenu(menu);
 	}
-*/
+
 	boolean itemhandler(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.rect:
