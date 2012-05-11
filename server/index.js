@@ -50,6 +50,17 @@ Storage.prototype.AppendMsg=function(pool,msg)
         this[pool]=new MsgPool();
     this[pool].AppendMsg(msg);
 }
+Storage.prototype.AddPool=function(pool)
+{
+    if(!this.HasMsgPool(pool))
+        this[pool]=new MsgPool();
+}
+Storage.prototype.removePool=function(pool)
+{
+    if(this.HasMsgPool(pool))
+        delete(this[pool]);
+}
+
 var storage=new Storage();
 var _time;
 function log(s)
@@ -86,22 +97,46 @@ function getmsg_loop(r2,name,fromid,ttv)
 function savemsg(r1,r2,querys)
 {
     r1.on('data',function(chunk){
-        log("daads");
         storage.AppendMsg(querys['name'],chunk);
         r2.write('saved');
         r2.end();
         });
     
 }
+function getifexist(r1,r2,q)
+{
+    if(storage.HasMsgPool(q['name']))
+    {
+        r2.write('1');
+        r2.end();
+    }
+    else
+    {
+        storage.AddPool(q['name']);
+        r2.write('0');
+        r2.end();
+    }
+    
+}
+function rmroom(r,query)
+{
+    storage.removePool(query['name']);
+    r.write("1");
+    r.end();
+}
 http.createServer(function(request, response) {
 log("go");
   var querys=urlparse.parse(request.url,true);
 log("parsed");
   response.writeHead(200, {"Content-Type": "text/plain"});
-  if(querys.pathname=="/get")
+  if(querys.pathname=="/ifexists")
+    getifexist(request,response,querys.query);
+  else if(querys.pathname=="/get")
     getmsg(request,response,querys.query);
   else if(querys.pathname=="/post")
     savemsg(request,response,querys.query);
+  else if(querys.pathname=="/rmroom")
+    rmroom(response,querys.query);
 log("done");
   
 }).listen(10080);
