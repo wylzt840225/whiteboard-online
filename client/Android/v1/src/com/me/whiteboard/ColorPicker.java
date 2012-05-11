@@ -1,8 +1,5 @@
 package com.me.whiteboard;
 
-import com.me.whiteboard.compat.ActionBarActivity;
-
-import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
@@ -12,6 +9,8 @@ import android.widget.Button;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RadioGroup.OnCheckedChangeListener;
+
+import com.me.whiteboard.compat.ActionBarActivity;
 
 public class ColorPicker extends ActionBarActivity {
 	int color;
