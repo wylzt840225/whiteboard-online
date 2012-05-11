@@ -15,9 +15,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.me.whiteboard.compat.ActionBarActivity;
-
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -33,6 +30,10 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+
+import com.me.whiteboard.compat.ActionBarActivity;
+import com.me.whiteboard.http.Client;
+import com.me.whiteboard.http.Client.onNewDataRecv;
 
 public class MainActivity extends ActionBarActivity {
 	/** Called when the activity is first created. */
@@ -50,6 +51,7 @@ public class MainActivity extends ActionBarActivity {
 	Canvas temp, c;
 	int type = 4;
 
+	@SuppressWarnings("serial")
 	class History implements Serializable {
 		float x1, y1, x2, y2;
 		int type, color;
@@ -287,10 +289,18 @@ public class MainActivity extends ActionBarActivity {
 		}
 
 	}
-
+	
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		Client.setOnDataRecv("me", new onNewDataRecv() {
+			
+			public void onRecv(String[] datas) {
+				setTitle(datas[0]);
+				//for test and demo
+			}
+		});
 		instance=this;
 		bm = Bitmap.createBitmap(getWindow().getWindowManager()
 				.getDefaultDisplay().getWidth(), getWindow().getWindowManager()
