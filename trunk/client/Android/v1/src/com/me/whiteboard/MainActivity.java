@@ -49,6 +49,10 @@ public class MainActivity extends ActionBarActivity {
 	boolean down;
 	Canvas temp, c;
 	int type = 3;
+	
+	public static short usr_ID;
+	public static short local_ID;
+	static ActionHistory actionHistory;
 
 	@SuppressWarnings("serial")
 	class History implements Serializable {
@@ -156,6 +160,10 @@ public class MainActivity extends ActionBarActivity {
 		if (type == 3 || cc == 1) {
 			temp.drawBitmap(bm, 0, 0, GlobalS.getinstance().mPaint);
 			list.add(new History(x, y, x1, y1, type, GlobalS.getinstance().mPaint.getColor()));
+			actionHistory.add(usr_ID, local_ID, (short) 0, 
+					Integer.toString(GlobalS.getinstance().mPaint.getColor()) + "," + 
+					Float.toString(x) + "," + Float.toString(y) + "," + 
+					Float.toString(x1) + "," + Float.toString(y1));
 		}
 
 		if (type < 4)
@@ -310,7 +318,12 @@ public class MainActivity extends ActionBarActivity {
 		Client.setOnDataRecv("me", new onNewDataRecv() {
 			
 			public void onRecv(String[] datas) {
-				setTitle(datas[datas.length-1]);
+				
+				for (int i = 0; i < datas.length; i++) {
+					
+				}
+				
+				//setTitle(datas[datas.length-1]);
 				/*try {
 					int n = Integer.parseInt(datas[datas.length-1]);
 					Client.SendData("me", Integer.toString(n+1), new Runnable() {
