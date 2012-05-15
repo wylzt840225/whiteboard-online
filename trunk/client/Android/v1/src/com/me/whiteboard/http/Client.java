@@ -26,9 +26,9 @@ public class Client {
 		}.execute();
 
 	};
-	static interface onRoomEntered
+	public static interface onRoomEntered
 	{
-		void Entered(String room,int usernum);
+		void Entered(String room,int usr_ID);
 		void Error();
 	};
 	//enter a room 

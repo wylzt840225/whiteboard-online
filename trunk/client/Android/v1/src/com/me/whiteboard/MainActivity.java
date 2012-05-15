@@ -22,6 +22,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.RectF;
 import android.os.Bundle;
+import android.util.Base64;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuInflater;
@@ -33,6 +34,7 @@ import android.view.View.OnTouchListener;
 import com.me.whiteboard.compat.ActionBarActivity;
 import com.me.whiteboard.http.Client;
 import com.me.whiteboard.http.Client.onNewDataRecv;
+import com.me.whiteboard.http.Client.onRoomEntered;
 
 public class MainActivity extends ActionBarActivity {
 	/** Called when the activity is first created. */
@@ -51,8 +53,8 @@ public class MainActivity extends ActionBarActivity {
 	int type = 3;
 	
 	public static short usr_ID;
-	public static short local_ID;
-	static ActionHistory actionHistory;
+	public static short local_ID = 0;
+	static ActionHistory actionHistory = new ActionHistory();
 
 	@SuppressWarnings("serial")
 	class History implements Serializable {
@@ -160,7 +162,7 @@ public class MainActivity extends ActionBarActivity {
 		if (type == 3 || cc == 1) {
 			temp.drawBitmap(bm, 0, 0, GlobalS.getinstance().mPaint);
 			list.add(new History(x, y, x1, y1, type, GlobalS.getinstance().mPaint.getColor()));
-			actionHistory.add(usr_ID, local_ID, (short) 0, 
+			actionHistory.add(usr_ID, local_ID, (short) 1, 
 					Integer.toString(GlobalS.getinstance().mPaint.getColor()) + "," + 
 					Float.toString(x) + "," + Float.toString(y) + "," + 
 					Float.toString(x1) + "," + Float.toString(y1));
@@ -301,26 +303,29 @@ public class MainActivity extends ActionBarActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		/*Client.SendData("me", Integer.toString(0), new Runnable() {
-			
-			public void run() {
-				// TODO Auto-generated method stub
-				
+		Client.EnterRoom("test1", new onRoomEntered() {
+			public void Error() {
 			}
-		}, new Runnable() {
-			
-			public void run() {
-				// TODO Auto-generated method stub
-				
+			public void Entered(String room, int usr_ID) {
+				MainActivity.usr_ID = (short) usr_ID;
 			}
-		});*/
+		});
 		
-		Client.setOnDataRecv("me", new onNewDataRecv() {
-			
+		Client.setOnDataRecv("test1", new onNewDataRecv() {
 			public void onRecv(String[] datas) {
-				
 				for (int i = 0; i < datas.length; i++) {
+					String data = android.util.Base64.decode(datas[i], Base64.DEFAULT).toString();
+
+					short usr_ID = Short.parseShort(data.substring(0, data.indexOf(";") - 1));
+					data = data.substring(data.indexOf(";") + 1, data.length() - 1);
+
+					short local_ID = Short.parseShort(data.substring(0, data.indexOf(";") - 1));
+					data = data.substring(data.indexOf(";") + 1, data.length() - 1);
+
+					short type = Short.parseShort(data.substring(0, data.indexOf(";") - 1));
+					data = data.substring(data.indexOf(";") + 1, data.length() - 1);
 					
+					actionHistory.add(usr_ID, local_ID, type, data);
 				}
 				
 				//setTitle(datas[datas.length-1]);
@@ -369,7 +374,7 @@ public class MainActivity extends ActionBarActivity {
 				case MotionEvent.ACTION_UP:
 					down = false;
 					drawOn(1, event.getX(), event.getY());
-
+					local_ID++;
 					break;
 				case MotionEvent.ACTION_DOWN:
 					x = event.getX();
