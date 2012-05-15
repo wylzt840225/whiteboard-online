@@ -24,7 +24,6 @@ import android.graphics.RectF;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -49,7 +48,7 @@ public class MainActivity extends ActionBarActivity {
 	DrawView dw;
 	boolean down;
 	Canvas temp, c;
-	int type = 4;
+	int type = 3;
 
 	@SuppressWarnings("serial")
 	class History implements Serializable {
@@ -176,7 +175,7 @@ public class MainActivity extends ActionBarActivity {
 		menu.findItem(R.id.colorss).setVisible(false);
 
 	}
-
+/*
 	/*public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater menuInflater = getMenuInflater();
 		menuInflater.inflate(R.menu.main, menu);
@@ -294,10 +293,43 @@ public class MainActivity extends ActionBarActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
+		/*Client.SendData("me", Integer.toString(0), new Runnable() {
+			
+			public void run() {
+				// TODO Auto-generated method stub
+				
+			}
+		}, new Runnable() {
+			
+			public void run() {
+				// TODO Auto-generated method stub
+				
+			}
+		});*/
+		
 		Client.setOnDataRecv("me", new onNewDataRecv() {
 			
 			public void onRecv(String[] datas) {
-				setTitle(datas[0]);
+				setTitle(datas[datas.length-1]);
+				/*try {
+					int n = Integer.parseInt(datas[datas.length-1]);
+					Client.SendData("me", Integer.toString(n+1), new Runnable() {
+						
+						public void run() {
+							// TODO Auto-generated method stub
+							
+						}
+					}, new Runnable() {
+						
+						public void run() {
+							// TODO Auto-generated method stub
+							
+						}
+					});
+				} catch (Exception e) {
+					// TODO: handle exception
+				}*/
+				
 				//for test and demo
 			}
 		});
@@ -351,7 +383,7 @@ public class MainActivity extends ActionBarActivity {
 			}
 		});
 
-		registerForContextMenu(dw);
+		//registerForContextMenu(dw);
 
 		dw.setBackgroundColor(Color.WHITE);
 
