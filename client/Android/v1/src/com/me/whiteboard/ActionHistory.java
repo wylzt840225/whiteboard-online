@@ -11,14 +11,21 @@ public class ActionHistory {
 	@SuppressWarnings("serial")
 	private class Action implements Serializable {
 		
+		@SuppressWarnings("unused")
 		public short usr_ID;
+		@SuppressWarnings("unused")
 		public short local_ID;
+		@SuppressWarnings("unused")
+		public long time;
+		@SuppressWarnings("unused")
 		public short type;
-		public String data;
+		@SuppressWarnings("unused")
+		public String data;		
 		
-		Action(short usr_ID, short local_ID, short type, String data) {
+		Action(short usr_ID, short local_ID, long time, short type, String data) {
 			this.usr_ID = usr_ID;
 			this.local_ID = local_ID;
+			this.time = time;
 			this.type = type;
 			this.data = data;
 		}
@@ -34,7 +41,7 @@ public class ActionHistory {
 	}
 	
 	public void add(short usr_ID, short local_ID, short type, String data) {
-		Action action = new Action(usr_ID, local_ID, type, data);
+		Action action = new Action(usr_ID, local_ID, System.currentTimeMillis(), type, data);
 		actionList.add(action);
 	}
 
