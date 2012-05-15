@@ -6,7 +6,7 @@ import android.os.AsyncTask;
 public class Client {
 	//try to see if there is already  a room named @room,
 	// if yes , call @exist
-	// else , the server will assign this room to you and  @notexist is called.
+	// else @notexist is called.
 	public static void GetIfRoomExists(final String room, final Runnable exist,
 			final Runnable notexsit) {
 		new AsyncTask<Void, Void, String>() {
@@ -20,14 +20,55 @@ public class Client {
 				if (s.equals("1"))
 					exist.run();
 				else
-					notexsit.run();// not exist and the server created one ,
-									// just enter now
+					notexsit.run();
 			}
 
 		}.execute();
 
 	};
-	
+	static interface onRoomEntered
+	{
+		void Entered(String room,int usernum);
+		void Error();
+	};
+	//enter a room 
+	public static void EnterRoom(final String room,final onRoomEntered o )
+	{
+		new AsyncTask<Void, Void, String>() {
+
+			@Override
+			protected String doInBackground(Void... params) {
+				return JsonTransfer.httpTransfor("/enter?name=" + room);
+			}
+
+			protected void onPostExecute(String s) {
+				if (s.equals("!error"))
+					o.Error();
+				else
+					o.Entered(room, Integer.parseInt(s));
+			}
+
+		}.execute();
+	}
+	//create a room
+	public static void CreateRoom(final String room,final Runnable done,final Runnable error)
+	{
+		new AsyncTask<Void, Void, String>() {
+
+			@Override
+			protected String doInBackground(Void... params) {
+				return JsonTransfer.httpTransfor("/create?name=" + room);
+			}
+
+			protected void onPostExecute(String s) {
+				if (s.equals("1"))
+					done.run();
+				else
+					error.run();
+			}
+
+		}.execute();
+	}
 	//remove the room 
 	public static void removeRoom(final String room, final Runnable done) {
 		new AsyncTask<Void, Void, String>() {
