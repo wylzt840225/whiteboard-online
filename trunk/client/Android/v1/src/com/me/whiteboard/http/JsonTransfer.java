@@ -13,7 +13,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.util.EntityUtils;
 
 public class JsonTransfer {
-	static String url0 = "http://mobiact.aliapp.com";
+	static String url0 = "http://whiteboard.aliapp.com";
 
 	static public String httpTransfor(String url, boolean post, String Data) {
 		url = url0 + url;
