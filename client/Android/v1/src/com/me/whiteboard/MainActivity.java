@@ -20,9 +20,9 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Bundle;
-import android.util.Base64;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuInflater;
@@ -50,12 +50,13 @@ public class MainActivity extends ActionBarActivity {
 	DrawView dw;
 	boolean down;
 	Canvas temp, c;
-	int type = 3;
+	//int type = 3;
 	
 	public static short usr_ID;
 	public static short local_ID = 0;
 	static ActionHistory actionHistory = new ActionHistory();
 
+	/*
 	@SuppressWarnings("serial")
 	class History implements Serializable {
 		float x1, y1, x2, y2;
@@ -101,11 +102,11 @@ public class MainActivity extends ActionBarActivity {
 			return js.toString();
 		}
 
-	}
+	}*/
 
-	ArrayList<History> list;
+	//ArrayList<History> list;
 
-	void drawlist() {
+	/*void drawlist() {
 		History h;
 		temp.drawColor(Color.WHITE);
 		c.drawColor(Color.WHITE);
@@ -119,7 +120,7 @@ public class MainActivity extends ActionBarActivity {
 			temp.drawBitmap(bm, 0, 0, GlobalS.getinstance().mPaint);
 		}
 		dw.invalidate();
-	}
+	}*/
 
 	class DrawView extends View {
 		public DrawView(Context context) {
@@ -134,7 +135,7 @@ public class MainActivity extends ActionBarActivity {
 		}
 	}
 
-	void Draw(Canvas p, float x1, float y1) {
+	/*void Draw(Canvas p, float x1, float y1) {
 		switch (type) {
 		case 0:
 			p.drawRect(x, y, x1, y1,GlobalS.getinstance(). mPaint);
@@ -161,16 +162,22 @@ public class MainActivity extends ActionBarActivity {
 		Draw(p, x1, y1);
 		if (type == 3 || cc == 1) {
 			temp.drawBitmap(bm, 0, 0, GlobalS.getinstance().mPaint);
-			list.add(new History(x, y, x1, y1, type, GlobalS.getinstance().mPaint.getColor()));
-			actionHistory.add(usr_ID, local_ID, (short) 1, 
-					Integer.toString(GlobalS.getinstance().mPaint.getColor()) + "," + 
-					Float.toString(x) + "," + Float.toString(y) + "," + 
-					Float.toString(x1) + "," + Float.toString(y1));
+			//list.add(new History(x, y, x1, y1, type, GlobalS.getinstance().mPaint.getColor()));
+			
+			String data = Integer.toString(GlobalS.getinstance().mPaint.getColor()) + "," + 
+						Float.toString(x) + "," + Float.toString(y) + "," + 
+					Float.toString(x1) + "," + Float.toString(y1);
+			actionHistory.add(usr_ID, local_ID, (short) 1, data);
+			
+			String base64String = Base64Coder.encodeString(usr_ID + ";" + local_ID + ";" +
+					Short.toString((short) 1) + ";" + data);
+			Client.SendData("test1", base64String, new Runnable() { public void run() {}},
+					new Runnable() { public void run() {}});
 		}
 
 		if (type < 4)
 			dw.invalidate();
-	}
+	}*/
 
 	public void onCreateContextMenu(ContextMenu menu, View v,
 			ContextMenuInfo menuInfo) {
@@ -193,7 +200,7 @@ public class MainActivity extends ActionBarActivity {
 		return super.onCreateOptionsMenu(menu);
 	}*/
 
-	boolean itemhandler(MenuItem item) {
+	/*boolean itemhandler(MenuItem item) {
 		switch (item.getItemId()) {
 		case R.id.rect:
 			type = 0;
@@ -222,12 +229,12 @@ public class MainActivity extends ActionBarActivity {
 			dw.invalidate();
 			break;
 		case R.id.save:
-			savelist("1");
-			list = new ArrayList<MainActivity.History>();
+			//savelist("1");
+			//list = new ArrayList<MainActivity.History>();
 			break;
 		case R.id.load:
-			loadlist("1");
-			drawlist();
+			//loadlist("1");
+			//drawlist();
 			break;
 
 		}
@@ -242,9 +249,9 @@ public class MainActivity extends ActionBarActivity {
 	public boolean onContextItemSelected(MenuItem item) {
 
 		return itemhandler(item);
-	}
+	}*/
 
-	void savelist(String fileName) {
+	/*void savelist(String fileName) {
 		FileOutputStream fos;
 
 		try {
@@ -297,6 +304,28 @@ public class MainActivity extends ActionBarActivity {
 			e.printStackTrace();
 		}
 
+	}*/
+	
+	void draw(Paint paint, float x1, float y1, float x2, float y2) {
+		c.drawLine(x1, y1, x2, y2, paint);
+		temp.drawLine(x1, y1, x2, y2, paint);
+		
+		dw.invalidate((int)Math.min(x1, x2), (int)Math.min(y1, y2), 
+				(int)Math.max(x1, x2), (int)Math.max(y1, y2));
+	}
+	
+	void draw(float x1, float y1, float x2, float y2) {
+		draw(GlobalS.getinstance().mPaint, x1, y1, x2, y2);
+		
+		String data = Integer.toString(GlobalS.getinstance().mPaint.getColor()) + "," + 
+					Float.toString(x) + "," + Float.toString(y) + "," + 
+				Float.toString(x1) + "," + Float.toString(y1);
+		actionHistory.add(usr_ID, local_ID, (short) 1, data);
+		
+		String base64String = Base64Coder.encodeString(usr_ID + ";" + local_ID + ";" +
+				Short.toString((short) 1) + ";" + data);
+		Client.SendData("test1", base64String, new Runnable() { public void run() {}},
+				new Runnable() { public void run() {}});
 	}
 	
 	@Override
@@ -314,41 +343,21 @@ public class MainActivity extends ActionBarActivity {
 		Client.setOnDataRecv("test1", new onNewDataRecv() {
 			public void onRecv(String[] datas) {
 				for (int i = 0; i < datas.length; i++) {
-					String data = android.util.Base64.decode(datas[i], Base64.DEFAULT).toString();
-
-					short usr_ID = Short.parseShort(data.substring(0, data.indexOf(";") - 1));
-					data = data.substring(data.indexOf(";") + 1, data.length() - 1);
-
-					short local_ID = Short.parseShort(data.substring(0, data.indexOf(";") - 1));
-					data = data.substring(data.indexOf(";") + 1, data.length() - 1);
-
-					short type = Short.parseShort(data.substring(0, data.indexOf(";") - 1));
-					data = data.substring(data.indexOf(";") + 1, data.length() - 1);
+					String [] data = Base64Coder.decodeString(datas[i]).split(";");
 					
-					actionHistory.add(usr_ID, local_ID, type, data);
+					short usr_ID_recv = Short.parseShort(data[0]);
+					short local_ID_recv = Short.parseShort(data[1]);
+					short type_recv = Short.parseShort(data[2]);
+					
+					if (usr_ID_recv != usr_ID) {
+						String [] detail = data[3].split(",");
+						Paint paint = new Paint();
+						paint.setColor(Integer.parseInt(detail[0]));
+						draw(paint, Float.parseFloat(detail[1]), Float.parseFloat(detail[2]), 
+								Float.parseFloat(detail[3]), Float.parseFloat(detail[4]));
+						actionHistory.add(usr_ID_recv, local_ID_recv, type_recv, data[3]);
+					}
 				}
-				
-				//setTitle(datas[datas.length-1]);
-				/*try {
-					int n = Integer.parseInt(datas[datas.length-1]);
-					Client.SendData("me", Integer.toString(n+1), new Runnable() {
-						
-						public void run() {
-							// TODO Auto-generated method stub
-							
-						}
-					}, new Runnable() {
-						
-						public void run() {
-							// TODO Auto-generated method stub
-							
-						}
-					});
-				} catch (Exception e) {
-					// TODO: handle exception
-				}*/
-				
-				//for test and demo
 			}
 		});
 		instance=this;
@@ -359,7 +368,7 @@ public class MainActivity extends ActionBarActivity {
 				.getDefaultDisplay().getWidth(), getWindow().getWindowManager()
 				.getDefaultDisplay().getHeight(), Bitmap.Config.ARGB_8888);
 		temp = new Canvas(tempbm);
-		list = new ArrayList<MainActivity.History>();
+		//list = new ArrayList<MainActivity.History>();
 		c = new Canvas(bm);
 		dw = new DrawView(this);
 		setContentView(dw);
@@ -373,7 +382,8 @@ public class MainActivity extends ActionBarActivity {
 				switch (a) {
 				case MotionEvent.ACTION_UP:
 					down = false;
-					drawOn(1, event.getX(), event.getY());
+					//drawOn(1, event.getX(), event.getY());
+					draw(x, y, event.getX(), event.getY());
 					local_ID++;
 					break;
 				case MotionEvent.ACTION_DOWN:
@@ -385,19 +395,21 @@ public class MainActivity extends ActionBarActivity {
 				case MotionEvent.ACTION_MOVE:
 
 					if (down) {
-						if (type < 3)
-							drawOn(0, event.getX(), event.getY());
-						else {
+//						if (type < 3)
+//							drawOn(0, event.getX(), event.getY());
+//						else {
 
-							drawOn(1, event.getX(), event.getY());
-							x = event.getX();
-							y = event.getY();
-						}
+							//drawOn(1, event.getX(), event.getY());
+						draw(x, y, event.getX(), event.getY());
+						x = event.getX();
+						y = event.getY();
+//						}
 					}
 					break;
 				}
 
-				return type == 3;
+				//return type == 3;
+				return true;
 			}
 		});
 
