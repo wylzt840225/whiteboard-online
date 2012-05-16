@@ -10,6 +10,7 @@ import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.io.StreamCorruptedException;
 import java.util.ArrayList;
+import java.util.Random;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,6 +22,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Path;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.util.Log;
@@ -44,11 +46,13 @@ public class MainActivity extends ActionBarActivity {
 	Bitmap tempbm;
 	Float x, y;
 	DrawView dw;
-	boolean down;
+	//boolean down;
 	Canvas temp, c;
-	//int type = 3;
-	int width;
-	int height;
+	int type = 1;
+	int width, height;
+	Path path;
+	ArrayList<Float> x_History = new ArrayList<Float> ();
+	ArrayList<Float> y_History = new ArrayList<Float> ();
 	
 	public static short usr_ID;
 	public static short local_ID = 0;
@@ -134,8 +138,7 @@ public class MainActivity extends ActionBarActivity {
 
 		public void onDraw(Canvas canvas) {
 			super.onDraw(canvas);
-			GlobalS.getinstance().mPaint.setColor(Color.BLACK);
-			canvas.drawBitmap(tempbm, 0, 0,GlobalS.getinstance(). mPaint);
+			canvas.drawBitmap(tempbm, 0, 0, null);
 		}
 	}
 
@@ -175,7 +178,7 @@ public class MainActivity extends ActionBarActivity {
 			
 			String base64String = Base64Coder.encodeString(usr_ID + ";" + local_ID + ";" +
 					Short.toString((short) 1) + ";" + data);
-			Client.SendData("test2", base64String, new Runnable() { public void run() {}},
+			Client.SendData("test4", base64String, new Runnable() { public void run() {}},
 					new Runnable() { public void run() {}});
 		}
 
@@ -310,26 +313,65 @@ public class MainActivity extends ActionBarActivity {
 
 	}*/
 	
-	void draw(Paint paint, float x1, float y1, float x2, float y2) {
-		c.drawLine(x1, y1, x2, y2, paint);
-		temp.drawLine(x1, y1, x2, y2, paint);
-		
+	void draw(Float x, Float y) {
+		//tempbm = bm;
+		temp.drawPath(path, GlobalS.getinstance().mPaint);
 		dw.invalidate();
-		//dw.invalidate((int)Math.min(x1, x2), (int)Math.min(y1, y2), 
-			//	(int)Math.max(x1, x2), (int)Math.max(y1, y2));
+		
+		x_History.add(x);
+		y_History.add(y);
+		
+		/*String data = Integer.toString(GlobalS.getinstance().mPaint.getColor()) + "," + 
+					Float.toString(x/width) + "," + Float.toString(y/height);
+		actionHistory.add(usr_ID, local_ID, (short) type, data);*/
+		
+		/*String base64String = Base64Coder.encodeString(usr_ID + ";" + local_ID + ";" +
+				Short.toString((short) type) + ";" + data);
+		Client.SendData("test4", base64String, new Runnable() { public void run() {}},
+				new Runnable() { public void run() {}});*/
 	}
 	
-	void draw(float x1, float y1, float x2, float y2) {
-		draw(GlobalS.getinstance().mPaint, x1, y1, x2, y2);
+	void drawPath(String [] data) {
+		if (data.length < 3) {
+			return;
+		}
 		
-		String data = Integer.toString(GlobalS.getinstance().mPaint.getColor()) + "," + 
-					Float.toString(x1/width) + "," + Float.toString(y1/height) + "," + 
-				Float.toString(x2/width) + "," + Float.toString(y2/height);
-		actionHistory.add(usr_ID, local_ID, (short) 1, data);
+		Paint paint = new Paint(GlobalS.getinstance().mPaint);
+		paint.setColor(Integer.parseInt(data[0]));
 		
-		String base64String = Base64Coder.encodeString(usr_ID + ";" + local_ID + ";" +
-				Short.toString((short) 1) + ";" + data);
-		Client.SendData("test2", base64String, new Runnable() { public void run() {}},
+		Path path = new Path();
+		path.reset();
+		path.moveTo(Float.parseFloat(data[1])*width, Float.parseFloat(data[2])*height);
+		
+		int i;
+		for (i = 1; i < data.length - 3; i += 2) {
+			path.quadTo(Float.parseFloat(data[i])*width, Float.parseFloat(data[i+1])*height, 
+					(Float.parseFloat(data[i]) + Float.parseFloat(data[i+2]))/2*width, 
+					(Float.parseFloat(data[i+1]) + Float.parseFloat(data[i+3]))/2*height);
+		}
+		path.lineTo(Float.parseFloat(data[i])*width, Float.parseFloat(data[i+1])*height);
+		
+		temp.drawPath(path, paint);
+		dw.invalidate();
+	}
+	
+	void sendPath() {
+		String data = Integer.toString(GlobalS.getinstance().mPaint.getColor());
+		
+		for (int i = 0; i < x_History.size(); i++) {
+			data += "," + Float.toString(x_History.get(i)/width) + 
+					"," + Float.toString(y_History.get(i)/height);
+		}
+		
+		x_History.clear();
+		y_History.clear();
+		
+		actionHistory.add(usr_ID, local_ID, (short) type, data);
+		
+		String base64String = Base64Coder.encodeString(Short.toString(usr_ID) + ";" + 
+													   Short.toString(local_ID) + ";" +
+													   Short.toString((short) type) + ";" + data);
+		Client.SendData("test4", base64String, new Runnable() { public void run() {}},
 				new Runnable() { public void run() {}});
 	}
 	
@@ -337,13 +379,13 @@ public class MainActivity extends ActionBarActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		Client.EnterRoom("test2", new onRoomEntered() {
+		Client.EnterRoom("test4", new onRoomEntered() {
 			public void Error() {
 			}
 			public void Entered(String room, int usr_ID) {
 				MainActivity.usr_ID = (short) usr_ID;
 				setTitle(room);
-				Client.setOnDataRecv("test2", new onNewDataRecv() {
+				Client.setOnDataRecv("test4", new onNewDataRecv() {
 					public void onRecv(String[] datas) {
 						for (int i = 0; i < datas.length; i++) {
 							String [] data = Base64Coder.decodeString(datas[i]).split(";");
@@ -353,18 +395,34 @@ public class MainActivity extends ActionBarActivity {
 							short type_recv = Short.parseShort(data[2]);
 							
 							if (usr_ID_recv != MainActivity.usr_ID) {
-								String [] detail = data[3].split(",");
+								drawPath(data[3].split(","));
+								/*String [] detail = data[3].split(",");
 								Paint paint = new Paint();
 								paint.setColor(Integer.parseInt(detail[0]));
 								draw(paint, Float.parseFloat(detail[1])*width, 
 										Float.parseFloat(detail[2])*height, 
 										Float.parseFloat(detail[3])*width, 
 										Float.parseFloat(detail[4])*height);
-								actionHistory.add(usr_ID_recv, local_ID_recv, type_recv, data[3]);
+								actionHistory.add(usr_ID_recv, local_ID_recv, type_recv, data[3]);*/
 							}
 						}
 					}
 				});
+				
+				new Thread(new Runnable() {
+					public void run() {
+						while (true) {
+							try {
+								Thread.sleep(500);
+							} catch (InterruptedException e) {
+								e.printStackTrace();
+							}
+							if (type == 1) {
+								//sendPath();
+							}
+						}
+					}
+				}).start();
 			}
 		});
 		
@@ -379,43 +437,53 @@ public class MainActivity extends ActionBarActivity {
 		//list = new ArrayList<MainActivity.History>();
 		c = new Canvas(bm);
 		dw = new DrawView(this);
+		path = new Path();
 		setContentView(dw);
-		down = false;
+		GlobalS.getinstance().mPaint.setColor(Color.BLACK);
+		GlobalS.getinstance().mPaint.setAntiAlias(true);
+		GlobalS.getinstance().mPaint.setStyle(Paint.Style.STROKE);
+		GlobalS.getinstance().mPaint.setStrokeCap(Paint.Cap.ROUND);
+		GlobalS.getinstance().mPaint.setStrokeWidth(0);
+		//down = false;
 		
 		width = getWindowManager().getDefaultDisplay().getWidth();
 		height = getWindowManager().getDefaultDisplay().getHeight();
 		
 		dw.setOnTouchListener(new OnTouchListener() {
-
 			public boolean onTouch(View v, MotionEvent event) {
-
-				int a = event.getAction();
-				switch (a) {
+				switch (event.getAction()) {
 				case MotionEvent.ACTION_UP:
-					down = false;
+					path.lineTo(x, y);
+					//down = false;
 					//drawOn(1, event.getX(), event.getY());
-					draw(x, y, event.getX(), event.getY());
+					draw(x, y);
+					sendPath();
+					c.drawPath(path, GlobalS.getinstance().mPaint);
 					local_ID++;
+					path.reset();
 					break;
 				case MotionEvent.ACTION_DOWN:
 					x = event.getX();
 					y = event.getY();
-					down = true;
+					path.reset();
+					path.moveTo(x, y);
+					//down = true;
 					break;
 
 				case MotionEvent.ACTION_MOVE:
 
-					if (down) {
+//					if (down) {
 //						if (type < 3)
 //							drawOn(0, event.getX(), event.getY());
 //						else {
 
 							//drawOn(1, event.getX(), event.getY());
-						draw(x, y, event.getX(), event.getY());
-						x = event.getX();
-						y = event.getY();
+					path.quadTo(x, y, (x + event.getX())/2, (y + event.getY())/2);
+					draw(x, y);
+					x = event.getX();
+					y = event.getY();
 //						}
-					}
+//					}
 					break;
 				}
 

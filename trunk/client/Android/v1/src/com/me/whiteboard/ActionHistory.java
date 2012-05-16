@@ -9,17 +9,12 @@ public class ActionHistory {
 	public static List<Action> actionList = new Vector<Action>();
 
 	@SuppressWarnings("serial")
-	private class Action implements Serializable {
+	public class Action implements Serializable {
 
-		@SuppressWarnings("unused")
 		public short usr_ID;
-		@SuppressWarnings("unused")
 		public short local_ID;
-		@SuppressWarnings("unused")
 		public long time;
-		@SuppressWarnings("unused")
 		public short type;
-		@SuppressWarnings("unused")
 		public String data;
 
 		Action(short usr_ID, short local_ID, long time, short type, String data) {
