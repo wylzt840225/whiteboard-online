@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:gravity="center"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/TextView01"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="请输入您要进入的房间号：" />
+
+    <EditText
+        android:id="@+id/RoomNum"
+        android:layout_width="200dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/TextView01" />
+
+    <LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal" >
+
+        <Button
+            android:id="@+id/creatRoom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="创建房间" />
+
+        <Button
+            android:id="@+id/loginRoom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="登录房间" />
+    </LinearLayout>
+
+</LinearLayout>
