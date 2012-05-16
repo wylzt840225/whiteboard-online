@@ -4,10 +4,6 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Vector;
 
-import com.me.whiteboard.http.Client;
-
-import android.util.Base64;
-
 public class ActionHistory {
 
 	public static List<Action> actionList = new Vector<Action>();
@@ -47,13 +43,9 @@ public class ActionHistory {
 	public void add(short usr_ID, short local_ID, short type, String data) {
 		Action action = new Action(usr_ID, local_ID, System.currentTimeMillis(), type, data);
 		actionList.add(action);
-		/*String base64String = Base64.encodeToString((usr_ID + ";" + local_ID + ";" +
-				type + ";" + data).getBytes(), Base64.DEFAULT);
-		Client.SendData("test1", base64String, new Runnable() { public void run() {}},
-				new Runnable() { public void run() {}});*/
 	}
 
-	public void add(String base64String) {
+	/*public void add(String base64String) {
 		String data = Base64.decode(base64String, Base64.DEFAULT).toString();
 
 		short usr_ID = Short.parseShort(data.substring(0, data.indexOf(";") - 1));
@@ -66,6 +58,6 @@ public class ActionHistory {
 		data = data.substring(data.indexOf(";") + 1, data.length() - 1);
 
 		add(usr_ID, local_ID, type, data);
-	}
+	}*/
 
 }
