@@ -23,6 +23,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.MenuInflater;
@@ -39,11 +40,6 @@ import com.me.whiteboard.http.Client.onRoomEntered;
 public class MainActivity extends ActionBarActivity {
 	/** Called when the activity is first created. */
 	
-	static MainActivity instance;
-	static MainActivity getinstance()
-	{
-		return instance;
-	}
 	Bitmap bm;
 	Bitmap tempbm;
 	Float x, y;
@@ -51,10 +47,18 @@ public class MainActivity extends ActionBarActivity {
 	boolean down;
 	Canvas temp, c;
 	//int type = 3;
+	int width;
+	int height;
 	
 	public static short usr_ID;
 	public static short local_ID = 0;
 	static ActionHistory actionHistory = new ActionHistory();
+	
+	static MainActivity instance;
+	static MainActivity getinstance()
+	{
+		return instance;
+	}
 
 	/*
 	@SuppressWarnings("serial")
@@ -171,7 +175,7 @@ public class MainActivity extends ActionBarActivity {
 			
 			String base64String = Base64Coder.encodeString(usr_ID + ";" + local_ID + ";" +
 					Short.toString((short) 1) + ";" + data);
-			Client.SendData("test1", base64String, new Runnable() { public void run() {}},
+			Client.SendData("test2", base64String, new Runnable() { public void run() {}},
 					new Runnable() { public void run() {}});
 		}
 
@@ -310,21 +314,22 @@ public class MainActivity extends ActionBarActivity {
 		c.drawLine(x1, y1, x2, y2, paint);
 		temp.drawLine(x1, y1, x2, y2, paint);
 		
-		dw.invalidate((int)Math.min(x1, x2), (int)Math.min(y1, y2), 
-				(int)Math.max(x1, x2), (int)Math.max(y1, y2));
+		dw.invalidate();
+		//dw.invalidate((int)Math.min(x1, x2), (int)Math.min(y1, y2), 
+			//	(int)Math.max(x1, x2), (int)Math.max(y1, y2));
 	}
 	
 	void draw(float x1, float y1, float x2, float y2) {
 		draw(GlobalS.getinstance().mPaint, x1, y1, x2, y2);
 		
 		String data = Integer.toString(GlobalS.getinstance().mPaint.getColor()) + "," + 
-					Float.toString(x) + "," + Float.toString(y) + "," + 
-				Float.toString(x1) + "," + Float.toString(y1);
+					Float.toString(x1/width) + "," + Float.toString(y1/height) + "," + 
+				Float.toString(x2/width) + "," + Float.toString(y2/height);
 		actionHistory.add(usr_ID, local_ID, (short) 1, data);
 		
 		String base64String = Base64Coder.encodeString(usr_ID + ";" + local_ID + ";" +
 				Short.toString((short) 1) + ";" + data);
-		Client.SendData("test1", base64String, new Runnable() { public void run() {}},
+		Client.SendData("test2", base64String, new Runnable() { public void run() {}},
 				new Runnable() { public void run() {}});
 	}
 	
@@ -332,34 +337,37 @@ public class MainActivity extends ActionBarActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		Client.EnterRoom("test1", new onRoomEntered() {
+		Client.EnterRoom("test2", new onRoomEntered() {
 			public void Error() {
 			}
 			public void Entered(String room, int usr_ID) {
 				MainActivity.usr_ID = (short) usr_ID;
+				setTitle(room);
+				Client.setOnDataRecv("test2", new onNewDataRecv() {
+					public void onRecv(String[] datas) {
+						for (int i = 0; i < datas.length; i++) {
+							String [] data = Base64Coder.decodeString(datas[i]).split(";");
+							
+							short usr_ID_recv = Short.parseShort(data[0]);
+							short local_ID_recv = Short.parseShort(data[1]);
+							short type_recv = Short.parseShort(data[2]);
+							
+							if (usr_ID_recv != MainActivity.usr_ID) {
+								String [] detail = data[3].split(",");
+								Paint paint = new Paint();
+								paint.setColor(Integer.parseInt(detail[0]));
+								draw(paint, Float.parseFloat(detail[1])*width, 
+										Float.parseFloat(detail[2])*height, 
+										Float.parseFloat(detail[3])*width, 
+										Float.parseFloat(detail[4])*height);
+								actionHistory.add(usr_ID_recv, local_ID_recv, type_recv, data[3]);
+							}
+						}
+					}
+				});
 			}
 		});
 		
-		Client.setOnDataRecv("test1", new onNewDataRecv() {
-			public void onRecv(String[] datas) {
-				for (int i = 0; i < datas.length; i++) {
-					String [] data = Base64Coder.decodeString(datas[i]).split(";");
-					
-					short usr_ID_recv = Short.parseShort(data[0]);
-					short local_ID_recv = Short.parseShort(data[1]);
-					short type_recv = Short.parseShort(data[2]);
-					
-					if (usr_ID_recv != usr_ID) {
-						String [] detail = data[3].split(",");
-						Paint paint = new Paint();
-						paint.setColor(Integer.parseInt(detail[0]));
-						draw(paint, Float.parseFloat(detail[1]), Float.parseFloat(detail[2]), 
-								Float.parseFloat(detail[3]), Float.parseFloat(detail[4]));
-						actionHistory.add(usr_ID_recv, local_ID_recv, type_recv, data[3]);
-					}
-				}
-			}
-		});
 		instance=this;
 		bm = Bitmap.createBitmap(getWindow().getWindowManager()
 				.getDefaultDisplay().getWidth(), getWindow().getWindowManager()
@@ -373,7 +381,10 @@ public class MainActivity extends ActionBarActivity {
 		dw = new DrawView(this);
 		setContentView(dw);
 		down = false;
-
+		
+		width = getWindowManager().getDefaultDisplay().getWidth();
+		height = getWindowManager().getDefaultDisplay().getHeight();
+		
 		dw.setOnTouchListener(new OnTouchListener() {
 
 			public boolean onTouch(View v, MotionEvent event) {
