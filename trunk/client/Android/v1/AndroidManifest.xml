@@ -25,11 +25,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.me.whiteboard.ColorPicker"
-            android:screenOrientation="landscape"
-            android:theme="@style/AppTheme" >
-        </activity>
-        <activity
             android:name="com.me.whiteboard.MainActivity"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme" >
