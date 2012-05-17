@@ -185,6 +185,22 @@ public class MainActivity extends ActionBarActivity {
 			public void run() {
 				width =findViewById(R.id.draw).getWidth();
 				height = findViewById(R.id.draw).getHeight();
+				
+				
+				if(((float)width)/height>4.0/3.0)
+				{
+					width=height*4/3;
+				}
+				else
+				{
+					height=width*3/4;
+				}
+				
+				LayoutParams lp=new LayoutParams();
+				lp.width=width;
+				lp.height=height;
+										
+				
 				instance = MainActivity.this;
 				bm = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 				tempbm = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
@@ -194,9 +210,8 @@ public class MainActivity extends ActionBarActivity {
 				dw = new DrawView(MainActivity.this);
 				path = new Path();
 				
-				LayoutParams lp=new LayoutParams();
-				lp.width=android.view.ViewGroup.LayoutParams.FILL_PARENT;
-				lp.height=android.view.ViewGroup.LayoutParams.FILL_PARENT;
+				
+				
 				((ViewGroup)findViewById(R.id.draw)).addView(dw,lp);
 				GlobalS.getinstance().mPaint.setColor(Color.BLACK);
 				GlobalS.getinstance().mPaint.setAntiAlias(true);
