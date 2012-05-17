@@ -19,41 +19,30 @@
     <item
         android:id="@+id/rect"
         android:icon="@drawable/ic_action_refresh"
+        android:showAsAction="never"
         android:title="矩形"/>
-    <item
-        android:id="@+id/oval"
-        android:icon="@drawable/ic_action_refresh"
-        android:title="椭圆"/>
-    <item
-        android:id="@+id/line"
-        android:icon="@drawable/ic_action_refresh"
-        android:title="直线"/>
+    
     <item
         android:id="@+id/free"
         android:icon="@drawable/ic_action_refresh"
+        android:showAsAction="never"
         android:title="随手画"/>
     <item
         android:id="@+id/colorss"
         android:icon="@drawable/ic_action_refresh"
+        android:showAsAction="never"
         android:title="颜色"/>
      <item
-        android:id="@+id/save"
-        android:icon="@drawable/ic_action_refresh"
-        android:title="保存"/>
-     <item
-        android:id="@+id/load"
-        android:icon="@drawable/ic_action_refresh"
-        android:title="载入"/>
-    <item
         android:id="@+id/clearss"
         android:icon="@drawable/ic_action_refresh"
+        android:showAsAction="never"
         android:title="清除"/>
     
     <item
-        android:id="@+id/nones"
+        android:id="@+id/exit"
         android:icon="@drawable/ic_action_refresh"
-        android:title="空闲"/>
-    
+        android:showAsAction="never"
+        android:title="退出"/>
    
 
 </menu>
