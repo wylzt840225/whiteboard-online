@@ -9,8 +9,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.os.Bundle;
-import android.view.ContextMenu;
-import android.view.ContextMenu.ContextMenuInfo;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -62,20 +61,8 @@ public class MainActivity extends ActionBarActivity {
 		}
 	}
 
-	public void onCreateContextMenu(ContextMenu menu, View v,
-			ContextMenuInfo menuInfo) {
 
-		super.onCreateContextMenu(menu, v, menuInfo);
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.main, menu);
-
-		menu.findItem(R.id.load).setVisible(false);
-		menu.findItem(R.id.save).setVisible(false);
-		menu.findItem(R.id.nones).setVisible(false);
-		menu.findItem(R.id.colorss).setVisible(false);
-
-	}
-
+	
 	void draw(Float x, Float y) {
 		// tempbm = bm;
 		temp.drawPath(path, GlobalS.getinstance().mPaint);
@@ -140,7 +127,12 @@ public class MainActivity extends ActionBarActivity {
 			}
 		});
 	}
-
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater menuInflater = getMenuInflater();
+		menuInflater.inflate(R.menu.main, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
