@@ -15,6 +15,8 @@ import android.view.MenuInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
+import android.view.WindowManager.LayoutParams;
 
 import com.me.whiteboard.compat.ActionBarActivity;
 import com.me.whiteboard.http.Client;
@@ -177,77 +179,84 @@ public class MainActivity extends ActionBarActivity {
 				}
 			}
 		}).start();
+		setContentView(R.layout.canvas);
+		findViewById(R.id.draw).post(new Runnable() {
+			
+			public void run() {
+				width =findViewById(R.id.draw).getWidth();
+				height = findViewById(R.id.draw).getHeight();
+				instance = MainActivity.this;
+				bm = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+				tempbm = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
+				temp = new Canvas(tempbm);
+				// list = new ArrayList<MainActivity.History>();
+				c = new Canvas(bm);
+				dw = new DrawView(MainActivity.this);
+				path = new Path();
+				
+				LayoutParams lp=new LayoutParams();
+				lp.width=android.view.ViewGroup.LayoutParams.FILL_PARENT;
+				lp.height=android.view.ViewGroup.LayoutParams.FILL_PARENT;
+				((ViewGroup)findViewById(R.id.draw)).addView(dw,lp);
+				GlobalS.getinstance().mPaint.setColor(Color.BLACK);
+				GlobalS.getinstance().mPaint.setAntiAlias(true);
+				GlobalS.getinstance().mPaint.setStyle(Paint.Style.STROKE);
+				GlobalS.getinstance().mPaint.setStrokeCap(Paint.Cap.ROUND);
+				GlobalS.getinstance().mPaint.setStrokeWidth(0);
+				// down = false;
 
-		instance = this;
-		bm = Bitmap.createBitmap(getWindow().getWindowManager()
-				.getDefaultDisplay().getWidth(), getWindow().getWindowManager()
-				.getDefaultDisplay().getHeight(), Bitmap.Config.ARGB_8888);
-		tempbm = Bitmap.createBitmap(getWindow().getWindowManager()
-				.getDefaultDisplay().getWidth(), getWindow().getWindowManager()
-				.getDefaultDisplay().getHeight(), Bitmap.Config.ARGB_8888);
-		temp = new Canvas(tempbm);
-		// list = new ArrayList<MainActivity.History>();
-		c = new Canvas(bm);
-		dw = new DrawView(this);
-		path = new Path();
-		setContentView(dw);
-		GlobalS.getinstance().mPaint.setColor(Color.BLACK);
-		GlobalS.getinstance().mPaint.setAntiAlias(true);
-		GlobalS.getinstance().mPaint.setStyle(Paint.Style.STROKE);
-		GlobalS.getinstance().mPaint.setStrokeCap(Paint.Cap.ROUND);
-		GlobalS.getinstance().mPaint.setStrokeWidth(0);
-		// down = false;
+				
 
-		width = getWindowManager().getDefaultDisplay().getWidth();
-		height = getWindowManager().getDefaultDisplay().getHeight();
+				dw.setOnTouchListener(new OnTouchListener() {
+					public boolean onTouch(View v, MotionEvent event) {
+						switch (event.getAction()) {
+						case MotionEvent.ACTION_UP:
+							path.lineTo(x, y);
+							// down = false;
+							// drawOn(1, event.getX(), event.getY());
+							draw(x, y);
+							sendPath();
+							c.drawPath(path, GlobalS.getinstance().mPaint);
+							local_ID++;
+							path.reset();
+							break;
+						case MotionEvent.ACTION_DOWN:
+							x = event.getX();
+							y = event.getY();
+							path.reset();
+							path.moveTo(x, y);
+							// down = true;
+							break;
 
-		dw.setOnTouchListener(new OnTouchListener() {
-			public boolean onTouch(View v, MotionEvent event) {
-				switch (event.getAction()) {
-				case MotionEvent.ACTION_UP:
-					path.lineTo(x, y);
-					// down = false;
-					// drawOn(1, event.getX(), event.getY());
-					draw(x, y);
-					sendPath();
-					c.drawPath(path, GlobalS.getinstance().mPaint);
-					local_ID++;
-					path.reset();
-					break;
-				case MotionEvent.ACTION_DOWN:
-					x = event.getX();
-					y = event.getY();
-					path.reset();
-					path.moveTo(x, y);
-					// down = true;
-					break;
+						case MotionEvent.ACTION_MOVE:
 
-				case MotionEvent.ACTION_MOVE:
+							// if (down) {
+							// if (type < 3)
+							// drawOn(0, event.getX(), event.getY());
+							// else {
 
-					// if (down) {
-					// if (type < 3)
-					// drawOn(0, event.getX(), event.getY());
-					// else {
+							// drawOn(1, event.getX(), event.getY());
+							path.quadTo(x, y, (x + event.getX()) / 2,
+									(y + event.getY()) / 2);
+							draw(x, y);
+							x = event.getX();
+							y = event.getY();
+							// }
+							// }
+							break;
+						}
 
-					// drawOn(1, event.getX(), event.getY());
-					path.quadTo(x, y, (x + event.getX()) / 2,
-							(y + event.getY()) / 2);
-					draw(x, y);
-					x = event.getX();
-					y = event.getY();
-					// }
-					// }
-					break;
-				}
+						// return type == 3;
+						return true;
+					}
+				});
 
-				// return type == 3;
-				return true;
+				// registerForContextMenu(dw);
+
+				dw.setBackgroundColor(Color.WHITE);
 			}
 		});
-
-		// registerForContextMenu(dw);
-
-		dw.setBackgroundColor(Color.WHITE);
+		
 
 	}
 }
