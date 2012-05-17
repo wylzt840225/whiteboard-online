@@ -8,5 +8,8 @@
     <string name="loginerror">登录失败，请重试</string>
     <string name="room_not_exists">没有找到该房间。是否为您新建房间？</string>
     <string name="room_create_error">创建失败，请重试</string>
+    <string name="check_room">检查房间中,请稍候</string>
+    <string name="entering_room">进入房间中,请稍候</string>
+    <string name="createing_room">创建房间中,请稍候</string>
 
 </resources>
