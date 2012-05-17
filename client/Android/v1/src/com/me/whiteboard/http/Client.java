@@ -86,10 +86,14 @@ public class Client {
 		}.execute();
 
 	};
-
+	public interface onSend
+	{
+		void SendOK();
+		void SendError(String Data);
+	}
 	//send data to server 
 	public static void SendData(final String room, final String Data,
-			final Runnable done, final Runnable error) {
+			final onSend onSendListener) {
 		new AsyncTask<Void, Void, String>() {
 
 			@Override
@@ -100,9 +104,9 @@ public class Client {
 
 			protected void onPostExecute(String s) {
 				if (s.equals("saved"))
-					done.run();
+					onSendListener.SendOK();
 				else
-					error.run();
+					onSendListener.SendError(Data);
 			}
 
 		}.execute();
