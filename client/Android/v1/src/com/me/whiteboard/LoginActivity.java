@@ -1,7 +1,5 @@
 package com.me.whiteboard;
 
-import com.me.whiteboard.http.Client;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -13,6 +11,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import com.me.whiteboard.http.Client;
 
 public class LoginActivity extends Activity
 {
@@ -30,8 +30,13 @@ public class LoginActivity extends Activity
 			public void onClick(View v) 
 			{
 				EditText roomnum = (EditText)findViewById(R.id.RoomNum);
-				String room = roomnum.getText().toString();
-				Client.GetIfRoomExists(room, new BeginDrawing(), new LoginFail());
+				final String room = roomnum.getText().toString();
+				Client.GetIfRoomExists(room, new Runnable() {
+					
+					public void run() {
+						Client.EnterRoom(room, new BeginEnter());
+					}
+				}, new LoginFail());
 			}
 		});
 		
@@ -46,16 +51,7 @@ public class LoginActivity extends Activity
 		});
 	}
 	//enter succeed, begin drawing
-	class BeginDrawing implements Runnable
-	{
-		public void run() 
-		{
-			Intent intent = new Intent();  
-	        intent.setClass(LoginActivity.this, MainActivity.class);  
-	        startActivity(intent);  
-	        LoginActivity.this.finish();  
-		}
-	}
+	
 	class BeginEnter implements Client.onRoomEntered
 	{
 		//if room exits, enter room and begin drawing
@@ -63,6 +59,8 @@ public class LoginActivity extends Activity
 		{
 			Intent intent = new Intent();  
 	        intent.setClass(LoginActivity.this, MainActivity.class);  
+	        intent.putExtra("room", room);
+	        intent.putExtra("id", usernum);
 	        startActivity(intent);  
 	        LoginActivity.this.finish();  
 		}
@@ -88,8 +86,13 @@ public class LoginActivity extends Activity
 			                    break;  
 			                case Dialog.BUTTON_POSITIVE:
 			                	EditText roomnum = (EditText)findViewById(R.id.RoomNum);
-			    				String room = roomnum.getText().toString();
-			    				Client.CreateRoom(room, new BeginDrawing(), new ShowError());
+			    				final String room = roomnum.getText().toString();
+			    				Client.CreateRoom(room, new Runnable() {
+									
+									public void run() {
+										Client.EnterRoom(room, new BeginEnter());
+									}
+								}, new ShowError());
 			                    break;  
 			            }  
 			        }
