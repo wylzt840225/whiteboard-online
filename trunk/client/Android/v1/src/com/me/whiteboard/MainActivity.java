@@ -23,29 +23,32 @@ import com.me.whiteboard.http.Client.onNewDataRecv;
 
 public class MainActivity extends ActionBarActivity {
 	/** Called when the activity is first created. */
-
-	Bitmap bm;
-	Bitmap tempbm;
-	Float x, y;
-	DrawView dw;
-	String room;
+	
+	static Bitmap bmp;
+	static Canvas canvas;
+	static Paint paint;
+	//Bitmap bm;
+	//Bitmap tempbm;
+	static Float x, y;
+	static DrawView dw;
+	static String room;
 	// boolean down;
-	Canvas temp, c;
-	int type = 1;
-	int width, height;
-	Path path;
-	ArrayList<Float> x_History = new ArrayList<Float>();
-	ArrayList<Float> y_History = new ArrayList<Float>();
+	//Canvas temp, c;
+	static int type = 1;
+	static int width, height;
+	static Path path;
+	static ArrayList<Float> x_History = new ArrayList<Float>();
+	static ArrayList<Float> y_History = new ArrayList<Float>();
 
-	public static short usr_ID;
-	public static short local_ID = 0;
+	static short usr_ID;
+	static short local_ID = 0;
 	static ActionHistory actionHistory = new ActionHistory();
 
-	static MainActivity instance;
+	/*static MainActivity instance;
 
 	static MainActivity getinstance() {
 		return instance;
-	}
+	}*/
 
 	
 
@@ -57,15 +60,19 @@ public class MainActivity extends ActionBarActivity {
 
 		public void onDraw(Canvas canvas) {
 			super.onDraw(canvas);
-			canvas.drawBitmap(tempbm, 0, 0, null);
+			display(canvas);
 		}
 	}
-
-
+	
+	void display(Canvas canvas) {
+		canvas.drawBitmap(bmp, 0, 0, null);
+		
+		canvas.drawPath(path, paint);
+	}
 	
 	void draw(Float x, Float y) {
 		// tempbm = bm;
-		temp.drawPath(path, GlobalS.getinstance().mPaint);
+		//temp.drawPath(path, GlobalS.getinstance().mPaint);
 		dw.invalidate();
 
 		x_History.add(x);
@@ -78,7 +85,7 @@ public class MainActivity extends ActionBarActivity {
 			return;
 		}
 
-		Paint paint = new Paint(GlobalS.getinstance().mPaint);
+		Paint paint = new Paint(MainActivity.paint);
 		paint.setColor(Integer.parseInt(data[0]));
 
 		Path path = new Path();
@@ -99,12 +106,13 @@ public class MainActivity extends ActionBarActivity {
 		path.lineTo(Float.parseFloat(data[i]) * width,
 				Float.parseFloat(data[i + 1]) * height);
 
-		temp.drawPath(path, paint);
+		//temp.drawPath(path, paint);
+		canvas.drawPath(path, paint);
 		dw.invalidate();
 	}
 
 	void sendPath() {
-		String data = Integer.toString(GlobalS.getinstance().mPaint.getColor());
+		String data = Integer.toString(paint.getColor());
 
 		for (int i = 0; i < x_History.size(); i++) {
 			data += "," + Float.toString(x_History.get(i) / width) + ","
@@ -171,7 +179,9 @@ public class MainActivity extends ActionBarActivity {
 				}
 			}
 		}).start();
+		
 		setContentView(R.layout.canvas);
+		
 		findViewById(R.id.draw).post(new Runnable() {
 			
 			public void run() {
@@ -179,12 +189,9 @@ public class MainActivity extends ActionBarActivity {
 				height = findViewById(R.id.draw).getHeight();
 				
 				
-				if(((float)width)/height>4.0/3.0)
-				{
+				if(((float)width)/height>4.0/3.0) {
 					width=height*4/3;
-				}
-				else
-				{
+				} else {
 					height=width*3/4;
 				}
 				
@@ -193,23 +200,25 @@ public class MainActivity extends ActionBarActivity {
 				lp.height=height;
 										
 				
-				instance = MainActivity.this;
-				bm = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-				tempbm = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
-				temp = new Canvas(tempbm);
+				//instance = MainActivity.this;
+				//bm = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+				//tempbm = Bitmap.createBitmap(width,height, Bitmap.Config.ARGB_8888);
+				//temp = new Canvas(tempbm);
+				bmp = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+				canvas = new Canvas(bmp);
 				// list = new ArrayList<MainActivity.History>();
-				c = new Canvas(bm);
+				//c = new Canvas(bm);
 				dw = new DrawView(MainActivity.this);
 				path = new Path();
 				
 				
 				
 				((ViewGroup)findViewById(R.id.draw)).addView(dw,lp);
-				GlobalS.getinstance().mPaint.setColor(Color.BLACK);
-				GlobalS.getinstance().mPaint.setAntiAlias(true);
-				GlobalS.getinstance().mPaint.setStyle(Paint.Style.STROKE);
-				GlobalS.getinstance().mPaint.setStrokeCap(Paint.Cap.ROUND);
-				GlobalS.getinstance().mPaint.setStrokeWidth(0);
+				paint.setColor(Color.BLACK);
+				paint.setAntiAlias(true);
+				paint.setStyle(Paint.Style.STROKE);
+				paint.setStrokeCap(Paint.Cap.ROUND);
+				paint.setStrokeWidth(0);
 				// down = false;
 
 				
@@ -223,7 +232,8 @@ public class MainActivity extends ActionBarActivity {
 							// drawOn(1, event.getX(), event.getY());
 							draw(x, y);
 							sendPath();
-							c.drawPath(path, GlobalS.getinstance().mPaint);
+							//c.drawPath(path, GlobalS.getinstance().mPaint);
+							canvas.drawPath(path, paint);
 							local_ID++;
 							path.reset();
 							break;

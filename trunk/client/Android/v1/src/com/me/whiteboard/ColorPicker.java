@@ -17,7 +17,7 @@ public class ColorPicker extends ActionBarActivity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.main);
-		final Paint mpaint=GlobalS.getinstance().mPaint;
+		final Paint mpaint=MainActivity.paint;
 		RadioButton rButton=null;
 		color=mpaint.getColor();
 		RadioGroup rg=(RadioGroup) findViewById(R.id.colors);
@@ -59,7 +59,7 @@ public class ColorPicker extends ActionBarActivity {
 			
 			public void onClick(View v) {
 
-				GlobalS.getinstance().mPaint.setColor(color);
+				MainActivity.paint.setColor(color);
 				ColorPicker.this.finish();
 			}
 		});
