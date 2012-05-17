@@ -46,44 +46,7 @@ public class MainActivity extends ActionBarActivity {
 		return instance;
 	}
 
-	/*
-	 * @SuppressWarnings("serial") class History implements Serializable { float
-	 * x1, y1, x2, y2; int type, color;
-	 * 
-	 * History(float x1, float y1, float x2, float y2, int type, int color) {
-	 * this.x1 = x1; this.x2 = x2; this.y1 = y1; this.y2 = y2; this.type = type;
-	 * this.color = color;
-	 * 
-	 * }
-	 * 
-	 * History(JSONObject js) { try {
-	 * 
-	 * this.x1 = (float) js.getDouble("x1"); this.x2 = (float)
-	 * js.getDouble("x2"); this.y1 = (float) js.getDouble("y1"); this.y2 =
-	 * (float) js.getDouble("y2"); this.type = js.getInt("type"); this.color =
-	 * js.getInt("color"); } catch (JSONException e) { } }
-	 * 
-	 * String json() { JSONObject js = new JSONObject(); try { js.put("x1",
-	 * this.x1); js.put("x2", this.x2); js.put("y1", this.y1); js.put("y2",
-	 * this.y2); js.put("type", this.type); js.put("color", this.color); } catch
-	 * (JSONException e) { // TODO Auto-generated catch block
-	 * e.printStackTrace(); }
-	 * 
-	 * return js.toString(); }
-	 * 
-	 * }
-	 */
-
-	// ArrayList<History> list;
-
-	/*
-	 * void drawlist() { History h; temp.drawColor(Color.WHITE);
-	 * c.drawColor(Color.WHITE); for (int i = 0; i < list.size(); i++) { h =
-	 * list.get(i); x = h.x1; y = h.y1; type = h.type;
-	 * GlobalS.getinstance().mPaint.setColor(h.color); Draw(c, h.x2, h.y2);
-	 * temp.drawBitmap(bm, 0, 0, GlobalS.getinstance().mPaint); }
-	 * dw.invalidate(); }
-	 */
+	
 
 	class DrawView extends View {
 		public DrawView(Context context) {
@@ -189,8 +152,8 @@ public class MainActivity extends ActionBarActivity {
 							";");
 
 					short usr_ID_recv = Short.parseShort(data[0]);
-					short local_ID_recv = Short.parseShort(data[1]);
-					short type_recv = Short.parseShort(data[2]);
+					//short local_ID_recv = Short.parseShort(data[1]);
+					//short type_recv = Short.parseShort(data[2]);
 
 					if (usr_ID_recv != MainActivity.usr_ID) {
 						drawPath(data[3].split(","));

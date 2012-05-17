@@ -14,104 +14,114 @@ import android.widget.Toast;
 
 import com.me.whiteboard.http.Client;
 
-public class LoginActivity extends Activity
-{
-	public void onCreate(Bundle savedInstanceState) 
-	{
+public class LoginActivity extends Activity {
+	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		setContentView(R.layout.login);
-		
-		Button loginButton = (Button)findViewById(R.id.loginRoom);
-		Button creatButton = (Button)findViewById(R.id.creatRoom);
-		
-		loginButton.setOnClickListener(new View.OnClickListener() 
-		{	
-			public void onClick(View v) 
-			{
-				EditText roomnum = (EditText)findViewById(R.id.RoomNum);
+
+		Button loginButton = (Button) findViewById(R.id.loginRoom);
+		Button creatButton = (Button) findViewById(R.id.creatRoom);
+
+		loginButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				EditText roomnum = (EditText) findViewById(R.id.RoomNum);
+				String room = roomnum.getText().toString();
+				Client.GetIfRoomExists(room, new EnterRoom(room),
+						new onNoRoom());
+			}
+		});
+
+		creatButton.setOnClickListener(new View.OnClickListener() {
+			public void onClick(View v) {
+				EditText roomnum = (EditText) findViewById(R.id.RoomNum);
 				final String room = roomnum.getText().toString();
 				Client.GetIfRoomExists(room, new Runnable() {
-					
+
 					public void run() {
-						Client.EnterRoom(room, new BeginEnter());
+
+						new AlertDialog.Builder(LoginActivity.this)
+								.setTitle(R.string.error).setMessage(R.string.room_already_exists)
+								.setPositiveButton(R.string.positive, null).show();
+
 					}
-				}, new LoginFail());
-			}
-		});
-		
-		creatButton.setOnClickListener(new View.OnClickListener() 
-		{	
-			public void onClick(View v) 
-			{
-				EditText roomnum = (EditText)findViewById(R.id.RoomNum);
-				String room = roomnum.getText().toString();
-				Client.EnterRoom(room, new BeginEnter());
+				}, new CreateAndEnter(room));
+
 			}
 		});
 	}
-	//enter succeed, begin drawing
-	
-	class BeginEnter implements Client.onRoomEntered
-	{
-		//if room exits, enter room and begin drawing
-		public void Entered(String room, int usernum) 
-		{
-			Intent intent = new Intent();  
-	        intent.setClass(LoginActivity.this, MainActivity.class);  
-	        intent.putExtra("room", room);
-	        intent.putExtra("id", usernum);
-	        startActivity(intent);  
-	        LoginActivity.this.finish();  
+
+	class CreateAndEnter implements Runnable {
+		String room;
+
+		public CreateAndEnter(String room) {
+			this.room = room;
 		}
-		//if room not exists, create a new room and enter
-		public void Error() 
-		{
-			new AlertDialog.Builder(LoginActivity.this).setTitle("出错啦！")
-			.setMessage("该房间已存在，请修改名称")
-			.setPositiveButton("确定",null).show(); 
+
+		public void run() {
+			Client.CreateRoom(room, new EnterRoom(room), new CreateError());
+		}
+
+	}
+
+	class EnterRoom implements Runnable {
+		String room;
+
+		public EnterRoom(String room) {
+			this.room = room;
+		}
+
+		public void run() {
+			Client.EnterRoom(room, new onEnter());
 		}
 	}
-	//if room exists and creating failed, alert msg
-	class LoginFail implements Runnable
-	{
-		public void run() 
-		{
-			OnClickListener onclick = new OnClickListener() 
-			 {  
-			        public void onClick(DialogInterface dialog, int which) 
-			        {  
-			            switch (which) {  
-			                case Dialog.BUTTON_NEGATIVE:  
-			                    break;  
-			                case Dialog.BUTTON_POSITIVE:
-			                	EditText roomnum = (EditText)findViewById(R.id.RoomNum);
-			    				final String room = roomnum.getText().toString();
-			    				Client.CreateRoom(room, new Runnable() {
-									
-									public void run() {
-										Client.EnterRoom(room, new BeginEnter());
-									}
-								}, new ShowError());
-			                    break;  
-			            }  
-			        }
-			    };  
-			    
-			AlertDialog dialog = new AlertDialog.Builder(LoginActivity.this)  
-			.setTitle("出错啦！")  
-			.setMessage("没有找到该房间。是否为您新建房间？")
-			.setPositiveButton("确定", onclick)  
-			.setNegativeButton("返回",  onclick).create();  
-			dialog.show(); 
+
+	class onEnter implements Client.onRoomEntered {
+		// if room exits, enter room and begin drawing
+		public void Entered(String room, int usernum) {
+			Intent intent = new Intent();
+			intent.setClass(LoginActivity.this, MainActivity.class);
+			intent.putExtra("room", room);
+			intent.putExtra("id", usernum);
+			startActivity(intent);
+			LoginActivity.this.finish();
+		}
+
+		public void Error() {
+			Toast.makeText(LoginActivity.this, R.string.loginerror, Toast.LENGTH_LONG)
+					.show();
 		}
 	}
-	
-	class ShowError implements Runnable
-	{
-		public void run() 
-		{
-			Toast.makeText(LoginActivity.this,"创建失败，请重试", Toast.LENGTH_LONG).show();
+
+	// if room exists and creating failed, alert msg
+	class onNoRoom implements Runnable {
+		public void run() {
+			OnClickListener onclick = new OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					switch (which) {
+					case Dialog.BUTTON_NEGATIVE:
+						break;
+					case Dialog.BUTTON_POSITIVE:
+						EditText roomnum = (EditText) findViewById(R.id.RoomNum);
+						final String room = roomnum.getText().toString();
+						new CreateAndEnter(room).run();
+						break;
+					}
+				}
+			};
+
+			AlertDialog dialog = new AlertDialog.Builder(LoginActivity.this)
+					.setTitle(R.string.error).setMessage(R.string.room_not_exists)
+					.setPositiveButton(R.string.positive, onclick)
+					.setNegativeButton(R.string.negative, onclick).create();
+			dialog.show();
+		}
+	}
+
+	class CreateError implements Runnable {
+		public void run() {
+			Toast.makeText(LoginActivity.this, R.string.room_create_error, Toast.LENGTH_LONG)
+					.show();
 		}
 	}
 }
