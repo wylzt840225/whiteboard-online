@@ -65,8 +65,7 @@ Storage.prototype.EnterPool=function(pool)
 {
     if(this.HasMsgPool(pool))
       {
-        this[pool].n=this[pool].n+1;
-        return this[pool].n;
+        return ++(this[pool].n);
       }
      return 0;
 }
@@ -101,7 +100,7 @@ function getmsg_loop(r2,name,fromid,ttv)
             outputmsg(name,fromid,r2);
             return;
         }
-    setTimeout(function(){getmsg_loop(r2,name,fromid,ttv-1);},2000);   
+    setTimeout(function(){getmsg_loop(r2,name,fromid,ttv-1);},800);   
     
 }
 function savemsg(r1,r2,querys)
