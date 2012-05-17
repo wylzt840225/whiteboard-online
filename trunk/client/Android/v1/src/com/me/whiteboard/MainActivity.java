@@ -20,6 +20,7 @@ import android.view.WindowManager.LayoutParams;
 import com.me.whiteboard.compat.ActionBarActivity;
 import com.me.whiteboard.http.Client;
 import com.me.whiteboard.http.Client.onNewDataRecv;
+import com.me.whiteboard.http.Client.onSend;
 
 public class MainActivity extends ActionBarActivity {
 	/** Called when the activity is first created. */
@@ -50,8 +51,44 @@ public class MainActivity extends ActionBarActivity {
 		return instance;
 	}*/
 
+	class Sender
+	{
+		ArrayList<Action> list;
+		
+		Sender()
+		{
+			list=new ArrayList<Action>();
+		}
+		public void Flush()
+		{
+			MainActivity.this.getActionBarHelper().setRefreshActionItemState(true);
+			new Thread()
+			{
+				public void run()
+				{
+					String Data="";
+					Client.SendData(room, Data, new onSend() {
+						
+						public void SendOK() {
+							MainActivity.this.getActionBarHelper().setRefreshActionItemState(false);
+						}
+						
+						public void SendError(String Data) {
+							MainActivity.this.getActionBarHelper().setRefreshActionItemState(false);
+						}
+					});
+				}
+			}.start();
+			
+		}
+		public void add(Action a)
+		{
+			list.add(a);
+		}
+		
+	}
 	
-
+	
 	class DrawView extends View {
 		public DrawView(Context context) {
 			super(context);
@@ -127,13 +164,7 @@ public class MainActivity extends ActionBarActivity {
 		String base64String = Base64Coder.encodeString(Short.toString(usr_ID)
 				+ ";" + Short.toString(local_ID) + ";"
 				+ Short.toString((short) type) + ";" + data);
-		Client.SendData(room, base64String, new Runnable() {
-			public void run() {
-			}
-		}, new Runnable() {
-			public void run() {
-			}
-		});
+		
 	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
