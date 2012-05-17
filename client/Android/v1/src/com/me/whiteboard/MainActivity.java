@@ -24,25 +24,25 @@ import com.me.whiteboard.http.Client.onNewDataRecv;
 public class MainActivity extends ActionBarActivity {
 	/** Called when the activity is first created. */
 	
-	static Bitmap bmp;
-	static Canvas canvas;
-	static Paint paint;
+	Bitmap bmp;
+	Canvas canvas;
+	Paint paint=new Paint();
 	//Bitmap bm;
 	//Bitmap tempbm;
-	static Float x, y;
-	static DrawView dw;
-	static String room;
+	Float x, y;
+	DrawView dw;
+	String room;
 	// boolean down;
 	//Canvas temp, c;
-	static int type = 1;
-	static int width, height;
-	static Path path;
-	static ArrayList<Float> x_History = new ArrayList<Float>();
-	static ArrayList<Float> y_History = new ArrayList<Float>();
+	int type = 1;
+	int width, height;
+	Path path;
+	ArrayList<Float> x_History = new ArrayList<Float>();
+	ArrayList<Float> y_History = new ArrayList<Float>();
 
-	static short usr_ID;
-	static short local_ID = 0;
-	static ActionHistory actionHistory = new ActionHistory();
+	short usr_ID;
+	short local_ID = 0;
+	ActionHistory actionHistory = new ActionHistory();
 
 	/*static MainActivity instance;
 
@@ -85,7 +85,7 @@ public class MainActivity extends ActionBarActivity {
 			return;
 		}
 
-		Paint paint = new Paint(MainActivity.paint);
+		Paint paint = new Paint(MainActivity.this.paint);
 		paint.setColor(Integer.parseInt(data[0]));
 
 		Path path = new Path();
@@ -157,7 +157,7 @@ public class MainActivity extends ActionBarActivity {
 					//short local_ID_recv = Short.parseShort(data[1]);
 					//short type_recv = Short.parseShort(data[2]);
 
-					if (usr_ID_recv != MainActivity.usr_ID) {
+					if (usr_ID_recv != MainActivity.this.usr_ID) {
 						drawPath(data[3].split(","));
 
 					}
