@@ -10,12 +10,13 @@ import android.widget.ListView;
 
 import com.me.whiteboard.actions.Action;
 import com.me.whiteboard.actions.MsgAction;
+import com.me.whiteboard.compat.ActionBarActivity;
 import com.me.whiteboard.http.Client;
 import com.me.whiteboard.http.Client.GetData;
 import com.me.whiteboard.http.Client.onNewDataRecv;
 import com.me.whiteboard.http.Client.onSend;
 
-public class ChatActivity extends Activity {
+public class ChatActivity extends ActionBarActivity {
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +67,7 @@ public class ChatActivity extends Activity {
 				Action action;
 				for (int i = 0; i < datas.length; i++) {
 					action = Action.base64ToAction(datas[i]);
-					if(action.type==Action.TYPE_MSG)
+					if(action.type==Action.TYPE_MSG||action.type==Action.TYPE_NAME)
 						action.act(null, null);
 					action.addMeToList();
 					
