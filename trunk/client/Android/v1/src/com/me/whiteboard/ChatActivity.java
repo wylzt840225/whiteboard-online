@@ -1,6 +1,5 @@
 package com.me.whiteboard;
 
-import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -21,7 +20,7 @@ public class ChatActivity extends ActionBarActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.chat_dialog);
+		setContentView(R.layout.chat_activity);
 		ListView lv=(ListView) findViewById(R.id.chatlist);
 		MyData.getInstance().msgList.createAdapter(0, R.layout.msg_item);
 		lv.setAdapter(MyData.getInstance().msgList.getAdapter(0, this));
@@ -38,7 +37,7 @@ public class ChatActivity extends ActionBarActivity {
 			
 		});
 	}
-	class MsgSend implements onSend
+	static class MsgSend implements onSend
 	{
 		MsgAction b;
 		MsgSend(MsgAction a)
