@@ -11,5 +11,6 @@
     <string name="check_room">检查房间中,请稍候</string>
     <string name="entering_room">进入房间中,请稍候</string>
     <string name="createing_room">创建房间中,请稍候</string>
+    <string name="send">发送</string>
 
 </resources>

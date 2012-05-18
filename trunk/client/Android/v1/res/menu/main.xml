@@ -15,11 +15,16 @@
 -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/chat"
+        android:icon="@drawable/ic_menu_share"
+        android:showAsAction="always"
+        android:title="Chat"/>
 	<item
         android:id="@+id/menu_refresh"
         android:icon="@drawable/ic_action_refresh"
         android:showAsAction="always"
-        android:title="矩形"/>
+        android:title=""/>
     <item
         android:id="@+id/rect"
         android:icon="@drawable/ic_action_refresh"

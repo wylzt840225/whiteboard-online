@@ -3,6 +3,7 @@ package com.me.whiteboard;
 import java.util.ArrayList;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -10,6 +11,7 @@ import android.graphics.Paint;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
@@ -17,10 +19,10 @@ import android.view.ViewGroup;
 import android.view.WindowManager.LayoutParams;
 
 import com.me.whiteboard.actions.Action;
-import com.me.whiteboard.actions.ActionList;
 import com.me.whiteboard.actions.PathAction;
 import com.me.whiteboard.compat.ActionBarActivity;
 import com.me.whiteboard.http.Client;
+import com.me.whiteboard.http.Client.GetData;
 import com.me.whiteboard.http.Client.onNewDataRecv;
 import com.me.whiteboard.http.Client.onSend;
 
@@ -31,17 +33,16 @@ public class MainActivity extends ActionBarActivity {
 	public static Paint paint;
 	Float x, y;
 	DrawView dw;
-	String room;
+	
 	int type = 1;
 	public static int width;
 	// Path path;
 	public static int height;
-
-	public static short usr_ID;
-	static short local_ID = 0;
+	
 	// ActionHistory actionHistory;
 	Action acting;
-	ActionList actionList;
+	
+	
 	static Sender sender;
 
 	/*
@@ -49,6 +50,28 @@ public class MainActivity extends ActionBarActivity {
 	 * 
 	 * static MainActivity getinstance() { return instance; }
 	 */
+	GetData g;
+	protected void onPause() {
+		super.onPause();
+		if (g != null)
+			g.cancel(false);
+	}
+
+	protected void onResume() {
+		super.onResume();
+		g = Client.setOnDataRecv(MyData.getInstance().room, new onNewDataRecv() {
+			public void onRecv(final String[] datas) {
+
+				Action action;
+				for (int i = 0; i < datas.length; i++) {
+					action = Action.base64ToAction(datas[i]);
+					action.act(MainActivity.this, canvas);
+					action.addMeToList();
+				}
+
+			}
+		});
+	}
 
 	class Sender {
 		ArrayList<Action> toSend;
@@ -80,7 +103,7 @@ public class MainActivity extends ActionBarActivity {
 						b = b.substring(0, b.length() - 1);
 					}
 
-					Client.SendData(room, b, new onSend() {
+					Client.SendData(MyData.getInstance().room, b, new onSend() {
 
 						public void SendOK() {
 							MainActivity.this.getActionBarHelper()
@@ -121,60 +144,21 @@ public class MainActivity extends ActionBarActivity {
 		}
 	}
 
-	/*
-	 * void display(Canvas canvas) { canvas.drawBitmap(bmp, 0, 0, null);
-	 * 
-	 * canvas.drawPath(path, paint); }
-	 */
-
-	/*
-	 * void draw(Float x, Float y) { // tempbm = bm; //temp.drawPath(path,
-	 * GlobalS.getinstance().mPaint); dw.invalidate();
-	 * 
-	 * x_History.add(x); y_History.add(y);
-	 * 
-	 * }
-	 */
-
-	/*
-	 * void drawPath(String[] data) { if (data.length < 3) { return; }
-	 * 
-	 * Paint paint = new Paint(MainActivity.this.paint);
-	 * paint.setColor(Integer.parseInt(data[0]));
-	 * 
-	 * Path path = new Path(); path.reset();
-	 * path.moveTo(Float.parseFloat(data[1]) * width, Float.parseFloat(data[2])
-	 * * height);
-	 * 
-	 * int i; for (i = 1; i < data.length - 3; i += 2) { path.quadTo(
-	 * Float.parseFloat(data[i]) * width, Float.parseFloat(data[i + 1]) *
-	 * height, (Float.parseFloat(data[i]) + Float.parseFloat(data[i + 2])) / 2 *
-	 * width, (Float.parseFloat(data[i + 1]) + Float .parseFloat(data[i + 3])) /
-	 * 2 * height); } path.lineTo(Float.parseFloat(data[i]) * width,
-	 * Float.parseFloat(data[i + 1]) * height);
-	 * 
-	 * //temp.drawPath(path, paint); canvas.drawPath(path, paint);
-	 * dw.invalidate(); }
-	 */
-
-	/*
-	 * void sendPath() { String data = Integer.toString(paint.getColor());
-	 * 
-	 * for (int i = 0; i < x_History.size(); i++) { data += "," +
-	 * Float.toString(x_History.get(i) / width) + "," +
-	 * Float.toString(y_History.get(i) / height); }
-	 * 
-	 * x_History.clear(); y_History.clear();
-	 * 
-	 * actionHistory.add(usr_ID, local_ID, (short) type, data);
-	 * 
-	 * String base64String = Base64Coder.encodeString(Short.toString(usr_ID) +
-	 * ";" + Short.toString(local_ID) + ";" + Short.toString((short) type) + ";"
-	 * + data);
-	 * 
-	 * }
-	 */
-
+	
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch(item.getItemId())
+		{
+		case android.R.id.home:
+			return true;
+		case R.id.chat:
+			Intent i=new Intent();
+			i.setClass(this, ChatActivity.class);
+			startActivity(i);
+			return true;
+		}
+		return false;
+		
+	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater menuInflater = getMenuInflater();
@@ -189,41 +173,11 @@ public class MainActivity extends ActionBarActivity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		room = getIntent().getStringExtra("room");
-		usr_ID = (short) getIntent().getIntExtra("id", 0);
-		setTitle(room);
 
-		actionList = new ActionList();
+		setTitle(MyData.getInstance().room);
+
+		
 		sender = new Sender();
-
-		Client.setOnDataRecv(room, new onNewDataRecv() {
-			public void onRecv(final String[] datas) {
-				/*
-				 * for (int i = 0; i < datas.length; i++) { String[] data =
-				 * Base64Coder.decodeString(datas[i]).split( ";");
-				 * 
-				 * short usr_ID_recv = Short.parseShort(data[0]); // short
-				 * local_ID_recv = Short.parseShort(data[1]); // short type_recv
-				 * = Short.parseShort(data[2]);
-				 * 
-				 * if (usr_ID_recv != MainActivity.this.usr_ID) {
-				 * drawPath(data[3].split(","));
-				 * 
-				 * } }
-				 */
-				// new Thread(new Runnable() {
-				// public void run() {
-				Action action;
-				for (int i = 0; i < datas.length; i++) {
-					action = Action.base64ToAction(datas[i]);
-					action.act(MainActivity.this, canvas);
-					actionList.add(action);
-				}
-				// }
-				// }).start();
-
-			}
-		});
 
 		setContentView(R.layout.canvas);
 
@@ -277,9 +231,9 @@ public class MainActivity extends ActionBarActivity {
 							// sendPath();
 							// c.drawPath(path, GlobalS.getinstance().mPaint);
 							// canvas.drawPath(path, paint);
-							local_ID++;
+							MyData.getInstance().local_ID++;
 							acting.act(MainActivity.this, canvas);
-							actionList.add(acting);
+							MyData.getInstance().actionList.add(acting);
 							sender.add(acting);
 							sender.Flush();
 							acting = null;
@@ -289,7 +243,7 @@ public class MainActivity extends ActionBarActivity {
 						case MotionEvent.ACTION_DOWN:
 							// x = event.getX();
 							// y = event.getY();
-							acting = new PathAction(usr_ID, local_ID, paint);
+							acting = new PathAction(MyData.getInstance().usr_ID, MyData.getInstance().local_ID, paint);
 							((PathAction) acting).addPoint(event.getX(),
 									event.getY());
 							dw.invalidate();

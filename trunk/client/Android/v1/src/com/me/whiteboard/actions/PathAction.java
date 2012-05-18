@@ -4,15 +4,15 @@ import java.util.ArrayList;
 
 import org.apache.http.util.ByteArrayBuffer;
 
-import com.me.whiteboard.MainActivity;
-
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Path;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.me.whiteboard.MainActivity;
+import com.me.whiteboard.MyData;
 
 public class PathAction extends Action {
 	public int color;
@@ -43,7 +43,7 @@ public class PathAction extends Action {
 		Paint paint = new Paint(MainActivity.paint);
 		paint.setColor(color);
 		
-		if (usr_ID == MainActivity.usr_ID) {
+		if (usr_ID == MyData.getInstance().usr_ID) {
 			canvas.drawPath(path, paint);
 		} else {
 			Path path = new Path();

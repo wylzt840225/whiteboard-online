@@ -2,22 +2,26 @@ package com.me.whiteboard.actions;
 
 import java.nio.charset.Charset;
 
-import com.me.whiteboard.MainActivity;
-import com.me.whiteboard.MyData;
-
 import android.graphics.Canvas;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.me.whiteboard.MainActivity;
+import com.me.whiteboard.MyData;
+import com.me.whiteboard.R;
 
 public class MsgAction extends Action {
 
 	static Charset utf8 = Charset.forName("UTF-8");
-	String Msg;
-
+	public String Msg;
+	public MsgAction()
+	{
+		this.type=TYPE_MSG;
+	}
 	@Override
 	public void act(MainActivity context,Canvas canvas) {
-		MyData.getInstance().msgList.add(this);
 	}
 
 	@Override
@@ -33,6 +37,14 @@ public class MsgAction extends Action {
 	@Override
 	public View getView(LayoutInflater mLayoutInflater, int mResource,
 			View convertView, ViewGroup parent, boolean selected) {
-		return null;
+		View v=mLayoutInflater.inflate(mResource, null);
+		String name=MyData.getInstance().nametable.get((Short)usr_ID);
+		if(name==null)
+		{
+			name="User"+usr_ID;
+		}
+		((TextView)v.findViewById(R.id.msg_item_who_tv)).setText(name);
+		((TextView)v.findViewById(R.id.msg_item_content_tv)).setText(Msg);
+		return v;
 	}
 }

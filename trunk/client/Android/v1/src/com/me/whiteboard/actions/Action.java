@@ -2,13 +2,14 @@ package com.me.whiteboard.actions;
 
 import org.apache.http.util.ByteArrayBuffer;
 
-import com.me.whiteboard.MainActivity;
-import com.me.whiteboard.compat.Base64Coder;
-
 import android.graphics.Canvas;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.me.whiteboard.MainActivity;
+import com.me.whiteboard.MyData;
+import com.me.whiteboard.compat.Base64Coder;
 
 public abstract class Action {
 
@@ -33,6 +34,7 @@ public abstract class Action {
 	
 	public Action() {
 		this.time = System.currentTimeMillis();
+		this.usr_ID = MyData.getInstance().usr_ID;
 	}
 	
 	public Action(short type, short usr_ID, short local_ID) {
@@ -59,7 +61,18 @@ public abstract class Action {
 		System.arraycopy(shortToBytes(local_ID), 0, bytes, 4, 2);
 		return bytes;
 	}
-
+	
+	//add to msglist or actionlist
+	public void addMeToList()
+	{
+		if(type!=Action.TYPE_MSG)
+			MyData.getInstance().actionList.add(this);
+		else
+		{
+			MyData.getInstance().msgList.add(this);
+			MyData.getInstance().msgList.notifyAllAdapter();
+		}
+	}
 	public static Action base64ToAction(String base64String) {
 		byte[] bytes = Base64Coder.decode(base64String);
 		Action action = null;
@@ -69,6 +82,9 @@ public abstract class Action {
 			break;
 		case TYPE_MSG:
 			action = new MsgAction();
+			break;
+		case TYPE_NAME:
+			action=new NameAction();
 			break;
 		}
 		if (action != null) {

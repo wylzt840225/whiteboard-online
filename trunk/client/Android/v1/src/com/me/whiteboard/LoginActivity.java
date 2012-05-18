@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.me.whiteboard.actions.NameAction;
 import com.me.whiteboard.http.Client;
 
 public class LoginActivity extends Activity {
@@ -124,13 +125,13 @@ public class LoginActivity extends Activity {
 
 	class onEnter implements Client.onRoomEntered {
 		// if room exits, enter room and begin drawing
-		public void Entered(String room, int usernum) 
+		public void Entered(String room, short usernum) 
 		{
 			setContentView(R.layout.getname);
 			setWaitingState(false, null);
 
 			final String tmproom = room;
-			final int tmpnum = usernum;
+			final short tmpnum = usernum;
 
 			Button submitButton = (Button)findViewById(R.id.submitName);
 			submitButton.setOnClickListener(new View.OnClickListener() 
@@ -142,23 +143,23 @@ public class LoginActivity extends Activity {
 
 					Intent intent = new Intent();
 					intent.setClass(LoginActivity.this, MainActivity.class);
-					intent.putExtra("room", tmproom);
-					intent.putExtra("id", tmpnum);
-					intent.putExtra("username", username);
+					MyData.getInstance().room=tmproom;
+					MyData.getInstance().usr_ID=tmpnum;
+					
+					NameAction db=new NameAction();
+					
+					//note!!
+					db.local_ID=MyData.local_ID;
+					
+					db.Name=username;
+					
+					Client.SendData(tmproom, db.toBase64(), null);
 					startActivity(intent);
-
 					LoginActivity.this.finish();
 				}
 			});
 
-			Button cancelButton = (Button)findViewById(R.id.cancelName);
-			cancelButton.setOnClickListener(new View.OnClickListener() 
-			{	
-				public void onClick(View v) 
-				{
-					loginInit();
-				}
-			});
+			
 		}
 
 		public void Error() {
