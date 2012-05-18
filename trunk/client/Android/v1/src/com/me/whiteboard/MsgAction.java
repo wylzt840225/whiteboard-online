@@ -9,29 +9,27 @@ import android.view.ViewGroup;
 
 public class MsgAction extends Action {
 
-	static Charset utf8=Charset.forName("UTF-8");
+	static Charset utf8 = Charset.forName("UTF-8");
 	String Msg;
+
 	@Override
-	public void doAction(MainActivity act, Canvas canvas) {
-		MyData.getInstance().msgList.Add(this);
+	public void act(Canvas canvas) {
+		MyData.getInstance().msgList.add(this);
 	}
 
 	@Override
-	public byte[] ToByte() {
+	public byte[] privateToBytes() {
 		return Msg.getBytes(utf8);
+	}
+	
+	@Override
+	protected void bytesToPrivate(byte[] bytes) {
+		Msg = new String(bytes, utf8);
 	}
 
 	@Override
 	public View getView(LayoutInflater mLayoutInflater, int mResource,
 			View convertView, ViewGroup parent, boolean selected) {
-		// TODO Auto-generated method stub
 		return null;
 	}
-
-	@Override
-	public void setData(byte[] bs) {
-		
-		Msg=new String(bs,  utf8);
-		}
-
 }

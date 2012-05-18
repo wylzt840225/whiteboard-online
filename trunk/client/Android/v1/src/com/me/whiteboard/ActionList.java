@@ -7,65 +7,53 @@ import java.util.Set;
 import android.content.Context;
 import android.widget.BaseAdapter;
 
-
-
 public class ActionList {
 	protected HashMap<Integer, ActionAdapter> adapterList;
 	public ArrayList<Action> list;
-	
-	protected boolean refreshing=false;
+
+	protected boolean refreshing = false;
 
 	public ActionList() {
-		
 		list = new ArrayList<Action>();
-		adapterList=new HashMap<Integer, ActionAdapter>();
+		adapterList = new HashMap<Integer, ActionAdapter>();
 	}
-	public void clear()
-	{
+
+	public void clear() {
 		this.list.clear();
 	}
-	public int Add(Action f) {
 
-			this.list.add(f);
-			return 1;
+	public void add(Action action) {
+		this.list.add(action);
 	}
-	
 
-	public void NotifyAllAdapter()
-	{
-		Set<Integer> set= adapterList.keySet();
-		Object[] array=set.toArray();
-		for(int i=0;i<set.size();i++)
-		{
+	public void notifyAllAdapter() {
+		Set<Integer> set = adapterList.keySet();
+		Object[] array = set.toArray();
+		for (int i = 0; i < set.size(); i++) {
 			BaseAdapter adapter;
-			adapter=adapterList.get(array[i]);
-			if(adapter!=null)
+			adapter = adapterList.get(array[i]);
+			if (adapter != null)
 				adapter.notifyDataSetChanged();
 		}
 	}
-	public void CreateAdapter(int tag,int resource)
-	{
-		if(!adapterList.containsKey(tag))
-		{
-			ActionAdapter adapter=new ActionAdapter(resource, this);
+
+	public void createAdapter(int tag, int resource) {
+		if (!adapterList.containsKey(tag)) {
+			ActionAdapter adapter = new ActionAdapter(resource, this);
 			adapterList.put(tag, adapter);
-		}	
+		}
 	}
-	public ActionAdapter getAdapter(int tag,Context context)
-	{	
-		ActionAdapter adapter=adapterList.get(tag);
+
+	public ActionAdapter getAdapter(int tag, Context context) {
+		ActionAdapter adapter = adapterList.get(tag);
 		adapter.setContext(context);
 		return adapter;
 	}
-	
-	
-	
-
-	
 
 	public int size() {
-		if (list == null)
+		if (list == null) {
 			return 0;
+		}
 		return list.size();
 	}
 }
