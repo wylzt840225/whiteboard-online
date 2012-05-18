@@ -1,6 +1,9 @@
-package com.me.whiteboard;
+package com.me.whiteboard.actions;
 
 import java.nio.charset.Charset;
+
+import com.me.whiteboard.MainActivity;
+import com.me.whiteboard.MyData;
 
 import android.graphics.Canvas;
 import android.view.LayoutInflater;
@@ -13,7 +16,7 @@ public class MsgAction extends Action {
 	String Msg;
 
 	@Override
-	public void act(Canvas canvas) {
+	public void act(MainActivity context,Canvas canvas) {
 		MyData.getInstance().msgList.add(this);
 	}
 

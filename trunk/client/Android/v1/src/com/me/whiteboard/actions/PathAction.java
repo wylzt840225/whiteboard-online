@@ -1,8 +1,10 @@
-package com.me.whiteboard;
+package com.me.whiteboard.actions;
 
 import java.util.ArrayList;
 
 import org.apache.http.util.ByteArrayBuffer;
+
+import com.me.whiteboard.MainActivity;
 
 import android.graphics.Canvas;
 import android.graphics.Paint;
@@ -26,14 +28,14 @@ public class PathAction extends Action {
 	}
 
 	public PathAction(short usr_ID, short local_ID, Paint paint) {
-		super(MainActivity.TYPE_PATH, usr_ID, local_ID);
+		super(TYPE_PATH, usr_ID, local_ID);
 		x_history = new ArrayList<Float>();
 		y_history = new ArrayList<Float>();
 		color = paint.getColor();
 		path = new Path();
 	}
 
-	public void act(Canvas canvas) {
+	public void act(MainActivity acts,Canvas canvas) {
 		if (x_history.size() == 0 || x_history.size() != y_history.size()) {
 			return;
 		}
@@ -61,6 +63,7 @@ public class PathAction extends Action {
 			path.lineTo(x2, y2);
 			canvas.drawPath(path, paint);
 		}
+		acts.FlushCanvas();
 	}
 
 	public byte[] privateToBytes() {
@@ -76,19 +79,12 @@ public class PathAction extends Action {
 					/ MainActivity.height * Short.MAX_VALUE));
 			baf.append(bytes, 0, bytes.length);
 		}
-		Log.v("before,x1=",Float.toString(x_history.get(1)));
-		Log.v("before,y1=",Float.toString(y_history.get(1)));
-		x_history.clear();
-		y_history.clear();
-		bytesToPrivate(baf.toByteArray());
-		Log.v("after,x1=",Float.toString(x_history.get(1)));
-		Log.v("after,y1=",Float.toString(y_history.get(1)));
 		return baf.toByteArray();
 	}
 
 	protected void bytesToPrivate(byte[] bytes) {
 		color = bytesToInt(bytes[0], bytes[1], bytes[2], bytes[3]);
-		for (int i = 4; i < bytes.length - 3; i += 2) {
+		for (int i = 4; i < bytes.length - 3; i += 4) {
 			x_history.add((float) (1.0 * bytesToShort(bytes[i], bytes[i + 1])
 					/ Short.MAX_VALUE * MainActivity.width));
 			y_history.add((float) (1.0 * bytesToShort(bytes[i + 2], bytes[i + 3])

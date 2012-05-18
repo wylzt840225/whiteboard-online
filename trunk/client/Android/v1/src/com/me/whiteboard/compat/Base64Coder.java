@@ -14,7 +14,7 @@
 // Please contact the author if you need another license.
 // This module is provided "as is", without warranties of any kind.
 
-package com.me.whiteboard;
+package com.me.whiteboard.compat;
 
 /**
  * A Base64 encoder/decoder.

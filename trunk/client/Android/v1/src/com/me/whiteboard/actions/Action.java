@@ -1,6 +1,9 @@
-package com.me.whiteboard;
+package com.me.whiteboard.actions;
 
 import org.apache.http.util.ByteArrayBuffer;
+
+import com.me.whiteboard.MainActivity;
+import com.me.whiteboard.compat.Base64Coder;
 
 import android.graphics.Canvas;
 import android.view.LayoutInflater;
@@ -9,6 +12,9 @@ import android.view.ViewGroup;
 
 public abstract class Action {
 
+	public static final short TYPE_NAME = 0;
+	public static final short TYPE_PATH = 1;
+	public static final short TYPE_MSG = 2;
 	public short type;
 	public short usr_ID;
 	public short local_ID;
@@ -16,7 +22,7 @@ public abstract class Action {
 
 	static ByteArrayBuffer baf = new ByteArrayBuffer(10000);
 
-	public abstract void act(Canvas canvas);
+	public abstract void act(MainActivity acts,Canvas canvas);
 
 	public abstract byte[] privateToBytes();
 
@@ -36,7 +42,7 @@ public abstract class Action {
 		this.time = System.currentTimeMillis();
 	}
 	
-	protected byte[] bytesToPublic(byte[] bytes) {
+	private byte[] bytesToPublic(byte[] bytes) {
 		type = bytesToShort(bytes[0], bytes[1]);
 		usr_ID = bytesToShort(bytes[2], bytes[3]);
 		local_ID = bytesToShort(bytes[4], bytes[5]);
@@ -54,14 +60,14 @@ public abstract class Action {
 		return bytes;
 	}
 
-	protected static Action base64ToAction(String base64String) {
+	public static Action base64ToAction(String base64String) {
 		byte[] bytes = Base64Coder.decode(base64String);
 		Action action = null;
 		switch (bytesToShort(bytes[0], bytes[1])) {
-		case MainActivity.TYPE_PATH:
+		case TYPE_PATH:
 			action = new PathAction();
 			break;
-		case MainActivity.TYPE_MSG:
+		case TYPE_MSG:
 			action = new MsgAction();
 			break;
 		}

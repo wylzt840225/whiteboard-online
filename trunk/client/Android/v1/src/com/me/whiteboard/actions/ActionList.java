@@ -1,4 +1,4 @@
-package com.me.whiteboard;
+package com.me.whiteboard.actions;
 
 import java.util.ArrayList;
 import java.util.HashMap;
