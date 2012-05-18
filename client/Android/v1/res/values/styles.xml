@@ -30,6 +30,7 @@
 
     <style name="ActionBarCompat">
         <item name="android:background">#eee</item>
+         <item name="android:icon">@drawable/ic_home</item>
     </style>
 
     <style name="ActionBarCompatItemBase">
@@ -44,6 +45,7 @@
 
     <style name="ActionBarCompatTitleBase">
         <item name="android:id">@id/actionbar_compat_title</item>
+        
         <!-- layout_width/height/weight must be set in code -->
         <item name="android:gravity">center_vertical</item>
         <item name="android:textSize">18sp</item>
