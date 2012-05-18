@@ -44,8 +44,8 @@ public class ActionAdapter extends BaseAdapter {
 	protected int selectItem = -1;
 
 	public View getView(int position, View convertView, ViewGroup parent) {
-		return ((Action) getItem(position)).getView(mLayoutInflater,
-				mResource, convertView, parent,selectItem==position);
+		return ((Action) getItem(position)).getView(mLayoutInflater, mResource,
+				convertView, parent, selectItem == position);
 	}
 
 	public void setContext(Context context) {
