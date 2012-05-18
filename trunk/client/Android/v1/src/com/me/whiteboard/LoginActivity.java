@@ -9,6 +9,7 @@ import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -17,41 +18,49 @@ import com.me.whiteboard.http.Client;
 
 public class LoginActivity extends Activity {
 	ProgressDialog dialog=null;
-    public void onDestroy()
-    {
-    	if(dialog!=null)
-    		dialog.dismiss();
-    	super.onDestroy();
-    }
-    public void setWaitingState(boolean waiting,int ResId)
-    {
-    	setWaitingState(waiting, getResources().getString(ResId));
-    }
-    public void setWaitingState(boolean waiting,String info)
-    {
-    	
-    	if(waiting)
-    	{
-    		if(dialog==null)
-    		{
-    			dialog=new ProgressDialog(this);
-    			dialog.setIndeterminate(true);
-    			dialog.setCancelable(false);
-    		}
-    		
-    		dialog.setMessage(info);
-    		dialog.show();
-    	}
-    	else
-    	{
-    		if(dialog!=null)
-    			dialog.dismiss();
-    	}
-    }
+	public void onDestroy()
+	{
+		if(dialog!=null)
+			dialog.dismiss();
+		super.onDestroy();
+	}
+	public void setWaitingState(boolean waiting,int ResId)
+	{
+		setWaitingState(waiting, getResources().getString(ResId));
+	}
+	public void setWaitingState(boolean waiting,String info)
+	{
+
+		if(waiting)
+		{
+			if(dialog==null)
+			{
+				dialog=new ProgressDialog(this);
+				dialog.setIndeterminate(true);
+				dialog.setCancelable(false);
+			}
+
+			dialog.setMessage(info);
+			dialog.show();
+		}
+		else
+		{
+			if(dialog!=null)
+				dialog.dismiss();
+		}
+	}
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		loginInit();
+	}
+
+	void loginInit()
+	{
+		requestWindowFeature(Window.FEATURE_LEFT_ICON);
 		setContentView(R.layout.login);
+		getWindow().setFeatureDrawableResource(Window.FEATURE_LEFT_ICON,
+				R.drawable.ic_home);
 
 		Button loginButton = (Button) findViewById(R.id.loginRoom);
 		Button creatButton = (Button) findViewById(R.id.creatRoom);
@@ -76,8 +85,8 @@ public class LoginActivity extends Activity {
 					public void run() {
 						setWaitingState(false, R.string.check_room);
 						new AlertDialog.Builder(LoginActivity.this)
-								.setTitle(R.string.error).setMessage(R.string.room_already_exists)
-								.setPositiveButton(R.string.positive, null).show();
+						.setTitle(R.string.error).setMessage(R.string.room_already_exists)
+						.setPositiveButton(R.string.positive, null).show();
 
 					}
 				}, new CreateAndEnter(room));
@@ -115,21 +124,47 @@ public class LoginActivity extends Activity {
 
 	class onEnter implements Client.onRoomEntered {
 		// if room exits, enter room and begin drawing
-		public void Entered(String room, int usernum) {
-			Intent intent = new Intent();
-			intent.setClass(LoginActivity.this, MainActivity.class);
-			intent.putExtra("room", room);
-			intent.putExtra("id", usernum);
+		public void Entered(String room, int usernum) 
+		{
+			setContentView(R.layout.getname);
 			setWaitingState(false, null);
-			startActivity(intent);
-			
-			LoginActivity.this.finish();
+
+			final String tmproom = room;
+			final int tmpnum = usernum;
+
+			Button submitButton = (Button)findViewById(R.id.submitName);
+			submitButton.setOnClickListener(new View.OnClickListener() 
+			{
+				public void onClick(View v) 
+				{
+					EditText nametext = (EditText)findViewById(R.id.username);
+					String username = nametext.getText().toString();
+
+					Intent intent = new Intent();
+					intent.setClass(LoginActivity.this, MainActivity.class);
+					intent.putExtra("room", tmproom);
+					intent.putExtra("id", tmpnum);
+					intent.putExtra("username", username);
+					startActivity(intent);
+
+					LoginActivity.this.finish();
+				}
+			});
+
+			Button cancelButton = (Button)findViewById(R.id.cancelName);
+			cancelButton.setOnClickListener(new View.OnClickListener() 
+			{	
+				public void onClick(View v) 
+				{
+					loginInit();
+				}
+			});
 		}
 
 		public void Error() {
 			setWaitingState(false, null);
 			Toast.makeText(LoginActivity.this, R.string.loginerror, Toast.LENGTH_LONG)
-					.show();
+			.show();
 		}
 	}
 
@@ -152,9 +187,9 @@ public class LoginActivity extends Activity {
 			};
 
 			AlertDialog dialog = new AlertDialog.Builder(LoginActivity.this)
-					.setTitle(R.string.error).setMessage(R.string.room_not_exists)
-					.setPositiveButton(R.string.positive, onclick)
-					.setNegativeButton(R.string.negative, onclick).create();
+			.setTitle(R.string.error).setMessage(R.string.room_not_exists)
+			.setPositiveButton(R.string.positive, onclick)
+			.setNegativeButton(R.string.negative, onclick).create();
 			dialog.show();
 		}
 	}
@@ -163,7 +198,7 @@ public class LoginActivity extends Activity {
 		public void run() {
 			setWaitingState(false, null);
 			Toast.makeText(LoginActivity.this, R.string.room_create_error, Toast.LENGTH_LONG)
-					.show();
+			.show();
 		}
 	}
 }
