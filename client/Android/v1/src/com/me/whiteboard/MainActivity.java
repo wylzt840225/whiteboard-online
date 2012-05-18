@@ -16,6 +16,9 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.WindowManager.LayoutParams;
 
+import com.me.whiteboard.actions.Action;
+import com.me.whiteboard.actions.ActionList;
+import com.me.whiteboard.actions.PathAction;
 import com.me.whiteboard.compat.ActionBarActivity;
 import com.me.whiteboard.http.Client;
 import com.me.whiteboard.http.Client.onNewDataRecv;
@@ -23,21 +26,20 @@ import com.me.whiteboard.http.Client.onSend;
 
 public class MainActivity extends ActionBarActivity {
 
-	static final short TYPE_NAME = 0;
-	static final short TYPE_PATH = 1;
-	static final short TYPE_MSG = 2;
+
 
 	Bitmap bmp;
 	Canvas canvas;
-	static Paint paint;
+	public static Paint paint;
 	Float x, y;
 	DrawView dw;
 	String room;
 	int type = 1;
-	static int width, height;
-	//Path path;
+	public static int width;
+	// Path path;
+	public static int height;
 
-	static short usr_ID;
+	public static short usr_ID;
 	static short local_ID = 0;
 	// ActionHistory actionHistory;
 	Action acting;
@@ -52,31 +54,49 @@ public class MainActivity extends ActionBarActivity {
 
 	class Sender {
 		ArrayList<Action> toSend;
-		ArrayList<Action> reSend;
+		ArrayList<String> reSend;
 
 		Sender() {
 			toSend = new ArrayList<Action>();
-			reSend = new ArrayList<Action>();
+			reSend = new ArrayList<String>();
 		}
 
 		public void Flush() {
-			MainActivity.this.getActionBarHelper().setRefreshActionItemState(true);
+			MainActivity.this.getActionBarHelper().setRefreshActionItemState(
+					true);
 			new Thread(new Runnable() {
 				public void run() {
+					StringBuilder bl = new StringBuilder();
 					for (int i = 0; i < toSend.size(); i++) {
-						Client.SendData(room, toSend.get(i).toBase64(), new onSend() {
-
-							public void SendOK() {
-								MainActivity.this.getActionBarHelper()
-										.setRefreshActionItemState(false);
-							}
-
-							public void SendError(String Data) {
-								MainActivity.this.getActionBarHelper()
-										.setRefreshActionItemState(false);
-							}
-						});
+						bl.append(toSend.get(i).toBase64());
+						bl.append(',');
 					}
+					toSend.clear();
+					for (int i = 0; i < reSend.size(); i++) {
+						bl.append(reSend);
+						bl.append(',');
+					}
+					reSend.clear();
+					String b = bl.toString();
+					if (b.endsWith(",")) {
+						b = b.substring(0, b.length() - 1);
+					}
+					
+					Client.SendData(room, b, new onSend() {
+
+						public void SendOK() {
+							MainActivity.this.getActionBarHelper()
+									.setRefreshActionItemState(false);
+						}
+
+						public void SendError(String Data) {
+							MainActivity.this.getActionBarHelper()
+									.setRefreshActionItemState(false);
+							reSend.add(Data);
+							
+						}
+					});
+
 				}
 			}).start();
 
@@ -98,16 +118,16 @@ public class MainActivity extends ActionBarActivity {
 			super.onDraw(canvas);
 			canvas.drawBitmap(bmp, 0, 0, null);
 			if (acting != null) {
-				acting.act(canvas);
+				acting.act(MainActivity.this,canvas);
 			}
 		}
 	}
 
-	/*void display(Canvas canvas) {
-		canvas.drawBitmap(bmp, 0, 0, null);
-
-		canvas.drawPath(path, paint);
-	}*/
+	/*
+	 * void display(Canvas canvas) { canvas.drawBitmap(bmp, 0, 0, null);
+	 * 
+	 * canvas.drawPath(path, paint); }
+	 */
 
 	/*
 	 * void draw(Float x, Float y) { // tempbm = bm; //temp.drawPath(path,
@@ -163,7 +183,10 @@ public class MainActivity extends ActionBarActivity {
 		menuInflater.inflate(R.menu.main, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
-
+	public void FlushCanvas()
+	{
+		dw.invalidate();
+	}
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -176,30 +199,30 @@ public class MainActivity extends ActionBarActivity {
 
 		Client.setOnDataRecv(room, new onNewDataRecv() {
 			public void onRecv(final String[] datas) {
-				/*for (int i = 0; i < datas.length; i++) {
-					String[] data = Base64Coder.decodeString(datas[i]).split(
-							";");
-
-					short usr_ID_recv = Short.parseShort(data[0]);
-					// short local_ID_recv = Short.parseShort(data[1]);
-					// short type_recv = Short.parseShort(data[2]);
-
-					if (usr_ID_recv != MainActivity.this.usr_ID) {
-						drawPath(data[3].split(","));
-
-					}
-				}*/
+				/*
+				 * for (int i = 0; i < datas.length; i++) { String[] data =
+				 * Base64Coder.decodeString(datas[i]).split( ";");
+				 * 
+				 * short usr_ID_recv = Short.parseShort(data[0]); // short
+				 * local_ID_recv = Short.parseShort(data[1]); // short type_recv
+				 * = Short.parseShort(data[2]);
+				 * 
+				 * if (usr_ID_recv != MainActivity.this.usr_ID) {
+				 * drawPath(data[3].split(","));
+				 * 
+				 * } }
+				 */
 				new Thread(new Runnable() {
 					public void run() {
 						Action action;
 						for (int i = 0; i < datas.length; i++) {
 							action = Action.base64ToAction(datas[i]);
-							action.act(canvas);
+							action.act(MainActivity.this,canvas);
 							actionList.add(action);
 						}
 					}
 				}).start();
-				dw.invalidate();
+				
 			}
 		});
 
@@ -248,7 +271,7 @@ public class MainActivity extends ActionBarActivity {
 				// list = new ArrayList<MainActivity.History>();
 				// c = new Canvas(bm);
 				dw = new DrawView(MainActivity.this);
-				//path = new Path();
+				// path = new Path();
 
 				((ViewGroup) findViewById(R.id.draw)).addView(dw, lp);
 				paint = new Paint();
@@ -263,35 +286,37 @@ public class MainActivity extends ActionBarActivity {
 					public boolean onTouch(View v, MotionEvent event) {
 						switch (event.getAction()) {
 						case MotionEvent.ACTION_UP:
-							//path.lineTo(x, y);
+							// path.lineTo(x, y);
 							// down = false;
 							// drawOn(1, event.getX(), event.getY());
-							//draw(x, y);
-							//sendPath();
+							// draw(x, y);
+							// sendPath();
 							// c.drawPath(path, GlobalS.getinstance().mPaint);
-							//canvas.drawPath(path, paint);
+							// canvas.drawPath(path, paint);
 							local_ID++;
-							acting.act(canvas);
+							acting.act(MainActivity.this,canvas);
 							actionList.add(acting);
 							sender.add(acting);
 							sender.Flush();
 							acting = null;
 							dw.invalidate();
-							//path.reset();
+							// path.reset();
 							break;
 						case MotionEvent.ACTION_DOWN:
-							//x = event.getX();
-							//y = event.getY();
+							// x = event.getX();
+							// y = event.getY();
 							acting = new PathAction(usr_ID, local_ID, paint);
-							((PathAction) acting).addPoint(event.getX(), event.getY());
+							((PathAction) acting).addPoint(event.getX(),
+									event.getY());
 							dw.invalidate();
-							//path.reset();
-							//path.moveTo(x, y);
+							// path.reset();
+							// path.moveTo(x, y);
 							// down = true;
 							break;
 
 						case MotionEvent.ACTION_MOVE:
-							((PathAction) acting).addPoint(event.getX(), event.getY());
+							((PathAction) acting).addPoint(event.getX(),
+									event.getY());
 							dw.invalidate();
 							// if (down) {
 							// if (type < 3)
@@ -299,11 +324,11 @@ public class MainActivity extends ActionBarActivity {
 							// else {
 
 							// drawOn(1, event.getX(), event.getY());
-							//path.quadTo(x, y, (x + event.getX()) / 2,
-							//		(y + event.getY()) / 2);
-							//draw(x, y);
-							//x = event.getX();
-							//y = event.getY();
+							// path.quadTo(x, y, (x + event.getX()) / 2,
+							// (y + event.getY()) / 2);
+							// draw(x, y);
+							// x = event.getX();
+							// y = event.getY();
 							// }
 							// }
 							break;

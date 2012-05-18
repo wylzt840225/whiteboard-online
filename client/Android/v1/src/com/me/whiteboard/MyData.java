@@ -2,9 +2,11 @@ package com.me.whiteboard;
 
 import java.util.HashMap;
 
+import com.me.whiteboard.actions.ActionList;
+
 public class MyData {
-	ActionList msgList;
-	HashMap<Integer, String> nametable;
+	public ActionList msgList;
+	public HashMap<Integer, String> nametable;
 
 	static MyData instance = null;
 
