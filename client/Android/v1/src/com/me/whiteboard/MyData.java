@@ -6,10 +6,12 @@ import com.me.whiteboard.actions.ActionList;
 
 public class MyData {
 	public ActionList msgList;
-	public HashMap<Integer, String> nametable;
-
+	public HashMap<Short, String> nametable;
+	public ActionList actionList;
 	static MyData instance = null;
-
+	String room;
+	public short usr_ID;
+	static short local_ID = 0;
 	public static MyData getInstance() {
 		if (instance == null)
 			instance = new MyData();
@@ -18,7 +20,8 @@ public class MyData {
 
 	MyData() {
 		msgList = new ActionList();
-		nametable = new HashMap<Integer, String>();
+		nametable = new HashMap<Short, String>();
+		actionList = new ActionList();
 	}
 
 }
