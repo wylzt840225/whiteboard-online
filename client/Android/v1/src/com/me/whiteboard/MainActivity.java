@@ -26,8 +26,6 @@ import com.me.whiteboard.http.Client.onSend;
 
 public class MainActivity extends ActionBarActivity {
 
-
-
 	Bitmap bmp;
 	Canvas canvas;
 	public static Paint paint;
@@ -81,7 +79,7 @@ public class MainActivity extends ActionBarActivity {
 					if (b.endsWith(",")) {
 						b = b.substring(0, b.length() - 1);
 					}
-					
+
 					Client.SendData(room, b, new onSend() {
 
 						public void SendOK() {
@@ -93,7 +91,7 @@ public class MainActivity extends ActionBarActivity {
 							MainActivity.this.getActionBarHelper()
 									.setRefreshActionItemState(false);
 							reSend.add(Data);
-							
+
 						}
 					});
 
@@ -118,7 +116,7 @@ public class MainActivity extends ActionBarActivity {
 			super.onDraw(canvas);
 			canvas.drawBitmap(bmp, 0, 0, null);
 			if (acting != null) {
-				acting.act(MainActivity.this,canvas);
+				acting.act(MainActivity.this, canvas);
 			}
 		}
 	}
@@ -183,10 +181,11 @@ public class MainActivity extends ActionBarActivity {
 		menuInflater.inflate(R.menu.main, menu);
 		return super.onCreateOptionsMenu(menu);
 	}
-	public void FlushCanvas()
-	{
+
+	public void FlushCanvas() {
 		dw.invalidate();
 	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -212,34 +211,19 @@ public class MainActivity extends ActionBarActivity {
 				 * 
 				 * } }
 				 */
-				new Thread(new Runnable() {
-					public void run() {
-						Action action;
-						for (int i = 0; i < datas.length; i++) {
-							action = Action.base64ToAction(datas[i]);
-							action.act(MainActivity.this,canvas);
-							actionList.add(action);
-						}
-					}
-				}).start();
-				
+				// new Thread(new Runnable() {
+				// public void run() {
+				Action action;
+				for (int i = 0; i < datas.length; i++) {
+					action = Action.base64ToAction(datas[i]);
+					action.act(MainActivity.this, canvas);
+					actionList.add(action);
+				}
+				// }
+				// }).start();
+
 			}
 		});
-
-		new Thread(new Runnable() {
-			public void run() {
-				while (true) {
-					try {
-						Thread.sleep(500);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
-					}
-					if (type == 1) {
-						// sendPath();
-					}
-				}
-			}
-		}).start();
 
 		setContentView(R.layout.canvas);
 
@@ -294,7 +278,7 @@ public class MainActivity extends ActionBarActivity {
 							// c.drawPath(path, GlobalS.getinstance().mPaint);
 							// canvas.drawPath(path, paint);
 							local_ID++;
-							acting.act(MainActivity.this,canvas);
+							acting.act(MainActivity.this, canvas);
 							actionList.add(acting);
 							sender.add(acting);
 							sender.Flush();
