@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -146,7 +147,12 @@ public class MainActivity extends ActionBarActivity {
 
 		public void onDraw(Canvas canvas) {
 			super.onDraw(canvas);
-			canvas.drawBitmap(bmp, 0, 0, null);
+			//canvas.drawBitmap(bmp, 0, 0, null);
+			Rect srcRect = new Rect((int)Display.screen_pos_x, (int)Display.screen_pos_y, 
+					(int)(Display.screen_pos_x + Display.screen_width / Display.scaleFactor), 
+					(int)(Display.screen_pos_y + Display.screen_height / Display.scaleFactor));
+			Rect dstRect = new Rect(0, 0, Display.screen_width, Display.screen_height);
+			canvas.drawBitmap(bmp, srcRect, dstRect, null);
 			if (acting != null) {
 				acting.act(MainActivity.this, canvas);
 			}
