@@ -7,6 +7,10 @@ public class Display {
 	public static float screen_pos_x;
 	public static float screen_pos_y;
 	public static float scaleFactor;
+	public static int previousPointCount = 0;
+	public static float x_mean;
+	public static float y_mean;
+	public static float sumOfLength;
 	
 	public Display(int width, int height) {
 		screen_width = width;
