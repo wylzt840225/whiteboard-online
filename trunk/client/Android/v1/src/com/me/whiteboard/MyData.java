@@ -11,7 +11,7 @@ public class MyData {
 	static MyData instance = null;
 	String room;
 	public short usr_ID;
-	static short local_ID = 0;
+	public short local_ID = 0;
 	public static MyData getInstance() {
 		if (instance == null)
 			instance = new MyData();

@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.me.whiteboard.Display;
 import com.me.whiteboard.MainActivity;
 import com.me.whiteboard.MyData;
 
@@ -35,7 +36,7 @@ public class PathAction extends Action {
 		path = new Path();
 	}
 
-	public void act(MainActivity acts,Canvas canvas) {
+	public void act(MainActivity acts, Canvas canvas) {
 		if (x_history.size() == 0 || x_history.size() != y_history.size()) {
 			return;
 		}
@@ -73,10 +74,10 @@ public class PathAction extends Action {
 
 		for (int i = 0; i < x_history.size(); i++) {
 			bytes = shortToBytes((short) (x_history.get(i)
-					/ MainActivity.width * Short.MAX_VALUE));
+					/ Display.screen_width * Short.MAX_VALUE));
 			baf.append(bytes, 0, bytes.length);
 			bytes = shortToBytes((short) (y_history.get(i)
-					/ MainActivity.height * Short.MAX_VALUE));
+					/ Display.screen_height * Short.MAX_VALUE));
 			baf.append(bytes, 0, bytes.length);
 		}
 		return baf.toByteArray();
@@ -86,9 +87,9 @@ public class PathAction extends Action {
 		color = bytesToInt(bytes[0], bytes[1], bytes[2], bytes[3]);
 		for (int i = 4; i < bytes.length - 3; i += 4) {
 			x_history.add((float) (1.0 * bytesToShort(bytes[i], bytes[i + 1])
-					/ Short.MAX_VALUE * MainActivity.width));
+					/ Short.MAX_VALUE * Display.screen_width));
 			y_history.add((float) (1.0 * bytesToShort(bytes[i + 2], bytes[i + 3])
-					/ Short.MAX_VALUE * MainActivity.height));
+					/ Short.MAX_VALUE * Display.screen_height));
 		}
 	}
 
