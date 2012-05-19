@@ -15,7 +15,9 @@ public class Display {
 	public Display(int width, int height) {
 		screen_width = width;
 		screen_height = height;
-		
+		scaleFactor=1;
+		screen_pos_x=0;
+		screen_pos_y=0;
 		if (((float) screen_width) / screen_height > 4.0 / 3.0) {
 			screen_width = screen_height * 4 / 3;
 		} else {
@@ -35,9 +37,34 @@ public class Display {
 			return;
 		}
 		
-		screen_pos_x += (x_mean - Display.x_mean) / scaleFactor;
-		screen_pos_y += (y_mean - Display.y_mean) / scaleFactor;
+		screen_pos_x += (Display.x_mean-x_mean) / scaleFactor;
+		screen_pos_y += (Display.y_mean-y_mean) / scaleFactor;
+		Display.x_mean=x_mean;
+		Display.y_mean=y_mean;
 		scaleFactor *= sumOfLength / Display.sumOfLength;
+		if(scaleFactor<1)
+		{
+			scaleFactor=1;
+		}
+		if(scaleFactor>10)
+		{
+			scaleFactor=10;
+		}
+		
+		if(screen_pos_x>screen_width-screen_width/scaleFactor)
+		{
+			screen_pos_x=screen_width-screen_width/scaleFactor;
+		}
+		if(screen_pos_x<0)screen_pos_x=0;
+		
+		if(screen_pos_y>screen_height-screen_height/scaleFactor)
+		{
+			screen_pos_y=screen_height-screen_height/scaleFactor;
+		}
+		if(screen_pos_y<0)screen_pos_y=0;
+		
+		
+		Display.sumOfLength=sumOfLength;
 	}
 	
 	public static float x_AbsoluteToRelative (float x_absolute) {
