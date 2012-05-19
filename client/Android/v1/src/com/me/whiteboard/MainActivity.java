@@ -303,6 +303,7 @@ public class MainActivity extends ActionBarActivity {
 							acting = null;
 							dw.invalidate();
 							break;
+							
 						case MotionEvent.ACTION_DOWN:
 							acting = new PathAction(
 									MyData.getInstance().usr_ID, MyData

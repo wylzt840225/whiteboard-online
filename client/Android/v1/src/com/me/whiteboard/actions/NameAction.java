@@ -23,18 +23,17 @@ public class NameAction extends Action {
 	
 	@Override
 	public byte[] privateToBytes() {
-		return Name.getBytes(MsgAction.utf8);
+		return Name.getBytes();
 	}
 	
 	@Override
 	protected void bytesToPrivate(byte[] bytes) {
-		Name=new String(bytes, MsgAction.utf8);
+		Name=new String(bytes);
 	}
 
 	@Override
 	public View getView(LayoutInflater mLayoutInflater, int mResource,
 			View convertView, ViewGroup parent, boolean selected) {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

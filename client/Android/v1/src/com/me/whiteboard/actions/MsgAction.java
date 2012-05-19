@@ -1,7 +1,5 @@
 package com.me.whiteboard.actions;
 
-import java.nio.charset.Charset;
-
 import android.graphics.Canvas;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,37 +12,37 @@ import com.me.whiteboard.R;
 
 public class MsgAction extends Action {
 
-	static Charset utf8 = Charset.forName("UTF-8");
+	//static Charset utf8 = Charset.forName("UTF-8");
 	public String Msg;
-	public MsgAction()
-	{
-		this.type=TYPE_MSG;
+
+	public MsgAction() {
+		this.type = TYPE_MSG;
 	}
+
 	@Override
-	public void act(MainActivity context,Canvas canvas) {
+	public void act(MainActivity context, Canvas canvas) {
 	}
 
 	@Override
 	public byte[] privateToBytes() {
-		return Msg.getBytes(utf8);
+		return Msg.getBytes();
 	}
-	
+
 	@Override
 	protected void bytesToPrivate(byte[] bytes) {
-		Msg = new String(bytes, utf8);
+		Msg = new String(bytes);
 	}
 
 	@Override
 	public View getView(LayoutInflater mLayoutInflater, int mResource,
 			View convertView, ViewGroup parent, boolean selected) {
-		View v=mLayoutInflater.inflate(mResource, null);
-		String name=MyData.getInstance().nametable.get((Short)usr_ID);
-		if(name==null)
-		{
-			name="User"+usr_ID;
+		View v = mLayoutInflater.inflate(mResource, null);
+		String name = MyData.getInstance().nametable.get((Short) usr_ID);
+		if (name == null) {
+			name = "User" + usr_ID;
 		}
-		((TextView)v.findViewById(R.id.msg_item_who_tv)).setText(name);
-		((TextView)v.findViewById(R.id.msg_item_content_tv)).setText(Msg);
+		((TextView) v.findViewById(R.id.msg_item_who_tv)).setText(name);
+		((TextView) v.findViewById(R.id.msg_item_content_tv)).setText(Msg);
 		return v;
 	}
 }

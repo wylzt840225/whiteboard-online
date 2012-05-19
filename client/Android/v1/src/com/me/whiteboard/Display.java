@@ -6,6 +6,7 @@ public class Display {
 	public static int screen_height;
 	public static float screen_pos_x;
 	public static float screen_pos_y;
+	public static float scaleFactor;
 	
 	public Display(int width, int height) {
 		screen_width = width;

@@ -23,7 +23,7 @@ public abstract class Action {
 
 	static ByteArrayBuffer baf = new ByteArrayBuffer(10000);
 
-	public abstract void act(MainActivity acts,Canvas canvas);
+	public abstract void act(MainActivity acts, Canvas canvas);
 
 	public abstract byte[] privateToBytes();
 
@@ -31,29 +31,29 @@ public abstract class Action {
 
 	public abstract View getView(LayoutInflater mLayoutInflater, int mResource,
 			View convertView, ViewGroup parent, boolean selected);
-	
+
 	public Action() {
 		this.time = System.currentTimeMillis();
 		this.usr_ID = MyData.getInstance().usr_ID;
 	}
-	
+
 	public Action(short type, short usr_ID, short local_ID) {
 		this.type = type;
 		this.usr_ID = usr_ID;
 		this.local_ID = local_ID;
 		this.time = System.currentTimeMillis();
 	}
-	
+
 	private byte[] bytesToPublic(byte[] bytes) {
 		type = bytesToShort(bytes[0], bytes[1]);
 		usr_ID = bytesToShort(bytes[2], bytes[3]);
 		local_ID = bytesToShort(bytes[4], bytes[5]);
-		
+
 		byte[] bytes_private = new byte[bytes.length - 6];
 		System.arraycopy(bytes, 6, bytes_private, 0, bytes_private.length);
 		return bytes_private;
 	}
-	
+
 	protected byte[] publicToBytes() {
 		byte[] bytes = new byte[6];
 		System.arraycopy(shortToBytes(type), 0, bytes, 0, 2);
@@ -61,18 +61,17 @@ public abstract class Action {
 		System.arraycopy(shortToBytes(local_ID), 0, bytes, 4, 2);
 		return bytes;
 	}
-	
-	//add to msglist or actionlist
-	public void addMeToList()
-	{
-		if(type!=Action.TYPE_MSG)
+
+	// add to msglist or actionlist
+	public void addMeToList() {
+		if (type != Action.TYPE_MSG)
 			MyData.getInstance().actionList.add(this);
-		else
-		{
+		else {
 			MyData.getInstance().msgList.add(this);
 			MyData.getInstance().msgList.notifyAllAdapter();
 		}
 	}
+
 	public static Action base64ToAction(String base64String) {
 		byte[] bytes = Base64Coder.decode(base64String);
 		Action action = null;
@@ -84,7 +83,7 @@ public abstract class Action {
 			action = new MsgAction();
 			break;
 		case TYPE_NAME:
-			action=new NameAction();
+			action = new NameAction();
 			break;
 		}
 		if (action != null) {
@@ -102,7 +101,7 @@ public abstract class Action {
 		baf.append(bytes, 0, bytes.length);
 		return new String(Base64Coder.encode(baf.toByteArray()));
 	}
-	
+
 	protected static byte[] shortToBytes(short s) {
 		byte[] shortBuf = new byte[2];
 		for (int i = 0; i < 2; i++) {
@@ -126,6 +125,7 @@ public abstract class Action {
 	}
 
 	protected static final int bytesToInt(byte b1, byte b2, byte b3, byte b4) {
-		return (b1 << 24) + ((b2 & 0xFF) << 16) + ((b3 & 0xFF) << 8) + (b4 & 0xFF);
+		return (b1 << 24) + ((b2 & 0xFF) << 16) + ((b3 & 0xFF) << 8)
+				+ (b4 & 0xFF);
 	}
 }
