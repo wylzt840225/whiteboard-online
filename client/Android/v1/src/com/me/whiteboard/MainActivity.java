@@ -196,21 +196,31 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	float mTouchStartX, mTouchStartY;
-
+	boolean chatwindow=false;
 	public void showChatWindow() {
 
+		
 		ViewGroup vg = (ViewGroup) findViewById(R.id.framelayout);
-		
-		
+		if(chatwindow)
+			closeChatWindow();
 		vg.addView(floatview);
 		RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) floatview
 				.getLayoutParams();
 		lp.height=getResources().getDimensionPixelSize(R.dimen.chat_window_height);
 		lp.width=getResources().getDimensionPixelSize(R.dimen.chat_window_width);
 		floatview.setLayoutParams(lp);
+		chatwindow=true;
 
 	}
-
+	public void closeChatWindow()
+	{
+		if(chatwindow)
+		{
+			ViewGroup vg = (ViewGroup) findViewById(R.id.framelayout);
+			vg.removeView(floatview);
+			chatwindow=false;
+		}
+	}
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -273,8 +283,7 @@ public class MainActivity extends ActionBarActivity {
 				new OnClickListener() {
 
 					public void onClick(View v) {
-						ViewGroup vg = (ViewGroup) findViewById(R.id.framelayout);
-						vg.removeView(floatview);
+						closeChatWindow();
 					}
 				});
 
