@@ -64,12 +64,19 @@ public abstract class Action {
 
 	// add to msglist or actionlist
 	public void addMeToList() {
-		if (type != Action.TYPE_MSG)
-			MyData.getInstance().actionList.add(this);
-		else {
+		switch(type)
+		{
+		case Action.TYPE_MSG:
 			MyData.getInstance().msgList.add(this);
 			MyData.getInstance().msgList.notifyAllAdapter();
+			break;
+		case Action.TYPE_NAME:
+			MyData.getInstance().nametable.put(usr_ID, ((NameAction)(this)).Name);
+			break;
+		default:
+			MyData.getInstance().actionList.add(this);
 		}
+		
 	}
 
 	public static Action base64ToAction(String base64String) {

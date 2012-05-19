@@ -72,9 +72,6 @@ public class ChatActivity extends ActionBarActivity {
 						Action action;
 						for (int i = 0; i < datas.length; i++) {
 							action = Action.base64ToAction(datas[i]);
-							if (action.type == Action.TYPE_MSG
-									|| action.type == Action.TYPE_NAME)
-								action.act(null, null);
 							action.addMeToList();
 
 						}
