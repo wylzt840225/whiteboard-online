@@ -10,6 +10,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -39,17 +40,19 @@ public class MainActivity extends ActionBarActivity {
 	Bitmap bmp;
 	Canvas canvas;
 	public static Paint paint;
-	Float x, y;
 	DrawView dw;
-
 	int type = 1;
-
 	Action acting;
 	WindowManager wm;
 	WindowManager.LayoutParams wmParams;
 	View floatview;
 	static Sender sender;
 	GetData g;
+	
+	//float x, y;
+	int previousPointCount = 0;
+	
+	
 
 	static MainActivity instance;
 
@@ -289,36 +292,47 @@ public class MainActivity extends ActionBarActivity {
 				paint.setAntiAlias(true);
 				paint.setStyle(Paint.Style.STROKE);
 				paint.setStrokeCap(Paint.Cap.ROUND);
-				paint.setStrokeWidth(0);
+				paint.setStrokeWidth(5);
 
 				dw.setOnTouchListener(new OnTouchListener() {
 					public boolean onTouch(View v, MotionEvent event) {
-						switch (event.getAction()) {
-						case MotionEvent.ACTION_UP:
-							MyData.getInstance().local_ID++;
-							acting.act(MainActivity.this, canvas);
-							MyData.getInstance().actionList.add(acting);
-							sender.add(acting);
-							sender.Flush();
-							acting = null;
-							dw.invalidate();
-							break;
-							
-						case MotionEvent.ACTION_DOWN:
-							acting = new PathAction(
-									MyData.getInstance().usr_ID, MyData
-											.getInstance().local_ID, paint);
-							((PathAction) acting).addPoint(event.getX(),
-									event.getY());
-							dw.invalidate();
-							break;
+						int pointCount = event.getPointerCount();
+						if (pointCount == 1) {
+							switch (event.getAction()) {
+							case MotionEvent.ACTION_UP:
+								if (acting != null) {
+									addAction();
+									acting = null;
+								}
+								break;
+								
+							case MotionEvent.ACTION_DOWN:
+								acting = new PathAction(
+										MyData.getInstance().usr_ID, MyData
+												.getInstance().local_ID, paint);
+								((PathAction) acting).addPoint(event.getX(),
+										event.getY());
+								break;
 
-						case MotionEvent.ACTION_MOVE:
-							((PathAction) acting).addPoint(event.getX(),
-									event.getY());
+							case MotionEvent.ACTION_MOVE:
+								if (acting != null) {
+									((PathAction) acting).addPoint(event.getX(),
+											event.getY());
+								}
+								break;
+							}
 							dw.invalidate();
-							break;
+						} else {
+							if (acting != null) {
+								if (((PathAction) acting).x_history.size() > 1) {
+									addAction();
+								}
+								acting = null;
+							}
 						}
+						Log.v("pre",Integer.toString(previousPointCount));
+						Log.v("now",Integer.toString(pointCount));
+						previousPointCount = pointCount;
 						return true;
 					}
 				});
@@ -328,6 +342,13 @@ public class MainActivity extends ActionBarActivity {
 				dw.setBackgroundColor(Color.WHITE);
 			}
 		});
-
+	}
+	
+	private void addAction() {
+		MyData.getInstance().local_ID++;
+		acting.act(MainActivity.this, canvas);
+		MyData.getInstance().actionList.add(acting);
+		sender.add(acting);
+		sender.Flush();
 	}
 }
