@@ -21,37 +21,42 @@ public class ChatActivity extends ActionBarActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.chat_activity);
-		ListView lv=(ListView) findViewById(R.id.chatlist);
+		ListView lv = (ListView) findViewById(R.id.chatlist);
 		MyData.getInstance().msgList.createAdapter(0, R.layout.msg_item);
 		lv.setAdapter(MyData.getInstance().msgList.getAdapter(0, this));
-		Button send=(Button) findViewById(R.id.send);
+		Button send = (Button) findViewById(R.id.send);
 		send.setOnClickListener(new OnClickListener() {
-			
+
 			public void onClick(View v) {
-				MsgAction msg=new MsgAction();
-				msg.usr_ID=MyData.getInstance().usr_ID;
-				msg.Msg=((EditText)findViewById(R.id.msg_content_et)).getText().toString();
-				Client.SendData(MyData.getInstance().room, msg.toBase64(), new MsgSend(msg));
-				((EditText)findViewById(R.id.msg_content_et)).setText("");
+				MsgAction msg = new MsgAction();
+				msg.usr_ID = MyData.getInstance().usr_ID;
+				msg.Msg = ((EditText) findViewById(R.id.msg_content_et))
+						.getText().toString();
+				Client.SendData(MyData.getInstance().room, msg.toBase64(),
+						new MsgSend(msg));
+				((EditText) findViewById(R.id.msg_content_et)).setText("");
 			}
-			
+
 		});
 	}
-	static class MsgSend implements onSend
-	{
+
+	static class MsgSend implements onSend {
 		MsgAction b;
-		MsgSend(MsgAction a)
-		{
-			b=a;
+
+		MsgSend(MsgAction a) {
+			b = a;
 		}
+
 		public void SendOK() {
 		}
-		
+
 		public void SendError(String Data) {
-			Client.SendData(MyData.getInstance().room,Data, this);
+			Client.SendData(MyData.getInstance().room, Data, this);
 		}
 	}
+
 	GetData g;
+
 	protected void onPause() {
 		super.onPause();
 		if (g != null)
@@ -60,20 +65,21 @@ public class ChatActivity extends ActionBarActivity {
 
 	protected void onResume() {
 		super.onResume();
-		g = Client.setOnDataRecv(MyData.getInstance().room, new onNewDataRecv() {
-			public void onRecv(final String[] datas) {
+		g = Client.setOnDataRecv(MyData.getInstance().room,
+				new onNewDataRecv() {
+					public void onRecv(final String[] datas) {
 
-				Action action;
-				for (int i = 0; i < datas.length; i++) {
-					action = Action.base64ToAction(datas[i]);
-					if(action.type==Action.TYPE_MSG||action.type==Action.TYPE_NAME)
-						action.act(null, null);
-					action.addMeToList();
-					
-				}
+						Action action;
+						for (int i = 0; i < datas.length; i++) {
+							action = Action.base64ToAction(datas[i]);
+							if (action.type == Action.TYPE_MSG
+									|| action.type == Action.TYPE_NAME)
+								action.act(null, null);
+							action.addMeToList();
 
-			}
-		});
+						}
+
+					}
+				});
 	}
 }
-
