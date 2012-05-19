@@ -343,9 +343,20 @@ public class MainActivity extends ActionBarActivity {
 								}
 								acting = null;
 							}
-							if (Display.previousPointCount != pointCount) {
-								
+							
+							float x_mean = 0, y_mean = 0, sumOfLength = 0;
+							for (int i = 0; i < pointCount; i++) {
+								x_mean += event.getX(i);
+								y_mean += event.getY(i);
 							}
+							x_mean /= pointCount;
+							y_mean /= pointCount;
+							for (int i = 0; i < pointCount; i++) {
+								sumOfLength += Math.sqrt(Math.pow(event.getX(i)-x_mean, 2) + 
+										Math.pow(event.getY(i)-y_mean, 2));
+							}
+							
+							Display.update(pointCount, x_mean, y_mean, sumOfLength);
 						}
 						Log.v("pre", Integer.toString(Display.previousPointCount));
 						Log.v("now", Integer.toString(pointCount));
