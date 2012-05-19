@@ -20,18 +20,18 @@ public class Display {
 	}
 	
 	public static float x_AbsoluteToRelative (float x_absolute) {
-		return x_absolute;
+		return (x_absolute - screen_pos_x) * scaleFactor;
 	}
 	
 	public static float y_AbsoluteToRelative (float y_absolute) {
-		return y_absolute;
+		return (y_absolute - screen_pos_y) * scaleFactor;
 	}
 	
 	public static float x_RelativeToAbsolute (float x_relative) {
-		return x_relative;
+		return screen_pos_x + x_relative / scaleFactor;
 	}
 	
 	public static float y_RelativeToAbsolute (float y_relative) {
-		return y_relative;
+		return screen_pos_y + y_relative / scaleFactor;
 	}
 }
