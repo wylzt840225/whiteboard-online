@@ -51,9 +51,6 @@ public class MainActivity extends ActionBarActivity {
 	static Sender sender;
 	GetData g;
 
-	// float x, y;
-	int previousPointCount = 0;
-
 	static MainActivity instance;
 
 	static MainActivity getinstance() {
@@ -346,10 +343,13 @@ public class MainActivity extends ActionBarActivity {
 								}
 								acting = null;
 							}
+							if (Display.previousPointCount != pointCount) {
+								
+							}
 						}
-						Log.v("pre", Integer.toString(previousPointCount));
+						Log.v("pre", Integer.toString(Display.previousPointCount));
 						Log.v("now", Integer.toString(pointCount));
-						previousPointCount = pointCount;
+						Display.previousPointCount = pointCount;
 						return true;
 					}
 				});
