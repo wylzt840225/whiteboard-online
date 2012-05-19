@@ -94,12 +94,18 @@ public class PathAction extends Action {
 	}
 
 	public void addPoint(float x, float y) {
+		x = x < 0 ? 0 : x;
+		x = x > Display.screen_width ? Display.screen_width : x;
+		y = y < 0 ? 0 : y;
+		y = y > Display.screen_height ? Display.screen_height : y;
+		
 		if (x_history.isEmpty()) {
 			path.reset();
 			path.moveTo(x, y);
 		} else {
 			path.quadTo(PathAction.x, PathAction.y, (PathAction.x+x)/2, (PathAction.y+y)/2);
 		}
+		
 		x_history.add(x);
 		y_history.add(y);
 		PathAction.x = x;
