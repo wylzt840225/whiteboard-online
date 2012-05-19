@@ -21,7 +21,7 @@ public class PathAction extends Action {
 	public ArrayList<Float> y_history;
 
 	private static Path path;
-	private static float x, y;
+	private static float x_relative, y_relative;
 
 	public PathAction() {
 		x_history = new ArrayList<Float>();
@@ -49,16 +49,17 @@ public class PathAction extends Action {
 		} else {
 			Path path = new Path();
 			path.reset();
-			path.moveTo(x_history.get(0), y_history.get(0));
+			path.moveTo(Display.x_AbsoluteToRelative(x_history.get(0)), 
+						Display.y_AbsoluteToRelative(y_history.get(0)));
 
 			float x1, y1, x2, y2;
-			x2 = x_history.get(0);
-			y2 = y_history.get(0);
+			x2 = Display.x_AbsoluteToRelative(x_history.get(0));
+			y2 = Display.y_AbsoluteToRelative(y_history.get(0));
 			for (int i = 0; i < x_history.size() - 1; i++) {
 				x1 = x2;
 				y1 = y2;
-				x2 = x_history.get(i + 1);
-				y2 = y_history.get(i + 1);
+				x2 = Display.x_AbsoluteToRelative(x_history.get(i + 1));
+				y2 = Display.y_AbsoluteToRelative(y_history.get(i + 1));
 				path.quadTo(x1, y1, (x1 + x2) / 2, (y1 + y2) / 2);
 			}
 			path.lineTo(x2, y2);
@@ -93,23 +94,28 @@ public class PathAction extends Action {
 		}
 	}
 
-	public void addPoint(float x, float y) {
-		x = x < 0 ? 0 : x;
-		x = x > Display.screen_width ? Display.screen_width : x;
-		y = y < 0 ? 0 : y;
-		y = y > Display.screen_height ? Display.screen_height : y;
+	public void addPoint(float x_relative, float y_relative) {
+		float x_absolute = Display.x_RelativeToAbsolute(x_relative);
+		float y_absolute = Display.y_RelativeToAbsolute(y_relative);
+		
+		x_absolute = x_absolute < 0 ? 0 : x_absolute;
+		x_absolute = x_absolute > Display.screen_width ? Display.screen_width : x_absolute;
+		y_absolute = y_absolute < 0 ? 0 : y_absolute;
+		y_absolute = y_absolute > Display.screen_height ? Display.screen_height : y_absolute;
 		
 		if (x_history.isEmpty()) {
 			path.reset();
-			path.moveTo(x, y);
+			path.moveTo(x_relative, y_relative);
 		} else {
-			path.quadTo(PathAction.x, PathAction.y, (PathAction.x+x)/2, (PathAction.y+y)/2);
+			path.quadTo(PathAction.x_relative, PathAction.y_relative, 
+					(PathAction.x_relative+x_relative)/2, 
+					(PathAction.y_relative+y_relative)/2);
 		}
 		
-		x_history.add(x);
-		y_history.add(y);
-		PathAction.x = x;
-		PathAction.y = y;
+		x_history.add(x_absolute);
+		y_history.add(y_absolute);
+		PathAction.x_relative = x_relative;
+		PathAction.y_relative = y_relative;
 	}
 
 	@Override

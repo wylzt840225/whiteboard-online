@@ -148,9 +148,10 @@ public class MainActivity extends ActionBarActivity {
 		public void onDraw(Canvas canvas) {
 			super.onDraw(canvas);
 			//canvas.drawBitmap(bmp, 0, 0, null);
-			Rect srcRect = new Rect((int)Display.screen_pos_x, (int)Display.screen_pos_y, 
-					(int)(Display.screen_pos_x + Display.screen_width / Display.scaleFactor), 
-					(int)(Display.screen_pos_y + Display.screen_height / Display.scaleFactor));
+			Rect srcRect = new Rect((int)Display.x_RelativeToAbsolute(0), 
+									(int)Display.y_RelativeToAbsolute(0), 
+									(int)Display.x_RelativeToAbsolute(Display.screen_width), 
+									(int)Display.y_RelativeToAbsolute(Display.screen_height));
 			Rect dstRect = new Rect(0, 0, Display.screen_width, Display.screen_height);
 			canvas.drawBitmap(bmp, srcRect, dstRect, null);
 			if (acting != null) {
@@ -166,7 +167,8 @@ public class MainActivity extends ActionBarActivity {
 		case R.id.chat:
 			DisplayMetrics metrics = new DisplayMetrics();
 			wm.getDefaultDisplay().getMetrics(metrics);
-			if (metrics.heightPixels >= getResources().getDimensionPixelSize(R.dimen.chat_window_least_height)) {
+			if (metrics.heightPixels >= getResources().getDimensionPixelSize(
+					R.dimen.chat_window_least_height)) {
 				showChatWindow();
 			} else {
 				Intent i = new Intent();
@@ -341,7 +343,6 @@ public class MainActivity extends ActionBarActivity {
 								}
 								break;
 							}
-							dw.invalidate();
 						} else {
 							if (acting != null) {
 								if (((PathAction) acting).x_history.size() > 1) {
@@ -364,9 +365,12 @@ public class MainActivity extends ActionBarActivity {
 							
 							Display.update(pointCount, x_mean, y_mean, sumOfLength);
 						}
+						
 						Log.v("pre", Integer.toString(Display.previousPointCount));
 						Log.v("now", Integer.toString(pointCount));
+						
 						Display.previousPointCount = pointCount;
+						dw.invalidate();
 						return true;
 					}
 				});
