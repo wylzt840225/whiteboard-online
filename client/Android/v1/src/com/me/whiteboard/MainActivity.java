@@ -364,6 +364,7 @@ public class MainActivity extends ActionBarActivity {
 							}
 							
 							Display.update(pointCount, x_mean, y_mean, sumOfLength);
+				
 						}
 						
 						Log.v("pre", Integer.toString(Display.previousPointCount));
