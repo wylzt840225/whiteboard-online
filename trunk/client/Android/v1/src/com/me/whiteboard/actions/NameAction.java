@@ -18,7 +18,6 @@ public class NameAction extends Action {
 	
 	@Override
 	public void act(MainActivity acts, Canvas canvas) {
-		MyData.getInstance().nametable.put(this.usr_ID, Name);
 	}
 	
 	@Override
