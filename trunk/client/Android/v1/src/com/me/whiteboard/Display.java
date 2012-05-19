@@ -23,6 +23,23 @@ public class Display {
 		}
 	}
 	
+	private static void reset(float x_mean, float y_mean, float sumOfLength) {
+		Display.x_mean = x_mean;
+		Display.y_mean = y_mean;
+		Display.sumOfLength = sumOfLength;
+	}
+	
+	public static void update(int pointCount, float x_mean, float y_mean, float sumOfLength) {
+		if (pointCount != previousPointCount) {
+			reset(x_mean, y_mean, sumOfLength);
+			return;
+		}
+		
+		screen_pos_x += (x_mean - Display.x_mean) / scaleFactor;
+		screen_pos_y += (y_mean - Display.y_mean) / scaleFactor;
+		scaleFactor *= sumOfLength / Display.sumOfLength;
+	}
+	
 	public static float x_AbsoluteToRelative (float x_absolute) {
 		return (x_absolute - screen_pos_x) * scaleFactor;
 	}
