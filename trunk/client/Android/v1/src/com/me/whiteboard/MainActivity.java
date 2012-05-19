@@ -23,7 +23,9 @@ import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
 import com.me.whiteboard.ChatActivity.MsgSend;
 import com.me.whiteboard.actions.Action;
@@ -44,15 +46,13 @@ public class MainActivity extends ActionBarActivity {
 	int type = 1;
 	Action acting;
 	WindowManager wm;
-	WindowManager.LayoutParams wmParams;
+	// WindowManager.LayoutParams wmParams;
 	View floatview;
 	static Sender sender;
 	GetData g;
-	
-	//float x, y;
+
+	// float x, y;
 	int previousPointCount = 0;
-	
-	
 
 	static MainActivity instance;
 
@@ -163,7 +163,7 @@ public class MainActivity extends ActionBarActivity {
 		case R.id.chat:
 			DisplayMetrics metrics = new DisplayMetrics();
 			wm.getDefaultDisplay().getMetrics(metrics);
-			if (metrics.heightPixels > 500) {
+			if (metrics.heightPixels >= getResources().getDimensionPixelSize(R.dimen.chat_window_least_height)) {
 				showChatWindow();
 			} else {
 				Intent i = new Intent();
@@ -188,20 +188,27 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	private void updateViewPosition(float x, float y) {
-		wmParams.x = (int) (x - mTouchStartX);
-		wmParams.y = (int) (y - mTouchStartY);
-		wm.updateViewLayout(floatview, wmParams); // À¢–¬œ‘ æ
+		RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) floatview
+				.getLayoutParams();
+		lp.topMargin = (int) (lp.topMargin + y - mTouchStartY);
+		lp.leftMargin = (int) (lp.leftMargin + x - mTouchStartX);
+		floatview.setLayoutParams(lp);
 	}
 
 	float mTouchStartX, mTouchStartY;
 
 	public void showChatWindow() {
 
-		wmParams.type = 2002;
-		// wmParams.flags = LayoutParams.FLAG_TOUCHABLE_WHEN_WAKING;
-		wmParams.width = 400;
-		wmParams.height = 400;
-		wm.addView(floatview, wmParams);
+		ViewGroup vg = (ViewGroup) findViewById(R.id.framelayout);
+		
+		
+		vg.addView(floatview);
+		RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) floatview
+				.getLayoutParams();
+		lp.height=getResources().getDimensionPixelSize(R.dimen.chat_window_height);
+		lp.width=getResources().getDimensionPixelSize(R.dimen.chat_window_width);
+		floatview.setLayoutParams(lp);
+
 	}
 
 	@Override
@@ -215,7 +222,7 @@ public class MainActivity extends ActionBarActivity {
 		setContentView(R.layout.canvas);
 
 		wm = (WindowManager) getApplicationContext().getSystemService("window");
-		wmParams = new WindowManager.LayoutParams();
+		// wmParams = new WindowManager.LayoutParams();
 		floatview = getLayoutInflater().inflate(R.layout.chat_dialog, null);
 		ListView lv = (ListView) floatview.findViewById(R.id.chatlist);
 		MyData.getInstance().msgList.createAdapter(1, R.layout.msg_item);
@@ -266,7 +273,8 @@ public class MainActivity extends ActionBarActivity {
 				new OnClickListener() {
 
 					public void onClick(View v) {
-						wm.removeView(floatview);
+						ViewGroup vg = (ViewGroup) findViewById(R.id.framelayout);
+						vg.removeView(floatview);
 					}
 				});
 
@@ -305,7 +313,7 @@ public class MainActivity extends ActionBarActivity {
 									acting = null;
 								}
 								break;
-								
+
 							case MotionEvent.ACTION_DOWN:
 								acting = new PathAction(
 										MyData.getInstance().usr_ID, MyData
@@ -316,8 +324,8 @@ public class MainActivity extends ActionBarActivity {
 
 							case MotionEvent.ACTION_MOVE:
 								if (acting != null) {
-									((PathAction) acting).addPoint(event.getX(),
-											event.getY());
+									((PathAction) acting).addPoint(
+											event.getX(), event.getY());
 								}
 								break;
 							}
@@ -330,8 +338,8 @@ public class MainActivity extends ActionBarActivity {
 								acting = null;
 							}
 						}
-						Log.v("pre",Integer.toString(previousPointCount));
-						Log.v("now",Integer.toString(pointCount));
+						Log.v("pre", Integer.toString(previousPointCount));
+						Log.v("now", Integer.toString(pointCount));
 						previousPointCount = pointCount;
 						return true;
 					}
@@ -343,7 +351,7 @@ public class MainActivity extends ActionBarActivity {
 			}
 		});
 	}
-	
+
 	private void addAction() {
 		MyData.getInstance().local_ID++;
 		acting.act(MainActivity.this, canvas);
