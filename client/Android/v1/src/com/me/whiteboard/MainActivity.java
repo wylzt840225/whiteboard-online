@@ -43,23 +43,19 @@ public class MainActivity extends ActionBarActivity {
 	DrawView dw;
 
 	int type = 1;
-	public static int width;
-	// Path path;
-	public static int height;
 
-	// ActionHistory actionHistory;
 	Action acting;
 	WindowManager wm;
 	WindowManager.LayoutParams wmParams;
 	View floatview;
 	static Sender sender;
-
-	/*
-	 * static MainActivity instance;
-	 * 
-	 * static MainActivity getinstance() { return instance; }
-	 */
 	GetData g;
+
+	static MainActivity instance;
+
+	static MainActivity getinstance() {
+		return instance;
+	}
 
 	protected void onPause() {
 		super.onPause();
@@ -76,7 +72,9 @@ public class MainActivity extends ActionBarActivity {
 						Action action;
 						for (int i = 0; i < datas.length; i++) {
 							action = Action.base64ToAction(datas[i]);
-							action.act(MainActivity.this, canvas);
+							if (action.usr_ID != MyData.getInstance().usr_ID) {
+								action.act(MainActivity.this, canvas);
+							}
 							action.addMeToList();
 						}
 
@@ -162,7 +160,7 @@ public class MainActivity extends ActionBarActivity {
 		case R.id.chat:
 			DisplayMetrics metrics = new DisplayMetrics();
 			wm.getDefaultDisplay().getMetrics(metrics);
-			if (metrics.heightPixels>500) {
+			if (metrics.heightPixels > 500) {
 				showChatWindow();
 			} else {
 				Intent i = new Intent();
@@ -186,7 +184,7 @@ public class MainActivity extends ActionBarActivity {
 		dw.invalidate();
 	}
 
-	private void updateViewPosition(float x,float y) {
+	private void updateViewPosition(float x, float y) {
 		wmParams.x = (int) (x - mTouchStartX);
 		wmParams.y = (int) (y - mTouchStartY);
 		wm.updateViewLayout(floatview, wmParams); // 刷新显示
@@ -196,15 +194,12 @@ public class MainActivity extends ActionBarActivity {
 
 	public void showChatWindow() {
 
-		
-		wmParams.type = 2002; 
-		//wmParams.flags = LayoutParams.FLAG_TOUCHABLE_WHEN_WAKING;
+		wmParams.type = 2002;
+		// wmParams.flags = LayoutParams.FLAG_TOUCHABLE_WHEN_WAKING;
 		wmParams.width = 400;
 		wmParams.height = 400;
 		wm.addView(floatview, wmParams);
 	}
-
-
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -223,83 +218,70 @@ public class MainActivity extends ActionBarActivity {
 		MyData.getInstance().msgList.createAdapter(1, R.layout.msg_item);
 		lv.setAdapter(MyData.getInstance().msgList.getAdapter(1, this));
 		Button send = (Button) floatview.findViewById(R.id.send);
-		floatview.findViewById(R.id.title).setOnTouchListener(new OnTouchListener() {
+		floatview.findViewById(R.id.title).setOnTouchListener(
+				new OnTouchListener() {
 
-			public boolean onTouch(View v, MotionEvent event) {
+					public boolean onTouch(View v, MotionEvent event) {
 
-				switch (event.getAction()) {
-				case MotionEvent.ACTION_DOWN: // 捕获手指触摸按下动作
-					// 获取相对View的坐标，即以此View左上角为原点
-					mTouchStartX = event.getX();
-					mTouchStartY = event.getY();
+						switch (event.getAction()) {
+						case MotionEvent.ACTION_DOWN: // 捕获手指触摸按下动作
+							// 获取相对View的坐标，即以此View左上角为原点
+							mTouchStartX = event.getX();
+							mTouchStartY = event.getY();
 
-					break;
+							break;
 
-				case MotionEvent.ACTION_MOVE: // 捕获手指触摸移动动作
-					updateViewPosition(event.getX(),event.getY());
-					break;
+						case MotionEvent.ACTION_MOVE: // 捕获手指触摸移动动作
+							updateViewPosition(event.getX(), event.getY());
+							break;
 
-				case MotionEvent.ACTION_UP: // 捕获手指触摸离开动作
-					updateViewPosition(event.getX(),event.getY());
-					mTouchStartX = mTouchStartY = 0;
-					break;
-				}
-				return true;
-			}
+						case MotionEvent.ACTION_UP: // 捕获手指触摸离开动作
+							updateViewPosition(event.getX(), event.getY());
+							mTouchStartX = mTouchStartY = 0;
+							break;
+						}
+						return true;
+					}
 
-		});
+				});
 		send.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
 				MsgAction msg = new MsgAction();
 				msg.usr_ID = MyData.getInstance().usr_ID;
-				msg.Msg = ((EditText) floatview.findViewById(R.id.msg_content_et))
-						.getText().toString();
+				msg.Msg = ((EditText) floatview
+						.findViewById(R.id.msg_content_et)).getText()
+						.toString();
 				Client.SendData(MyData.getInstance().room, msg.toBase64(),
 						new MsgSend(msg));
-				((EditText) floatview.findViewById(R.id.msg_content_et)).setText("");
+				((EditText) floatview.findViewById(R.id.msg_content_et))
+						.setText("");
 			}
 
 		});
-		floatview.findViewById(R.id.close).setOnClickListener(new OnClickListener() {
-			
-			public void onClick(View v) {
-				wm.removeView(floatview);
-			}
-		});
-		
-		
-		
-		
+		floatview.findViewById(R.id.close).setOnClickListener(
+				new OnClickListener() {
+
+					public void onClick(View v) {
+						wm.removeView(floatview);
+					}
+				});
+
 		findViewById(R.id.draw).post(new Runnable() {
-			
-			public void run() {
-				width = findViewById(R.id.draw).getWidth();
-				height = findViewById(R.id.draw).getHeight();
 
-				if (((float) width) / height > 4.0 / 3.0) {
-					width = height * 4 / 3;
-				} else {
-					height = width * 3 / 4;
-				}
+			public void run() {
+				new Display(findViewById(R.id.draw).getWidth(), findViewById(
+						R.id.draw).getHeight());
 
 				LayoutParams lp = new LayoutParams();
-				lp.width = width;
-				lp.height = height;
+				lp.width = Display.screen_width;
+				lp.height = Display.screen_height;
 
 				// instance = MainActivity.this;
-				// bm = Bitmap.createBitmap(width, height,
-				// Bitmap.Config.ARGB_8888);
-				// tempbm = Bitmap.createBitmap(width,height,
-				// Bitmap.Config.ARGB_8888);
-				// temp = new Canvas(tempbm);
-				bmp = Bitmap.createBitmap(width, height,
-						Bitmap.Config.ARGB_8888);
+				bmp = Bitmap.createBitmap(Display.screen_width,
+						Display.screen_height, Bitmap.Config.ARGB_8888);
 				canvas = new Canvas(bmp);
-				// list = new ArrayList<MainActivity.History>();
-				// c = new Canvas(bm);
 				dw = new DrawView(MainActivity.this);
-				// path = new Path();
 
 				((ViewGroup) findViewById(R.id.draw)).addView(dw, lp);
 				paint = new Paint();
@@ -308,19 +290,11 @@ public class MainActivity extends ActionBarActivity {
 				paint.setStyle(Paint.Style.STROKE);
 				paint.setStrokeCap(Paint.Cap.ROUND);
 				paint.setStrokeWidth(0);
-				// down = false;
 
 				dw.setOnTouchListener(new OnTouchListener() {
 					public boolean onTouch(View v, MotionEvent event) {
 						switch (event.getAction()) {
 						case MotionEvent.ACTION_UP:
-							// path.lineTo(x, y);
-							// down = false;
-							// drawOn(1, event.getX(), event.getY());
-							// draw(x, y);
-							// sendPath();
-							// c.drawPath(path, GlobalS.getinstance().mPaint);
-							// canvas.drawPath(path, paint);
 							MyData.getInstance().local_ID++;
 							acting.act(MainActivity.this, canvas);
 							MyData.getInstance().actionList.add(acting);
@@ -328,43 +302,22 @@ public class MainActivity extends ActionBarActivity {
 							sender.Flush();
 							acting = null;
 							dw.invalidate();
-							// path.reset();
 							break;
 						case MotionEvent.ACTION_DOWN:
-							// x = event.getX();
-							// y = event.getY();
 							acting = new PathAction(
 									MyData.getInstance().usr_ID, MyData
 											.getInstance().local_ID, paint);
 							((PathAction) acting).addPoint(event.getX(),
 									event.getY());
 							dw.invalidate();
-							// path.reset();
-							// path.moveTo(x, y);
-							// down = true;
 							break;
 
 						case MotionEvent.ACTION_MOVE:
 							((PathAction) acting).addPoint(event.getX(),
 									event.getY());
 							dw.invalidate();
-							// if (down) {
-							// if (type < 3)
-							// drawOn(0, event.getX(), event.getY());
-							// else {
-
-							// drawOn(1, event.getX(), event.getY());
-							// path.quadTo(x, y, (x + event.getX()) / 2,
-							// (y + event.getY()) / 2);
-							// draw(x, y);
-							// x = event.getX();
-							// y = event.getY();
-							// }
-							// }
 							break;
 						}
-
-						// return type == 3;
 						return true;
 					}
 				});
