@@ -145,7 +145,7 @@ public class MainActivity extends ActionBarActivity {
 
 		public void onDraw(Canvas canvas) {
 			super.onDraw(canvas);
-			if (Display.previousPointCount > 1) {
+//			if (Display.previousPointCount > 1) {
 				/*Rect srcRect = new Rect((int) Display.x_ScreenPosToBmpPos(0),
 						(int) Display.y_ScreenPosToBmpPos(0),
 						(int) Display.x_ScreenPosToBmpPos(Display.screen_width),
@@ -158,11 +158,11 @@ public class MainActivity extends ActionBarActivity {
 						(int) Display.x_BmpPosToScreenPos(Display.screen_width),
 						(int) Display.y_BmpPosToScreenPos(Display.screen_height));
 				canvas.drawBitmap(bmp, null, dstRect, null);
-			} else {
-				canvas.drawBitmap(bmp, 0, 0, null);
-				if (acting != null) {
-					acting.act(MainActivity.this, canvas);
-				}
+//			} else {
+//				canvas.drawBitmap(bmp, 0, 0, null);
+//			}
+			if (acting != null) {
+				acting.act(MainActivity.this, canvas);
 			}
 		}
 	}
@@ -312,9 +312,7 @@ public class MainActivity extends ActionBarActivity {
 				lp.height = Display.screen_height;
 
 				// instance = MainActivity.this;
-				bmp = Bitmap.createBitmap(Display.screen_width,
-						Display.screen_height, Bitmap.Config.ARGB_8888);
-				canvas = new Canvas(bmp);
+				reSize();
 				dw = new DrawView(MainActivity.this);
 
 				((ViewGroup) findViewById(R.id.draw)).addView(dw, lp);
@@ -401,8 +399,8 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	private void reSize() {
-		bmp = Bitmap.createBitmap(Display.screen_width, Display.screen_height,
-				Bitmap.Config.ARGB_8888);
+		bmp = Bitmap.createBitmap(Display.bmp_width, 
+				Display.bmp_height, Bitmap.Config.ARGB_8888);
 		canvas = new Canvas(bmp);
 		MyData.getInstance().actionList.actAll(MainActivity.this, canvas);
 		Display.reSize();

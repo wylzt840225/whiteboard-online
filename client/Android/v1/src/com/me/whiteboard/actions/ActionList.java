@@ -61,6 +61,9 @@ public class ActionList {
 	}
 
 	public void actAll(MainActivity activity, Canvas canvas) {
+		if (list == null) {
+			return;
+		}
 		for (int i = 0; i < list.size(); i++) {
 			list.get(i).act(activity, canvas);
 		}

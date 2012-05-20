@@ -21,7 +21,7 @@ public class PathAction extends Action {
 	public ArrayList<Float> y_history;
 
 	private static Path path;
-	private static float x_relative, y_relative;
+	private static float x_BmpPos, y_BmpPos;
 
 	public PathAction() {
 		x_history = new ArrayList<Float>();
@@ -50,17 +50,17 @@ public class PathAction extends Action {
 		} else {
 			Path path = new Path();
 			path.reset();
-			path.moveTo(Display.x_AbsoluteToRelative(x_history.get(0)),
-					Display.y_AbsoluteToRelative(y_history.get(0)));
+			path.moveTo(Display.x_AbsoluteToBmpRelative(x_history.get(0)),
+					Display.y_AbsoluteToBmpRelative(y_history.get(0)));
 
 			float x1, y1, x2, y2;
-			x2 = Display.x_AbsoluteToRelative(x_history.get(0));
-			y2 = Display.y_AbsoluteToRelative(y_history.get(0));
+			x2 = Display.x_AbsoluteToBmpRelative(x_history.get(0));
+			y2 = Display.y_AbsoluteToBmpRelative(y_history.get(0));
 			for (int i = 0; i < x_history.size() - 1; i++) {
 				x1 = x2;
 				y1 = y2;
-				x2 = Display.x_AbsoluteToRelative(x_history.get(i + 1));
-				y2 = Display.y_AbsoluteToRelative(y_history.get(i + 1));
+				x2 = Display.x_AbsoluteToBmpRelative(x_history.get(i + 1));
+				y2 = Display.y_AbsoluteToBmpRelative(y_history.get(i + 1));
 				path.quadTo(x1, y1, (x1 + x2) / 2, (y1 + y2) / 2);
 			}
 			path.lineTo(x2, y2);
@@ -107,20 +107,23 @@ public class PathAction extends Action {
 		y_absolute = y_absolute < 0 ? 0 : y_absolute;
 		y_absolute = y_absolute > Display.screen_height ? Display.screen_height
 				: y_absolute;
+		
+		float x_BmpPos = Display.x_ScreenPosToBmpPos(x_relative);
+		float y_BmpPos = Display.y_ScreenPosToBmpPos(y_relative);
 
 		if (x_history.isEmpty()) {
 			path.reset();
-			path.moveTo(x_relative, y_relative);
+			path.moveTo(x_BmpPos, y_BmpPos);
 		} else {
-			path.quadTo(PathAction.x_relative, PathAction.y_relative,
-					(PathAction.x_relative + x_relative) / 2,
-					(PathAction.y_relative + y_relative) / 2);
+			path.quadTo(PathAction.x_BmpPos, PathAction.y_BmpPos,
+					(PathAction.x_BmpPos + x_BmpPos) / 2,
+					(PathAction.y_BmpPos + y_BmpPos) / 2);
 		}
 
 		x_history.add(x_absolute);
 		y_history.add(y_absolute);
-		PathAction.x_relative = x_relative;
-		PathAction.y_relative = y_relative;
+		PathAction.x_BmpPos = x_BmpPos;
+		PathAction.y_BmpPos = y_BmpPos;
 	}
 
 	@Override
