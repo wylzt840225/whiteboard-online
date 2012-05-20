@@ -12,7 +12,7 @@ public class Client {
 
 			@Override
 			protected String doInBackground(Void... params) {
-				return JsonTransfer.httpTransfor("/ifexists?name=" + room);
+				return JsonTransfer.httpTransfor("/ifexists?name=" +  java.net.URLEncoder.encode(room));
 			}
 
 			protected void onPostExecute(String s) {
@@ -38,7 +38,7 @@ public class Client {
 
 			@Override
 			protected String doInBackground(Void... params) {
-				return JsonTransfer.httpTransfor("/enter?name=" + room);
+				return JsonTransfer.httpTransfor("/enter?name=" + java.net.URLEncoder.encode(room));
 			}
 
 			protected void onPostExecute(String s) {
@@ -58,7 +58,7 @@ public class Client {
 
 			@Override
 			protected String doInBackground(Void... params) {
-				return JsonTransfer.httpTransfor("/create?name=" + room);
+				return JsonTransfer.httpTransfor("/create?name=" + java.net.URLEncoder.encode(room));
 			}
 
 			protected void onPostExecute(String s) {
@@ -77,7 +77,7 @@ public class Client {
 
 			@Override
 			protected String doInBackground(Void... params) {
-				return JsonTransfer.httpTransfor("/rmroom?name=" + room);
+				return JsonTransfer.httpTransfor("/rmroom?name=" + java.net.URLEncoder.encode(room));
 			}
 
 			protected void onPostExecute(String s) {
@@ -102,7 +102,7 @@ public class Client {
 
 			@Override
 			protected String doInBackground(Void... params) {
-				return JsonTransfer.httpTransfor("/post?name=" + room, true,
+				return JsonTransfer.httpTransfor("/post?name=" + java.net.URLEncoder.encode(room), true,
 						Data);
 			}
 
@@ -155,7 +155,7 @@ public class Client {
 		protected Void doInBackground(Void... params) {
 
 			while (running) {
-				String s = JsonTransfer.httpTransfor("/get?name=" + room
+				String s = JsonTransfer.httpTransfor("/get?name=" + java.net.URLEncoder.encode(room)
 						+ "&fromid=" + fromid);
 				if (running) {
 					if (!s.equals("!error") && s.length() != 0) {
