@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.me.whiteboard.MainActivity;
-import com.me.whiteboard.MyData;
 
 public class NameAction extends Action {
 	

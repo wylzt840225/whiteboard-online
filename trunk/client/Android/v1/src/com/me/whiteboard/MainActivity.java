@@ -24,7 +24,6 @@ import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -147,12 +146,13 @@ public class MainActivity extends ActionBarActivity {
 
 		public void onDraw(Canvas canvas) {
 			super.onDraw(canvas);
-			//canvas.drawBitmap(bmp, 0, 0, null);
-			Rect srcRect = new Rect((int)Display.x_RelativeToAbsolute(0), 
-									(int)Display.y_RelativeToAbsolute(0), 
-									(int)Display.x_RelativeToAbsolute(Display.screen_width), 
-									(int)Display.y_RelativeToAbsolute(Display.screen_height));
-			Rect dstRect = new Rect(0, 0, Display.screen_width, Display.screen_height);
+			// canvas.drawBitmap(bmp, 0, 0, null);
+			Rect srcRect = new Rect((int) Display.x_RelativeToAbsolute(0),
+					(int) Display.y_RelativeToAbsolute(0),
+					(int) Display.x_RelativeToAbsolute(Display.screen_width),
+					(int) Display.y_RelativeToAbsolute(Display.screen_height));
+			Rect dstRect = new Rect(0, 0, Display.screen_width,
+					Display.screen_height);
 			canvas.drawBitmap(bmp, srcRect, dstRect, null);
 			if (acting != null) {
 				acting.act(MainActivity.this, canvas);
@@ -201,31 +201,33 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	float mTouchStartX, mTouchStartY;
-	boolean chatwindow=false;
+	boolean chatwindow = false;
+
 	public void showChatWindow() {
 
-		
 		ViewGroup vg = (ViewGroup) findViewById(R.id.framelayout);
-		if(chatwindow)
+		if (chatwindow)
 			closeChatWindow();
 		vg.addView(floatview);
 		RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) floatview
 				.getLayoutParams();
-		lp.height=getResources().getDimensionPixelSize(R.dimen.chat_window_height);
-		lp.width=getResources().getDimensionPixelSize(R.dimen.chat_window_width);
+		lp.height = getResources().getDimensionPixelSize(
+				R.dimen.chat_window_height);
+		lp.width = getResources().getDimensionPixelSize(
+				R.dimen.chat_window_width);
 		floatview.setLayoutParams(lp);
-		chatwindow=true;
+		chatwindow = true;
 
 	}
-	public void closeChatWindow()
-	{
-		if(chatwindow)
-		{
+
+	public void closeChatWindow() {
+		if (chatwindow) {
 			ViewGroup vg = (ViewGroup) findViewById(R.id.framelayout);
 			vg.removeView(floatview);
-			chatwindow=false;
+			chatwindow = false;
 		}
 	}
+
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -345,12 +347,13 @@ public class MainActivity extends ActionBarActivity {
 							}
 						} else {
 							if (acting != null) {
-								if (((PathAction) acting).x_history.size() > 1) {
+								if (((PathAction) acting).x_history.size() > 1
+										&& (System.currentTimeMillis() - acting.time) > 1000) {
 									addAction();
 								}
 								acting = null;
 							}
-							
+
 							float x_mean = 0, y_mean = 0, sumOfLength = 0;
 							for (int i = 0; i < pointCount; i++) {
 								x_mean += event.getX(i);
@@ -359,17 +362,20 @@ public class MainActivity extends ActionBarActivity {
 							x_mean /= pointCount;
 							y_mean /= pointCount;
 							for (int i = 0; i < pointCount; i++) {
-								sumOfLength += Math.sqrt(Math.pow(event.getX(i)-x_mean, 2) + 
-										Math.pow(event.getY(i)-y_mean, 2));
+								sumOfLength += Math.sqrt(Math.pow(event.getX(i)
+										- x_mean, 2)
+										+ Math.pow(event.getY(i) - y_mean, 2));
 							}
-							
-							Display.update(pointCount, x_mean, y_mean, sumOfLength);
-				
+
+							Display.update(pointCount, x_mean, y_mean,
+									sumOfLength);
+
 						}
-						
-						Log.v("pre", Integer.toString(Display.previousPointCount));
+
+						Log.v("pre",
+								Integer.toString(Display.previousPointCount));
 						Log.v("now", Integer.toString(pointCount));
-						
+
 						Display.previousPointCount = pointCount;
 						dw.invalidate();
 						return true;
