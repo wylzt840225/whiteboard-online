@@ -66,18 +66,23 @@ public class Display {
 		Display.y_mean_absolute = y_RelativeToAbsolute(y_mean);
 		Display.sumOfLength = sumOfLength;
 
-		/*
-		 * if (scaleFactor < 1) { scaleFactor = 1; } else if (scaleFactor > 10)
-		 * { scaleFactor = 10; }
-		 * 
-		 * if (screen_pos_x > screen_width - screen_width / scaleFactor) {
-		 * screen_pos_x = screen_width - screen_width / scaleFactor; } else if
-		 * (screen_pos_x < 0) { screen_pos_x = 0; }
-		 * 
-		 * if (screen_pos_y > screen_height - screen_height / scaleFactor) {
-		 * screen_pos_y = screen_height - screen_height / scaleFactor; } else if
-		 * (screen_pos_y < 0) { screen_pos_y = 0; }
-		 */
+		// if (scaleFactor < 1) {
+		// scaleFactor = 1;
+		// } else if (scaleFactor > 10) {
+		// scaleFactor = 10;
+		// }
+		//
+		// if (screen_pos_x > screen_width - screen_width / scaleFactor) {
+		// screen_pos_x = screen_width - screen_width / scaleFactor;
+		// } else if (screen_pos_x < 0) {
+		// screen_pos_x = 0;
+		// }
+		//
+		// if (screen_pos_y > screen_height - screen_height / scaleFactor) {
+		// screen_pos_y = screen_height - screen_height / scaleFactor;
+		// } else if (screen_pos_y < 0) {
+		// screen_pos_y = 0;
+		// }
 
 	}
 

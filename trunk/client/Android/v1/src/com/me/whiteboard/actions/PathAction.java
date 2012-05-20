@@ -21,7 +21,7 @@ public class PathAction extends Action {
 	public ArrayList<Float> y_history;
 
 	private static Path path;
-	private static float x_BmpPos, y_BmpPos;
+	private static float x_relative, y_relative;
 
 	public PathAction() {
 		x_history = new ArrayList<Float>();
@@ -107,23 +107,20 @@ public class PathAction extends Action {
 		y_absolute = y_absolute < 0 ? 0 : y_absolute;
 		y_absolute = y_absolute > Display.screen_height ? Display.screen_height
 				: y_absolute;
-		
-		float x_BmpPos = Display.x_ScreenPosToBmpPos(x_relative);
-		float y_BmpPos = Display.y_ScreenPosToBmpPos(y_relative);
 
 		if (x_history.isEmpty()) {
 			path.reset();
-			path.moveTo(x_BmpPos, y_BmpPos);
+			path.moveTo(x_relative, y_relative);
 		} else {
-			path.quadTo(PathAction.x_BmpPos, PathAction.y_BmpPos,
-					(PathAction.x_BmpPos + x_BmpPos) / 2,
-					(PathAction.y_BmpPos + y_BmpPos) / 2);
+			path.quadTo(PathAction.x_relative, PathAction.y_relative,
+					(PathAction.x_relative + x_relative) / 2,
+					(PathAction.y_relative + y_relative) / 2);
 		}
 
 		x_history.add(x_absolute);
 		y_history.add(y_absolute);
-		PathAction.x_BmpPos = x_BmpPos;
-		PathAction.y_BmpPos = y_BmpPos;
+		PathAction.x_relative = x_relative;
+		PathAction.y_relative = y_relative;
 	}
 
 	@Override
