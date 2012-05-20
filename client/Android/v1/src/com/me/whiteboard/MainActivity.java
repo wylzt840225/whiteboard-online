@@ -146,13 +146,18 @@ public class MainActivity extends ActionBarActivity {
 		public void onDraw(Canvas canvas) {
 			super.onDraw(canvas);
 			if (Display.previousPointCount > 1) {
-				Rect srcRect = new Rect((int) Display.x_ScreenPosToBmpPos(0),
+				/*Rect srcRect = new Rect((int) Display.x_ScreenPosToBmpPos(0),
 						(int) Display.y_ScreenPosToBmpPos(0),
 						(int) Display.x_ScreenPosToBmpPos(Display.screen_width),
 						(int) Display.y_ScreenPosToBmpPos(Display.screen_height));
 				Rect dstRect = new Rect(0, 0, Display.screen_width,
 						Display.screen_height);
-				canvas.drawBitmap(bmp, srcRect, dstRect, null);
+				canvas.drawBitmap(bmp, srcRect, dstRect, null);*/
+				Rect dstRect = new Rect((int) Display.x_BmpPosToScreenPos(0),
+						(int) Display.y_BmpPosToScreenPos(0),
+						(int) Display.x_BmpPosToScreenPos(Display.screen_width),
+						(int) Display.y_BmpPosToScreenPos(Display.screen_height));
+				canvas.drawBitmap(bmp, null, dstRect, null);
 			} else {
 				canvas.drawBitmap(bmp, 0, 0, null);
 				if (acting != null) {

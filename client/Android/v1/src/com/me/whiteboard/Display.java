@@ -96,6 +96,16 @@ public class Display {
 				* scaleFactor_Bmp;
 	}
 
+	public static float x_BmpPosToScreenPos(float x_BmpPos) {
+		return (x_RelativeToAbsolute_Bmp(x_BmpPos) - screen_pos_x)
+				* scaleFactor;
+	}
+
+	public static float y_BmpPosToScreenPos(float y_BmpPos) {
+		return (y_RelativeToAbsolute_Bmp(y_BmpPos) - screen_pos_y)
+				* scaleFactor;
+	}
+
 	public static float x_AbsoluteToRelative(float x_absolute) {
 		return (x_absolute - screen_pos_x) * scaleFactor;
 	}
