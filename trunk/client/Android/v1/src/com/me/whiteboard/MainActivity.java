@@ -371,7 +371,8 @@ public class MainActivity extends ActionBarActivity {
 									sumOfLength);
 
 						}
-
+						
+						//for testing
 						Log.v("pre",
 								Integer.toString(Display.previousPointCount));
 						Log.v("now", Integer.toString(pointCount));
