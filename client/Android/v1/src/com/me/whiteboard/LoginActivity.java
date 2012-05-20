@@ -50,20 +50,16 @@ public class LoginActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		//loginInit();
-		
+		// loginInit();
+
+		// 以下为单机测试用
 		Intent intent = new Intent();
 		intent.setClass(LoginActivity.this, MainActivity.class);
 		MyData.getInstance().room = "zyl";
-		MyData.getInstance().usr_ID = (short)Math.random();
-
+		MyData.getInstance().usr_ID = (short) Math.random();
 		NameAction db = new NameAction();
-
-		// note!!
 		db.local_ID = MyData.getInstance().local_ID;
-
 		db.Name = "skysniper";
-
 		startActivity(intent);
 		LoginActivity.this.finish();
 	}

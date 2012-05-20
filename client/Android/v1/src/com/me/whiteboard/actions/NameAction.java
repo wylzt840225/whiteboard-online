@@ -8,25 +8,26 @@ import android.view.ViewGroup;
 import com.me.whiteboard.MainActivity;
 
 public class NameAction extends Action {
-	
+
 	public String Name;
+
 	public NameAction() {
 		super();
-		type=Action.TYPE_NAME;
+		type = Action.TYPE_NAME;
 	}
-	
+
 	@Override
 	public void act(MainActivity acts, Canvas canvas) {
 	}
-	
+
 	@Override
 	public byte[] privateToBytes() {
 		return Name.getBytes();
 	}
-	
+
 	@Override
 	protected void bytesToPrivate(byte[] bytes) {
-		Name=new String(bytes);
+		Name = new String(bytes);
 	}
 
 	@Override

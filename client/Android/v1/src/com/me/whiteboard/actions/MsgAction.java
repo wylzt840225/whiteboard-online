@@ -12,7 +12,7 @@ import com.me.whiteboard.R;
 
 public class MsgAction extends Action {
 
-	//static Charset utf8 = Charset.forName("UTF-8");
+	// static Charset utf8 = Charset.forName("UTF-8");
 	public String Msg;
 
 	public MsgAction() {

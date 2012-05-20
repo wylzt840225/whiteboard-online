@@ -4,7 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Set;
 
+import com.me.whiteboard.MainActivity;
+
 import android.content.Context;
+import android.graphics.Canvas;
 import android.widget.BaseAdapter;
 
 public class ActionList {
@@ -55,5 +58,11 @@ public class ActionList {
 			return 0;
 		}
 		return list.size();
+	}
+
+	public void actAll(MainActivity activity, Canvas canvas) {
+		for (int i = 0; i < list.size(); i++) {
+			list.get(i).act(activity, canvas);
+		}
 	}
 }

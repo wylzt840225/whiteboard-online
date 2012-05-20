@@ -23,7 +23,7 @@ public abstract class Action {
 
 	static ByteArrayBuffer baf = new ByteArrayBuffer(10000);
 
-	public abstract void act(MainActivity acts, Canvas canvas);
+	public abstract void act(MainActivity activity, Canvas canvas);
 
 	public abstract byte[] privateToBytes();
 
@@ -64,19 +64,19 @@ public abstract class Action {
 
 	// add to msglist or actionlist
 	public void addMeToList() {
-		switch(type)
-		{
+		switch (type) {
 		case Action.TYPE_MSG:
 			MyData.getInstance().msgList.add(this);
 			MyData.getInstance().msgList.notifyAllAdapter();
 			break;
 		case Action.TYPE_NAME:
-			MyData.getInstance().nametable.put(usr_ID, ((NameAction)(this)).Name);
+			MyData.getInstance().nametable.put(usr_ID,
+					((NameAction) (this)).Name);
 			break;
 		default:
 			MyData.getInstance().actionList.add(this);
 		}
-		
+
 	}
 
 	public static Action base64ToAction(String base64String) {

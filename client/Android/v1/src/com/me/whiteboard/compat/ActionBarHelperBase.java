@@ -113,7 +113,6 @@ public class ActionBarHelperBase extends ActionBarHelper {
 		 * titleText2.setLayoutParams(springLayoutParams);
 		 * titleText2.setText("33333"); //actionBarCompat.addView(titleText);
 		 */
-		
 
 	}
 
@@ -201,8 +200,6 @@ public class ActionBarHelperBase extends ActionBarHelper {
 		 * }
 		 */
 	}
-
-	
 
 	private View addActionItemCompatFromMenuItem(final MenuItem item) {
 		final int itemId = item.getItemId();
@@ -346,8 +343,6 @@ public class ActionBarHelperBase extends ActionBarHelper {
 		}
 
 	}
-
-	
 
 	@Override
 	public boolean onPrepareOptionsMenu(Menu menu) {

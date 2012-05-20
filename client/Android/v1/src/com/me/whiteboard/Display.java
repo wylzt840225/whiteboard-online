@@ -8,8 +8,8 @@ public class Display {
 	private static float screen_pos_y;
 	private static float scaleFactor;
 	public static int previousPointCount = 0;
-	//private static float x_mean;
-	//private static float y_mean;
+	// private static float x_mean;
+	// private static float y_mean;
 	private static float sumOfLength;
 	private static float x_mean_absolute;
 	private static float y_mean_absolute;
@@ -20,7 +20,7 @@ public class Display {
 		scaleFactor = 1;
 		screen_pos_x = 0;
 		screen_pos_y = 0;
-		
+
 		if (((float) screen_width) / screen_height > 4.0 / 3.0) {
 			screen_width = screen_height * 4 / 3;
 		} else {
@@ -29,8 +29,8 @@ public class Display {
 	}
 
 	private static void reset(float x_mean, float y_mean, float sumOfLength) {
-		//Display.x_mean = x_mean;
-		//Display.y_mean = y_mean;
+		// Display.x_mean = x_mean;
+		// Display.y_mean = y_mean;
 		Display.x_mean_absolute = x_RelativeToAbsolute(x_mean);
 		Display.y_mean_absolute = y_RelativeToAbsolute(y_mean);
 		Display.sumOfLength = sumOfLength;
@@ -42,19 +42,19 @@ public class Display {
 			reset(x_mean, y_mean, sumOfLength);
 			return;
 		}
-		
-		//screen_pos_x += (Display.x_mean - x_mean) / scaleFactor;
-		//screen_pos_y += (Display.y_mean - y_mean) / scaleFactor;
+
+		// screen_pos_x += (Display.x_mean - x_mean) / scaleFactor;
+		// screen_pos_y += (Display.y_mean - y_mean) / scaleFactor;
 		scaleFactor *= sumOfLength / Display.sumOfLength;
 		screen_pos_x += x_mean_absolute - x_RelativeToAbsolute(x_mean);
 		screen_pos_y += y_mean_absolute - y_RelativeToAbsolute(y_mean);
-		
-		//Display.x_mean = x_mean;
-		//Display.y_mean = y_mean;
+
+		// Display.x_mean = x_mean;
+		// Display.y_mean = y_mean;
 		Display.x_mean_absolute = x_RelativeToAbsolute(x_mean);
 		Display.y_mean_absolute = y_RelativeToAbsolute(y_mean);
 		Display.sumOfLength = sumOfLength;
-		
+
 		if (scaleFactor < 1) {
 			scaleFactor = 1;
 		} else if (scaleFactor > 10) {

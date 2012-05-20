@@ -11,7 +11,6 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -146,16 +145,21 @@ public class MainActivity extends ActionBarActivity {
 
 		public void onDraw(Canvas canvas) {
 			super.onDraw(canvas);
-			// canvas.drawBitmap(bmp, 0, 0, null);
-			Rect srcRect = new Rect((int) Display.x_RelativeToAbsolute(0),
-					(int) Display.y_RelativeToAbsolute(0),
-					(int) Display.x_RelativeToAbsolute(Display.screen_width),
-					(int) Display.y_RelativeToAbsolute(Display.screen_height));
-			Rect dstRect = new Rect(0, 0, Display.screen_width,
-					Display.screen_height);
-			canvas.drawBitmap(bmp, srcRect, dstRect, null);
-			if (acting != null) {
-				acting.act(MainActivity.this, canvas);
+			if (Display.previousPointCount > 1) {
+				Rect srcRect = new Rect((int) Display.x_RelativeToAbsolute(0),
+						(int) Display.y_RelativeToAbsolute(0),
+						(int) Display
+								.x_RelativeToAbsolute(Display.screen_width),
+						(int) Display
+								.y_RelativeToAbsolute(Display.screen_height));
+				Rect dstRect = new Rect(0, 0, Display.screen_width,
+						Display.screen_height);
+				canvas.drawBitmap(bmp, srcRect, dstRect, null);
+			} else {
+				canvas.drawBitmap(bmp, 0, 0, null);
+				if (acting != null) {
+					acting.act(MainActivity.this, canvas);
+				}
 			}
 		}
 	}
@@ -322,6 +326,9 @@ public class MainActivity extends ActionBarActivity {
 					public boolean onTouch(View v, MotionEvent event) {
 						int pointCount = event.getPointerCount();
 						if (pointCount == 1) {
+							if (Display.previousPointCount > 1) {
+								reSize();
+							}
 							switch (event.getAction()) {
 							case MotionEvent.ACTION_UP:
 								if (acting != null) {
@@ -329,7 +336,6 @@ public class MainActivity extends ActionBarActivity {
 									acting = null;
 								}
 								break;
-
 							case MotionEvent.ACTION_DOWN:
 								acting = new PathAction(
 										MyData.getInstance().usr_ID, MyData
@@ -337,7 +343,6 @@ public class MainActivity extends ActionBarActivity {
 								((PathAction) acting).addPoint(event.getX(),
 										event.getY());
 								break;
-
 							case MotionEvent.ACTION_MOVE:
 								if (acting != null) {
 									((PathAction) acting).addPoint(
@@ -371,11 +376,12 @@ public class MainActivity extends ActionBarActivity {
 									sumOfLength);
 
 						}
-						
-						//for testing
-						Log.v("pre",
-								Integer.toString(Display.previousPointCount));
-						Log.v("now", Integer.toString(pointCount));
+
+						// for testing point count
+						// android.util.Log.v("pre",
+						// Integer.toString(Display.previousPointCount));
+						// android.util.Log.v("now",
+						// Integer.toString(pointCount));
 
 						Display.previousPointCount = pointCount;
 						dw.invalidate();
@@ -388,6 +394,13 @@ public class MainActivity extends ActionBarActivity {
 				dw.setBackgroundColor(Color.WHITE);
 			}
 		});
+	}
+
+	private void reSize() {
+		bmp = Bitmap.createBitmap(Display.screen_width, Display.screen_height,
+				Bitmap.Config.ARGB_8888);
+		canvas = new Canvas(bmp);
+		MyData.getInstance().actionList.actAll(MainActivity.this, canvas);
 	}
 
 	private void addAction() {
