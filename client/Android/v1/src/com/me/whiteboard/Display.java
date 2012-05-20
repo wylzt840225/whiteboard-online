@@ -2,7 +2,7 @@ package com.me.whiteboard;
 
 public class Display {
 
-	public final static float bmpScale = 2;
+	public final static float bmpScale = 3;
 	public static int screen_width;
 	public static int screen_height;
 	public static int bmp_width;
@@ -68,23 +68,23 @@ public class Display {
 
 		reset(x_mean, y_mean, sumOfLength);
 
-		if (scaleFactor < 1) {
-			scaleFactor = 1;
-		} else if (scaleFactor > 10) {
-			scaleFactor = 10;
-		}
-
-		if (screen_pos_x > screen_width - screen_width / scaleFactor) {
-			screen_pos_x = screen_width - screen_width / scaleFactor;
-		} else if (screen_pos_x < 0) {
-			screen_pos_x = 0;
-		}
-
-		if (screen_pos_y > screen_height - screen_height / scaleFactor) {
-			screen_pos_y = screen_height - screen_height / scaleFactor;
-		} else if (screen_pos_y < 0) {
-			screen_pos_y = 0;
-		}
+//		if (scaleFactor < 1) {
+//			scaleFactor = 1;
+//		} else if (scaleFactor > 10) {
+//			scaleFactor = 10;
+//		}
+//
+//		if (screen_pos_x > screen_width - screen_width / scaleFactor) {
+//			screen_pos_x = screen_width - screen_width / scaleFactor;
+//		} else if (screen_pos_x < 0) {
+//			screen_pos_x = 0;
+//		}
+//
+//		if (screen_pos_y > screen_height - screen_height / scaleFactor) {
+//			screen_pos_y = screen_height - screen_height / scaleFactor;
+//		} else if (screen_pos_y < 0) {
+//			screen_pos_y = 0;
+//		}
 
 	}
 
