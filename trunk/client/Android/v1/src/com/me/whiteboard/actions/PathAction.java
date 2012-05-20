@@ -36,21 +36,22 @@ public class PathAction extends Action {
 		path = new Path();
 	}
 
-	public void act(MainActivity acts, Canvas canvas) {
+	public void act(MainActivity activity, Canvas canvas) {
 		if (x_history.size() == 0 || x_history.size() != y_history.size()) {
 			return;
 		}
-		
+
 		Paint paint = new Paint(MainActivity.paint);
 		paint.setColor(color);
-		
-		if (usr_ID == MyData.getInstance().usr_ID) {
+
+		if (usr_ID == MyData.getInstance().usr_ID
+				&& local_ID == MyData.getInstance().local_ID) {
 			canvas.drawPath(path, paint);
 		} else {
 			Path path = new Path();
 			path.reset();
-			path.moveTo(Display.x_AbsoluteToRelative(x_history.get(0)), 
-						Display.y_AbsoluteToRelative(y_history.get(0)));
+			path.moveTo(Display.x_AbsoluteToRelative(x_history.get(0)),
+					Display.y_AbsoluteToRelative(y_history.get(0)));
 
 			float x1, y1, x2, y2;
 			x2 = Display.x_AbsoluteToRelative(x_history.get(0));
@@ -65,11 +66,12 @@ public class PathAction extends Action {
 			path.lineTo(x2, y2);
 			canvas.drawPath(path, paint);
 		}
-		acts.FlushCanvas();
+		activity.FlushCanvas();
 	}
 
 	public byte[] privateToBytes() {
-		ByteArrayBuffer baf = new ByteArrayBuffer(4 + x_history.size() + y_history.size());
+		ByteArrayBuffer baf = new ByteArrayBuffer(4 + x_history.size()
+				+ y_history.size());
 		byte[] bytes = intToBytes(color);
 		baf.append(bytes, 0, bytes.length);
 
@@ -89,7 +91,8 @@ public class PathAction extends Action {
 		for (int i = 4; i < bytes.length - 3; i += 4) {
 			x_history.add((float) (1.0 * bytesToShort(bytes[i], bytes[i + 1])
 					/ Short.MAX_VALUE * Display.screen_width));
-			y_history.add((float) (1.0 * bytesToShort(bytes[i + 2], bytes[i + 3])
+			y_history.add((float) (1.0
+					* bytesToShort(bytes[i + 2], bytes[i + 3])
 					/ Short.MAX_VALUE * Display.screen_height));
 		}
 	}
@@ -97,21 +100,23 @@ public class PathAction extends Action {
 	public void addPoint(float x_relative, float y_relative) {
 		float x_absolute = Display.x_RelativeToAbsolute(x_relative);
 		float y_absolute = Display.y_RelativeToAbsolute(y_relative);
-		
+
 		x_absolute = x_absolute < 0 ? 0 : x_absolute;
-		x_absolute = x_absolute > Display.screen_width ? Display.screen_width : x_absolute;
+		x_absolute = x_absolute > Display.screen_width ? Display.screen_width
+				: x_absolute;
 		y_absolute = y_absolute < 0 ? 0 : y_absolute;
-		y_absolute = y_absolute > Display.screen_height ? Display.screen_height : y_absolute;
-		
+		y_absolute = y_absolute > Display.screen_height ? Display.screen_height
+				: y_absolute;
+
 		if (x_history.isEmpty()) {
 			path.reset();
 			path.moveTo(x_relative, y_relative);
 		} else {
-			path.quadTo(PathAction.x_relative, PathAction.y_relative, 
-					(PathAction.x_relative+x_relative)/2, 
-					(PathAction.y_relative+y_relative)/2);
+			path.quadTo(PathAction.x_relative, PathAction.y_relative,
+					(PathAction.x_relative + x_relative) / 2,
+					(PathAction.y_relative + y_relative) / 2);
 		}
-		
+
 		x_history.add(x_absolute);
 		y_history.add(y_absolute);
 		PathAction.x_relative = x_relative;

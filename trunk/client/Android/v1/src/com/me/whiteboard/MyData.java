@@ -12,6 +12,7 @@ public class MyData {
 	String room;
 	public short usr_ID;
 	public short local_ID = 0;
+
 	public static MyData getInstance() {
 		if (instance == null)
 			instance = new MyData();

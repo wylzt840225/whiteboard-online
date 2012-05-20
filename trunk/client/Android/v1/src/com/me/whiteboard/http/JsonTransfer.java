@@ -33,13 +33,12 @@ public class JsonTransfer {
 		try {
 			HttpClient httpClient = new DefaultHttpClient();
 			HttpResponse httpResponse = httpClient.execute(request);
-			int p=httpResponse.getStatusLine().getStatusCode();
-			if(p!=200)
+			int p = httpResponse.getStatusLine().getStatusCode();
+			if (p != 200)
 				return "!error";
 			resultString = EntityUtils.toString(httpResponse.getEntity(),
 					"UTF-8");
-			
-		
+
 		} catch (IOException e) {
 			resultString = "!error";
 		}

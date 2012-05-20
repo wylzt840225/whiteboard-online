@@ -5,5 +5,7 @@ import android.view.MenuItem;
 
 public interface MenuAdapter {
 	public void showMenu(Menu menu);
-	public boolean onOptionsItemSelected(MenuItem item,final ActionBarActivity act);
+
+	public boolean onOptionsItemSelected(MenuItem item,
+			final ActionBarActivity act);
 }
