@@ -7,7 +7,7 @@ import android.view.animation.TranslateAnimation;
 
 public class Display {
 
-	public final static float bmpScale = 1;
+	public final static float bmpScale = 2;
 	public static int screen_width;
 	public static int screen_height;
 	public static int bmp_width;
