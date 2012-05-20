@@ -31,6 +31,8 @@ import com.me.whiteboard.actions.Action;
 import com.me.whiteboard.actions.MsgAction;
 import com.me.whiteboard.actions.PathAction;
 import com.me.whiteboard.compat.ActionBarActivity;
+import com.me.whiteboard.compat.ColorPickerDialog;
+import com.me.whiteboard.compat.ColorPickerDialog.OnColorChangedListener;
 import com.me.whiteboard.http.Client;
 import com.me.whiteboard.http.Client.GetData;
 import com.me.whiteboard.http.Client.onNewDataRecv;
@@ -244,7 +246,20 @@ public class MainActivity extends ActionBarActivity {
 		sender = new Sender();
 
 		setContentView(R.layout.canvas);
-
+		
+		
+		final MyListener listener=new MyListener();
+		Button bnSelectColor=(Button)findViewById(R.id.bnSelectColor);
+		bnSelectColor.setOnClickListener(new OnClickListener()
+		{
+			ColorPickerDialog colorPickerDialog=new ColorPickerDialog(MainActivity.this, listener, 1);
+			public void onClick(View v)
+			{
+				colorPickerDialog.show();
+			}
+		});
+		
+		
 		wm = (WindowManager) getApplicationContext().getSystemService("window");
 		// wmParams = new WindowManager.LayoutParams();
 		floatview = getLayoutInflater().inflate(R.layout.chat_dialog, null);
@@ -389,7 +404,6 @@ public class MainActivity extends ActionBarActivity {
 						return true;
 					}
 				});
-
 				// registerForContextMenu(dw);
 
 				dw.setBackgroundColor(Color.WHITE);
@@ -411,5 +425,15 @@ public class MainActivity extends ActionBarActivity {
 		MyData.getInstance().actionList.add(acting);
 		sender.add(acting);
 		sender.Flush();
+	}
+}
+
+class MyListener implements OnColorChangedListener
+{
+
+	public void colorChanged(int color)
+	{
+		// TODO Auto-generated method stub
+		return;
 	}
 }
