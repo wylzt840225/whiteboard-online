@@ -403,8 +403,8 @@ public class MainActivity extends ActionBarActivity {
 		bmp = Bitmap.createBitmap(Display.bmp_width, Display.bmp_height,
 				Bitmap.Config.ARGB_8888);
 		canvas = new Canvas(bmp);
-		MyData.getInstance().actionList.actAll(MainActivity.this, canvas);
 		Display.reSize();
+		MyData.getInstance().actionList.actAll(MainActivity.this, canvas);
 	}
 
 	private void addAction() {
