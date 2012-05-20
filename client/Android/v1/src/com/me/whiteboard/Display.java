@@ -7,6 +7,9 @@ public class Display {
 	private static float screen_pos_x;
 	private static float screen_pos_y;
 	private static float scaleFactor;
+	private static float screen_pos_x_Bmp;
+	private static float screen_pos_y_Bmp;
+	private static float scaleFactor_Bmp;
 	public static int previousPointCount = 0;
 	// private static float x_mean;
 	// private static float y_mean;
@@ -26,6 +29,8 @@ public class Display {
 		} else {
 			screen_height = screen_width * 3 / 4;
 		}
+
+		reSize();
 	}
 
 	private static void reset(float x_mean, float y_mean, float sumOfLength) {
@@ -72,6 +77,23 @@ public class Display {
 		} else if (screen_pos_y < 0) {
 			screen_pos_y = 0;
 		}
+
+	}
+
+	public static void reSize() {
+		screen_pos_x_Bmp = screen_pos_x;
+		screen_pos_y_Bmp = screen_pos_y;
+		scaleFactor_Bmp = scaleFactor;
+	}
+
+	public static float x_ScreenPosToBmpPos(float x_screenPos) {
+		return (x_RelativeToAbsolute(x_screenPos) - x_RelativeToAbsolute_Bmp(0))
+				* scaleFactor_Bmp;
+	}
+
+	public static float y_ScreenPosToBmpPos(float y_screenPos) {
+		return (y_RelativeToAbsolute(y_screenPos) - y_RelativeToAbsolute_Bmp(0))
+				* scaleFactor_Bmp;
 	}
 
 	public static float x_AbsoluteToRelative(float x_absolute) {
@@ -88,5 +110,21 @@ public class Display {
 
 	public static float y_RelativeToAbsolute(float y_relative) {
 		return screen_pos_y + y_relative / scaleFactor;
+	}
+
+	/*
+	 * private static float x_AbsoluteToRelative_Bmp(float x_absolute) { return
+	 * (x_absolute - screen_pos_x_Bmp) * scaleFactor_Bmp; }
+	 * 
+	 * private static float y_AbsoluteToRelative_Bmp(float y_absolute) { return
+	 * (y_absolute - screen_pos_y_Bmp) * scaleFactor_Bmp; }
+	 */
+
+	private static float x_RelativeToAbsolute_Bmp(float x_relative_Bmp) {
+		return screen_pos_x_Bmp + x_relative_Bmp / scaleFactor_Bmp;
+	}
+
+	private static float y_RelativeToAbsolute_Bmp(float y_relative_Bmp) {
+		return screen_pos_y_Bmp + y_relative_Bmp / scaleFactor_Bmp;
 	}
 }

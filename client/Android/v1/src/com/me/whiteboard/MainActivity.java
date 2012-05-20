@@ -146,12 +146,10 @@ public class MainActivity extends ActionBarActivity {
 		public void onDraw(Canvas canvas) {
 			super.onDraw(canvas);
 			if (Display.previousPointCount > 1) {
-				Rect srcRect = new Rect((int) Display.x_RelativeToAbsolute(0),
-						(int) Display.y_RelativeToAbsolute(0),
-						(int) Display
-								.x_RelativeToAbsolute(Display.screen_width),
-						(int) Display
-								.y_RelativeToAbsolute(Display.screen_height));
+				Rect srcRect = new Rect((int) Display.x_ScreenPosToBmpPos(0),
+						(int) Display.y_ScreenPosToBmpPos(0),
+						(int) Display.x_ScreenPosToBmpPos(Display.screen_width),
+						(int) Display.y_ScreenPosToBmpPos(Display.screen_height));
 				Rect dstRect = new Rect(0, 0, Display.screen_width,
 						Display.screen_height);
 				canvas.drawBitmap(bmp, srcRect, dstRect, null);
@@ -327,6 +325,7 @@ public class MainActivity extends ActionBarActivity {
 						int pointCount = event.getPointerCount();
 						if (pointCount == 1) {
 							if (Display.previousPointCount > 1) {
+								Display.previousPointCount = 1;
 								reSize();
 							}
 							switch (event.getAction()) {
@@ -401,6 +400,7 @@ public class MainActivity extends ActionBarActivity {
 				Bitmap.Config.ARGB_8888);
 		canvas = new Canvas(bmp);
 		MyData.getInstance().actionList.actAll(MainActivity.this, canvas);
+		Display.reSize();
 	}
 
 	private void addAction() {
