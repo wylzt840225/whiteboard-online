@@ -185,9 +185,15 @@ public class MainActivity extends ActionBarActivity {
 				startActivity(i);
 			}
 			return true;
+		case R.id.colorss:
+			final MyListener listener=new MyListener();
+			ColorPickerDialog colorPickerDialog=new ColorPickerDialog(MainActivity.this, listener, 1);
+			colorPickerDialog.show();
+			return true;
 		}
+		
 		return false;
-
+		
 	}
 
 	@Override
@@ -248,16 +254,7 @@ public class MainActivity extends ActionBarActivity {
 		setContentView(R.layout.canvas);
 		
 		
-		final MyListener listener=new MyListener();
-		Button bnSelectColor=(Button)findViewById(R.id.bnSelectColor);
-		bnSelectColor.setOnClickListener(new OnClickListener()
-		{
-			ColorPickerDialog colorPickerDialog=new ColorPickerDialog(MainActivity.this, listener, 1);
-			public void onClick(View v)
-			{
-				colorPickerDialog.show();
-			}
-		});
+		
 		
 		
 		wm = (WindowManager) getApplicationContext().getSystemService("window");
@@ -433,7 +430,6 @@ class MyListener implements OnColorChangedListener
 
 	public void colorChanged(int color)
 	{
-		// TODO Auto-generated method stub
-		return;
+		MainActivity.paint.setColor(color);
 	}
 }
