@@ -7,7 +7,7 @@ import android.view.animation.TranslateAnimation;
 
 public class Display {
 
-	public final static float bmpScale = 3;
+	public final static float bmpScale = 1;
 	public static int screen_width;
 	public static int screen_height;
 	public static int bmp_width;
@@ -71,6 +71,24 @@ public class Display {
 
 		// android.util.Log.v("scaleFactor", Float.toString(scaleFactor));
 
+		if (scaleFactor < 1) {
+			scaleFactor = 1;
+		} else if (scaleFactor > 10) {
+			scaleFactor = 10;
+		}
+
+		if (screen_pos_x > screen_width - screen_width / scaleFactor) {
+			screen_pos_x = screen_width - screen_width / scaleFactor;
+		} else if (screen_pos_x < 0) {
+			screen_pos_x = 0;
+		}
+
+		if (screen_pos_y > screen_height - screen_height / scaleFactor) {
+			screen_pos_y = screen_height - screen_height / scaleFactor;
+		} else if (screen_pos_y < 0) {
+			screen_pos_y = 0;
+		}
+
 		reset(x_mean, y_mean, sumOfLength);
 
 		// if (scaleFactor < 1) {
@@ -93,7 +111,7 @@ public class Display {
 
 	}
 
-	//test animation
+	// test animation
 	public static void animate(MainActivity activity) {
 		AnimationSet animationSet = new AnimationSet(true);
 
@@ -112,21 +130,23 @@ public class Display {
 
 		if (x_RelativeToAbsolute(screen_width) > screen_width) {
 			fromXValue = 0;
-			toXValue = (int) (1 - x_AbsoluteToRelative(screen_width)/screen_width);
+			toXValue = (int) (1 - x_AbsoluteToRelative(screen_width)
+					/ screen_width);
 			screen_pos_x = screen_width - screen_width / scaleFactor;
 		} else if (screen_pos_x < 0) {
 			fromXValue = 0;
-			toXValue = (int) (x_AbsoluteToRelative(0)/screen_width);
+			toXValue = (int) (x_AbsoluteToRelative(0) / screen_width);
 			screen_pos_x = 0;
 		}
 
 		if (y_RelativeToAbsolute(screen_height) > screen_height) {
 			fromYValue = 0;
-			toYValue = (int) (1 - y_AbsoluteToRelative(screen_height)/screen_height);
+			toYValue = (int) (1 - y_AbsoluteToRelative(screen_height)
+					/ screen_height);
 			screen_pos_y = screen_height - screen_height / scaleFactor;
 		} else if (screen_pos_y < 0) {
 			fromYValue = (int) screen_pos_y;
-			toYValue = (int) (y_AbsoluteToRelative(0)/screen_height);
+			toYValue = (int) (y_AbsoluteToRelative(0) / screen_height);
 			screen_pos_y = 0;
 		}
 
