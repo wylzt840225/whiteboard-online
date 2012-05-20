@@ -50,12 +50,6 @@ public class MainActivity extends ActionBarActivity {
 	static Sender sender;
 	GetData g;
 
-	static MainActivity instance;
-
-	static MainActivity getinstance() {
-		return instance;
-	}
-
 	protected void onPause() {
 		super.onPause();
 		if (g != null)
@@ -145,23 +139,23 @@ public class MainActivity extends ActionBarActivity {
 
 		public void onDraw(Canvas canvas) {
 			super.onDraw(canvas);
-//			if (Display.previousPointCount > 1) {
-//				// Rect srcRect = new Rect((int) Display.x_ScreenPosToBmpPos(0),
-//				// (int) Display.y_ScreenPosToBmpPos(0),
-//				// (int) Display.x_ScreenPosToBmpPos(Display.screen_width),
-//				// (int) Display.y_ScreenPosToBmpPos(Display.screen_height));
-//				// Rect dstRect = new Rect(0, 0, Display.screen_width,
-//				// Display.screen_height);
-//				// canvas.drawBitmap(bmp, srcRect, dstRect, null);
-//				Rect dstRect = new Rect((int) Display.x_BmpPosToScreenPos(0),
-//						(int) Display.y_BmpPosToScreenPos(0),
-//						(int) Display.x_BmpPosToScreenPos(Display.bmp_width),
-//						(int) Display.y_BmpPosToScreenPos(Display.bmp_height));
-//				canvas.drawBitmap(bmp, null, dstRect, null);
-//			} else {
-//				canvas.drawBitmap(bmp, (int) Display.x_BmpPosToScreenPos(0),
-//						Display.y_BmpPosToScreenPos(0), null);
-//			}
+			// if (Display.previousPointCount > 1) {
+			// // Rect srcRect = new Rect((int) Display.x_ScreenPosToBmpPos(0),
+			// // (int) Display.y_ScreenPosToBmpPos(0),
+			// // (int) Display.x_ScreenPosToBmpPos(Display.screen_width),
+			// // (int) Display.y_ScreenPosToBmpPos(Display.screen_height));
+			// // Rect dstRect = new Rect(0, 0, Display.screen_width,
+			// // Display.screen_height);
+			// // canvas.drawBitmap(bmp, srcRect, dstRect, null);
+			// Rect dstRect = new Rect((int) Display.x_BmpPosToScreenPos(0),
+			// (int) Display.y_BmpPosToScreenPos(0),
+			// (int) Display.x_BmpPosToScreenPos(Display.bmp_width),
+			// (int) Display.y_BmpPosToScreenPos(Display.bmp_height));
+			// canvas.drawBitmap(bmp, null, dstRect, null);
+			// } else {
+			// canvas.drawBitmap(bmp, (int) Display.x_BmpPosToScreenPos(0),
+			// Display.y_BmpPosToScreenPos(0), null);
+			// }
 			Rect dstRect = new Rect((int) Display.x_BmpPosToScreenPos(0),
 					(int) Display.y_BmpPosToScreenPos(0),
 					(int) Display.x_BmpPosToScreenPos(Display.bmp_width),
@@ -317,7 +311,6 @@ public class MainActivity extends ActionBarActivity {
 				lp.width = Display.screen_width;
 				lp.height = Display.screen_height;
 
-				// instance = MainActivity.this;
 				reSize();
 				dw = new DrawView(MainActivity.this);
 
@@ -334,6 +327,7 @@ public class MainActivity extends ActionBarActivity {
 						int pointCount = event.getPointerCount();
 						if (pointCount == 1) {
 							if (Display.previousPointCount > 1) {
+								//Display.animate(MainActivity.this);
 								reSize();
 							}
 							switch (event.getAction()) {
