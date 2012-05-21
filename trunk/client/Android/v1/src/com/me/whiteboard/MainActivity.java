@@ -70,6 +70,7 @@ public class MainActivity extends ActionBarActivity {
 							action = Action.base64ToAction(datas[i]);
 							if (action.usr_ID != MyData.getInstance().usr_ID) {
 								action.act(MainActivity.this, canvas);
+								FlushCanvas();
 							}
 							action.addMeToList();
 						}
@@ -177,12 +178,15 @@ public class MainActivity extends ActionBarActivity {
 			
 			if (acting != null) {
 				acting.act(MainActivity.this, canvas);
+				FlushCanvas();
 			}
 		}
 	}
 	
 	public void FlushCanvas() {
-		dw.postInvalidate();
+		if (dw != null) {
+			dw.postInvalidate();
+		}
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -332,8 +336,8 @@ public class MainActivity extends ActionBarActivity {
 				lp.width = Display.screen_width;
 				lp.height = Display.screen_height;
 
-				reSize();
 				dw = new DrawView(MainActivity.this);
+				reSize();
 
 				((ViewGroup) findViewById(R.id.draw)).addView(dw, lp);
 				paint = new Paint();
@@ -353,10 +357,11 @@ public class MainActivity extends ActionBarActivity {
 									public void run() {
 										Display.animate(MainActivity.this);
 										animate = false;
+										reSize();
 									}
 								}).start();
 								FlushCanvas();
-								reSize();
+								//reSize();
 							}
 							switch (event.getAction()) {
 							case MotionEvent.ACTION_UP:
@@ -430,6 +435,7 @@ public class MainActivity extends ActionBarActivity {
 		canvas = new Canvas(bmp);
 		Display.reSize();
 		MyData.getInstance().actionList.actAll(MainActivity.this, canvas);
+		FlushCanvas();
 	}
 
 	private void addAction() {
