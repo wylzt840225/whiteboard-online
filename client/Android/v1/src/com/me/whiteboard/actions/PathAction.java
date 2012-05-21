@@ -66,7 +66,7 @@ public class PathAction extends Action {
 			path.lineTo(x2, y2);
 			canvas.drawPath(path, paint);
 		}
-		activity.FlushCanvas();
+		//activity.FlushCanvas();
 	}
 
 	public byte[] privateToBytes() {

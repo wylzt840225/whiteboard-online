@@ -3,6 +3,11 @@ package com.me.whiteboard;
 public class Display {
 
 	public final static float bmpScale = 2;
+	private final static int frameLength = 10;
+	private final static int frameInteveral = 10;
+	private final static float MAX_SCALEFACTOR = 10;
+	private final static float MIN_SCALEFACTOR = 1;
+
 	public static int screen_width;
 	public static int screen_height;
 	public static int bmp_width;
@@ -88,69 +93,130 @@ public class Display {
 
 	}
 
-	// test animation
 	public static void animate(MainActivity activity) {
-		float x_mean = x_AbsoluteToRelative(x_mean_absolute);
-		float y_mean = y_AbsoluteToRelative(y_mean_absolute);
-		while (scaleFactor < 1) {
-			scaleFactor += 0.05;
-			screen_pos_x += x_mean_absolute - x_RelativeToAbsolute(x_mean);
-			screen_pos_y += y_mean_absolute - y_RelativeToAbsolute(y_mean);
-			Display.x_mean_absolute = x_RelativeToAbsolute(x_mean);
-			Display.y_mean_absolute = y_RelativeToAbsolute(y_mean);
-			
-			try {
-				Thread.sleep(10);
-			} catch (Exception e) {
-			}
-			
-			activity.FlushCanvas();
-		}
-		
-//		AnimationSet animationSet = new AnimationSet(true);
+		if (scaleFactor < MIN_SCALEFACTOR || scaleFactor > MAX_SCALEFACTOR
+				|| screen_pos_x < 0
+				|| screen_pos_x > screen_width - screen_width / scaleFactor
+				|| screen_pos_y < 0
+				|| screen_pos_y > screen_height - screen_height / scaleFactor) {
 
-//		if (scaleFactor < 1 || scaleFactor > 10) {
-//			ScaleAnimation animation = new ScaleAnimation(1, 10 / scaleFactor,
-//					1, 10 / scaleFactor, Animation.RELATIVE_TO_SELF,
-//					x_AbsoluteToRelative(x_mean_absolute) / screen_width,
-//					Animation.RELATIVE_TO_SELF,
-//					y_AbsoluteToRelative(y_mean_absolute) / screen_height);
-//			animation.setDuration(500);
-//			animationSet.addAnimation(animation);
-//			scaleFactor = scaleFactor < 1 ? 1 : 10;
-//		}
-//
-//		int fromXValue = 0, toXValue = 0, fromYValue = 0, toYValue = 0;
-//
-//		if (x_RelativeToAbsolute(screen_width) > screen_width) {
-//			fromXValue = 0;
-//			toXValue = (int) (1 - x_AbsoluteToRelative(screen_width)
-//					/ screen_width);
-//			screen_pos_x = screen_width - screen_width / scaleFactor;
-//		} else if (screen_pos_x < 0) {
-//			fromXValue = 0;
-//			toXValue = (int) (x_AbsoluteToRelative(0) / screen_width);
-//			screen_pos_x = 0;
-//		}
-//
-//		if (y_RelativeToAbsolute(screen_height) > screen_height) {
-//			fromYValue = 0;
-//			toYValue = (int) (1 - y_AbsoluteToRelative(screen_height)
-//					/ screen_height);
-//			screen_pos_y = screen_height - screen_height / scaleFactor;
-//		} else if (screen_pos_y < 0) {
-//			fromYValue = (int) screen_pos_y;
-//			toYValue = (int) (y_AbsoluteToRelative(0) / screen_height);
-//			screen_pos_y = 0;
-//		}
-//
-//		TranslateAnimation animation = new TranslateAnimation(
-//				Animation.RELATIVE_TO_SELF, fromXValue,
-//				Animation.RELATIVE_TO_SELF, toXValue,
-//				Animation.RELATIVE_TO_SELF, fromYValue,
-//				Animation.RELATIVE_TO_SELF, toYValue);
-//		animation.setDuration(500);
-//		animationSet.addAnimation(animation);
+			float x_mean = x_AbsoluteToRelative(x_mean_absolute);
+			float y_mean = y_AbsoluteToRelative(y_mean_absolute);
+			float scaleFactorAnimation[] = new float[frameLength];
+			float screen_pos_x_animation[] = new float[frameLength];
+			float screen_pos_y_animation[] = new float[frameLength];
+
+			if (scaleFactor < MIN_SCALEFACTOR) {
+				for (int i = 0; i < frameLength; i++) {
+					scaleFactorAnimation[i] = scaleFactor
+							+ (MIN_SCALEFACTOR - scaleFactor)
+							/ (frameLength - 1) * i;
+				}
+			} else if (scaleFactor > MAX_SCALEFACTOR) {
+				for (int i = 0; i < frameLength; i++) {
+					scaleFactorAnimation[i] = scaleFactor
+							- (scaleFactor - MAX_SCALEFACTOR)
+							/ (frameLength - 1) * i;
+				}
+			} else {
+				for (int i = 0; i < frameLength; i++) {
+					scaleFactorAnimation[i] = scaleFactor;
+				}
+			}
+
+			for (int i = 0; i < frameLength; i++) {
+				scaleFactor = scaleFactorAnimation[i];
+				screen_pos_x += x_mean_absolute - x_RelativeToAbsolute(x_mean);
+				screen_pos_y += y_mean_absolute - y_RelativeToAbsolute(y_mean);
+				screen_pos_x_animation[i] = screen_pos_x;
+				screen_pos_y_animation[i] = screen_pos_y;
+				x_mean_absolute = x_RelativeToAbsolute(x_mean);
+				y_mean_absolute = y_RelativeToAbsolute(y_mean);
+			}
+
+			if (screen_pos_x < 0) {
+				for (int i = 0; i < frameLength; i++) {
+					screen_pos_x_animation[i] -= screen_pos_x
+							/ (frameLength - 1) * i;
+				}
+			} else if (screen_pos_x > screen_width - screen_width / scaleFactor) {
+				for (int i = 0; i < frameLength; i++) {
+					screen_pos_x_animation[i] -= (screen_pos_x - screen_width + screen_width
+							/ scaleFactor)
+							/ (frameLength - 1) * i;
+				}
+			}
+
+			if (screen_pos_y < 0) {
+				for (int i = 0; i < frameLength; i++) {
+					screen_pos_y_animation[i] -= screen_pos_y
+							/ (frameLength - 1) * i;
+				}
+			} else if (screen_pos_y > screen_height - screen_height
+					/ scaleFactor) {
+				for (int i = 0; i < frameLength; i++) {
+					screen_pos_y_animation[i] -= (screen_pos_y - screen_height + screen_height
+							/ scaleFactor)
+							/ (frameLength - 1) * i;
+				}
+			}
+
+			for (int i = 0; i < frameLength; i++) {
+				scaleFactor = scaleFactorAnimation[i];
+				screen_pos_x = screen_pos_x_animation[i];
+				screen_pos_y = screen_pos_y_animation[i];
+				activity.FlushCanvas();
+				try {
+					Thread.sleep(frameInteveral);
+				} catch (Exception e) {
+				}
+			}
+		}
+
+		// AnimationSet animationSet = new AnimationSet(true);
+
+		// if (scaleFactor < 1 || scaleFactor > 10) {
+		// ScaleAnimation animation = new ScaleAnimation(1, 10 / scaleFactor,
+		// 1, 10 / scaleFactor, Animation.RELATIVE_TO_SELF,
+		// x_AbsoluteToRelative(x_mean_absolute) / screen_width,
+		// Animation.RELATIVE_TO_SELF,
+		// y_AbsoluteToRelative(y_mean_absolute) / screen_height);
+		// animation.setDuration(500);
+		// animationSet.addAnimation(animation);
+		// scaleFactor = scaleFactor < 1 ? 1 : 10;
+		// }
+		//
+		// int fromXValue = 0, toXValue = 0, fromYValue = 0, toYValue = 0;
+		//
+		// if (x_RelativeToAbsolute(screen_width) > screen_width) {
+		// fromXValue = 0;
+		// toXValue = (int) (1 - x_AbsoluteToRelative(screen_width)
+		// / screen_width);
+		// screen_pos_x = screen_width - screen_width / scaleFactor;
+		// } else if (screen_pos_x < 0) {
+		// fromXValue = 0;
+		// toXValue = (int) (x_AbsoluteToRelative(0) / screen_width);
+		// screen_pos_x = 0;
+		// }
+		//
+		// if (y_RelativeToAbsolute(screen_height) > screen_height) {
+		// fromYValue = 0;
+		// toYValue = (int) (1 - y_AbsoluteToRelative(screen_height)
+		// / screen_height);
+		// screen_pos_y = screen_height - screen_height / scaleFactor;
+		// } else if (screen_pos_y < 0) {
+		// fromYValue = (int) screen_pos_y;
+		// toYValue = (int) (y_AbsoluteToRelative(0) / screen_height);
+		// screen_pos_y = 0;
+		// }
+		//
+		// TranslateAnimation animation = new TranslateAnimation(
+		// Animation.RELATIVE_TO_SELF, fromXValue,
+		// Animation.RELATIVE_TO_SELF, toXValue,
+		// Animation.RELATIVE_TO_SELF, fromYValue,
+		// Animation.RELATIVE_TO_SELF, toYValue);
+		// animation.setDuration(500);
+		// animationSet.addAnimation(animation);
 	}
 
 	public static void reSize() {
