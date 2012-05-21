@@ -2,7 +2,7 @@ package com.me.whiteboard;
 
 public class Display {
 
-	public final static float bmpScale = 2;
+	private final static float bmpScale = 2;
 	private final static int frameLength = 10;
 	private final static int frameInteveral = 10;
 	private final static float MAX_SCALEFACTOR = 15;
