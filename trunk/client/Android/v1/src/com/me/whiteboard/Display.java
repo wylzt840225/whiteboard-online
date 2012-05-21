@@ -7,6 +7,11 @@ public class Display {
 	private final static int frameInteveral = 10;
 	private final static float MAX_SCALEFACTOR = 10;
 	private final static float MIN_SCALEFACTOR = 1;
+	private final static float alpha = 10;
+	private final static float beta = 1;
+	private final static float gamma = (float) 0.8;
+	private final static float MAX_SCALEFACTOR_REAL = (float) 14.3928;
+	private final static float MIN_SCALEFACTOR_REAL = 1;
 
 	public static int screen_width;
 	public static int screen_height;
@@ -14,6 +19,7 @@ public class Display {
 	public static int bmp_height;
 	private static float screen_pos_x;
 	private static float screen_pos_y;
+	private static float scaleFactor_real;
 	private static float scaleFactor;
 	private static float screen_pos_x_Bmp;
 	private static float screen_pos_y_Bmp;
@@ -30,7 +36,8 @@ public class Display {
 	public Display(int width, int height) {
 		screen_width = width;
 		screen_height = height;
-		scaleFactor = 1;
+		scaleFactor_real = 1;
+		scaleFactor = scaleFactorRealToDisplay(scaleFactor_real);
 		screen_pos_x = 0;
 		screen_pos_y = 0;
 
@@ -55,6 +62,10 @@ public class Display {
 		// Display.y_mean_bmpPos = y_ScreenPosToBmpPos(y_mean);
 		Display.sumOfLength = sumOfLength;
 	}
+	
+	private static float scaleFactorRealToDisplay(float x) {
+		return (float) (alpha * Math.atan((x-beta)/alpha)+beta+gamma*(Math.exp(-x)-Math.exp(-1)));
+	}
 
 	public static void update(int pointCount, float x_mean, float y_mean,
 			float sumOfLength) {
@@ -65,32 +76,15 @@ public class Display {
 
 		// screen_pos_x += (Display.x_mean - x_mean) / scaleFactor;
 		// screen_pos_y += (Display.y_mean - y_mean) / scaleFactor;
-		scaleFactor *= sumOfLength / Display.sumOfLength;
+		
+		scaleFactor_real *= sumOfLength / Display.sumOfLength;
+		scaleFactor = scaleFactorRealToDisplay(scaleFactor_real);
 		screen_pos_x += x_mean_absolute - x_RelativeToAbsolute(x_mean);
 		screen_pos_y += y_mean_absolute - y_RelativeToAbsolute(y_mean);
 
 		// android.util.Log.v("scaleFactor", Float.toString(scaleFactor));
 
 		reset(x_mean, y_mean, sumOfLength);
-
-		// if (scaleFactor < 1) {
-		// scaleFactor = 1;
-		// } else if (scaleFactor > 10) {
-		// scaleFactor = 10;
-		// }
-		//
-		// if (screen_pos_x > screen_width - screen_width / scaleFactor) {
-		// screen_pos_x = screen_width - screen_width / scaleFactor;
-		// } else if (screen_pos_x < 0) {
-		// screen_pos_x = 0;
-		// }
-		//
-		// if (screen_pos_y > screen_height - screen_height / scaleFactor) {
-		// screen_pos_y = screen_height - screen_height / scaleFactor;
-		// } else if (screen_pos_y < 0) {
-		// screen_pos_y = 0;
-		// }
-
 	}
 
 	public static void animate(MainActivity activity) {
@@ -107,12 +101,14 @@ public class Display {
 			float screen_pos_y_animation[] = new float[frameLength];
 
 			if (scaleFactor < MIN_SCALEFACTOR) {
+				scaleFactor_real = MIN_SCALEFACTOR_REAL;
 				for (int i = 0; i < frameLength; i++) {
 					scaleFactorAnimation[i] = scaleFactor
 							+ (MIN_SCALEFACTOR - scaleFactor)
 							/ (frameLength - 1) * i;
 				}
 			} else if (scaleFactor > MAX_SCALEFACTOR) {
+				scaleFactor_real = MAX_SCALEFACTOR_REAL;
 				for (int i = 0; i < frameLength; i++) {
 					scaleFactorAnimation[i] = scaleFactor
 							- (scaleFactor - MAX_SCALEFACTOR)
@@ -172,51 +168,6 @@ public class Display {
 				}
 			}
 		}
-
-		// AnimationSet animationSet = new AnimationSet(true);
-
-		// if (scaleFactor < 1 || scaleFactor > 10) {
-		// ScaleAnimation animation = new ScaleAnimation(1, 10 / scaleFactor,
-		// 1, 10 / scaleFactor, Animation.RELATIVE_TO_SELF,
-		// x_AbsoluteToRelative(x_mean_absolute) / screen_width,
-		// Animation.RELATIVE_TO_SELF,
-		// y_AbsoluteToRelative(y_mean_absolute) / screen_height);
-		// animation.setDuration(500);
-		// animationSet.addAnimation(animation);
-		// scaleFactor = scaleFactor < 1 ? 1 : 10;
-		// }
-		//
-		// int fromXValue = 0, toXValue = 0, fromYValue = 0, toYValue = 0;
-		//
-		// if (x_RelativeToAbsolute(screen_width) > screen_width) {
-		// fromXValue = 0;
-		// toXValue = (int) (1 - x_AbsoluteToRelative(screen_width)
-		// / screen_width);
-		// screen_pos_x = screen_width - screen_width / scaleFactor;
-		// } else if (screen_pos_x < 0) {
-		// fromXValue = 0;
-		// toXValue = (int) (x_AbsoluteToRelative(0) / screen_width);
-		// screen_pos_x = 0;
-		// }
-		//
-		// if (y_RelativeToAbsolute(screen_height) > screen_height) {
-		// fromYValue = 0;
-		// toYValue = (int) (1 - y_AbsoluteToRelative(screen_height)
-		// / screen_height);
-		// screen_pos_y = screen_height - screen_height / scaleFactor;
-		// } else if (screen_pos_y < 0) {
-		// fromYValue = (int) screen_pos_y;
-		// toYValue = (int) (y_AbsoluteToRelative(0) / screen_height);
-		// screen_pos_y = 0;
-		// }
-		//
-		// TranslateAnimation animation = new TranslateAnimation(
-		// Animation.RELATIVE_TO_SELF, fromXValue,
-		// Animation.RELATIVE_TO_SELF, toXValue,
-		// Animation.RELATIVE_TO_SELF, fromYValue,
-		// Animation.RELATIVE_TO_SELF, toYValue);
-		// animation.setDuration(500);
-		// animationSet.addAnimation(animation);
 	}
 
 	public static void reSize() {
