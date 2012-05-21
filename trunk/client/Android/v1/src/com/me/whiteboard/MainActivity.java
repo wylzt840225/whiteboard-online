@@ -51,6 +51,7 @@ public class MainActivity extends ActionBarActivity {
 	View floatview;
 	static Sender sender;
 	GetData g;
+	boolean animate;
 
 	protected void onPause() {
 		super.onPause();
@@ -134,9 +135,9 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	class DrawView extends View {
+		
 		public DrawView(Context context) {
 			super(context);
-
 		}
 
 		public void onDraw(Canvas canvas) {
@@ -158,15 +159,30 @@ public class MainActivity extends ActionBarActivity {
 			// canvas.drawBitmap(bmp, (int) Display.x_BmpPosToScreenPos(0),
 			// Display.y_BmpPosToScreenPos(0), null);
 			// }
+			
+//			if (animate) {
+//				new Thread(new Runnable() {
+//					public void run() {
+//						animate = false;
+//						Display.animate(MainActivity.this);
+//					}
+//				}).start();
+//			}
+			
 			Rect dstRect = new Rect((int) Display.x_BmpPosToScreenPos(0),
 					(int) Display.y_BmpPosToScreenPos(0),
 					(int) Display.x_BmpPosToScreenPos(Display.bmp_width),
 					(int) Display.y_BmpPosToScreenPos(Display.bmp_height));
 			canvas.drawBitmap(bmp, null, dstRect, null);
+			
 			if (acting != null) {
 				acting.act(MainActivity.this, canvas);
 			}
 		}
+	}
+	
+	public void FlushCanvas() {
+		dw.postInvalidate();
 	}
 
 	public boolean onOptionsItemSelected(MenuItem item) {
@@ -201,10 +217,6 @@ public class MainActivity extends ActionBarActivity {
 		MenuInflater menuInflater = getMenuInflater();
 		menuInflater.inflate(R.menu.main, menu);
 		return super.onCreateOptionsMenu(menu);
-	}
-
-	public void FlushCanvas() {
-		dw.invalidate();
 	}
 
 	private void updateViewPosition(float x, float y) {
@@ -253,9 +265,7 @@ public class MainActivity extends ActionBarActivity {
 
 		setContentView(R.layout.canvas);
 		
-		
-		
-		
+		animate = false;
 		
 		wm = (WindowManager) getApplicationContext().getSystemService("window");
 		// wmParams = new WindowManager.LayoutParams();
@@ -288,10 +298,9 @@ public class MainActivity extends ActionBarActivity {
 						}
 						return true;
 					}
-
 				});
+		
 		send.setOnClickListener(new OnClickListener() {
-
 			public void onClick(View v) {
 				MsgAction msg = new MsgAction();
 				msg.usr_ID = MyData.getInstance().usr_ID;
@@ -305,6 +314,7 @@ public class MainActivity extends ActionBarActivity {
 			}
 
 		});
+		
 		floatview.findViewById(R.id.close).setOnClickListener(
 				new OnClickListener() {
 
@@ -314,7 +324,6 @@ public class MainActivity extends ActionBarActivity {
 				});
 
 		findViewById(R.id.draw).post(new Runnable() {
-
 			public void run() {
 				new Display(findViewById(R.id.draw).getWidth(), findViewById(
 						R.id.draw).getHeight());
@@ -339,7 +348,14 @@ public class MainActivity extends ActionBarActivity {
 						int pointCount = event.getPointerCount();
 						if (pointCount == 1) {
 							if (Display.previousPointCount > 1) {
-								//Display.animate(MainActivity.this);
+								animate = true;
+								new Thread(new Runnable() {
+									public void run() {
+										Display.animate(MainActivity.this);
+										animate = false;
+									}
+								}).start();
+								FlushCanvas();
 								reSize();
 							}
 							switch (event.getAction()) {
@@ -390,14 +406,14 @@ public class MainActivity extends ActionBarActivity {
 
 						}
 
-						// for testing point count
-						// android.util.Log.v("pre",
-						// Integer.toString(Display.previousPointCount));
-						// android.util.Log.v("now",
-						// Integer.toString(pointCount));
+						 ////for testing point count
+//						 android.util.Log.v("pre",
+//						 Integer.toString(Display.previousPointCount));
+//						 android.util.Log.v("now",
+//						 Integer.toString(pointCount));
 
 						Display.previousPointCount = pointCount;
-						dw.invalidate();
+						FlushCanvas();
 						return true;
 					}
 				});
