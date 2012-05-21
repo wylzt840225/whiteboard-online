@@ -17,6 +17,7 @@ import com.me.whiteboard.MyData;
 
 public class PathAction extends Action {
 	public int color;
+	public float strokeWidth;
 	public ArrayList<Float> x_history;
 	public ArrayList<Float> y_history;
 
@@ -33,6 +34,7 @@ public class PathAction extends Action {
 		x_history = new ArrayList<Float>();
 		y_history = new ArrayList<Float>();
 		color = paint.getColor();
+		strokeWidth = paint.getStrokeWidth();
 		path = new Path();
 	}
 
@@ -43,6 +45,7 @@ public class PathAction extends Action {
 
 		Paint paint = new Paint(MainActivity.paint);
 		paint.setColor(color);
+		paint.setStrokeWidth(Display.width_AbsoluteToRelative(strokeWidth));
 
 		if (usr_ID == MyData.getInstance().usr_ID
 				&& local_ID == MyData.getInstance().local_ID) {
@@ -70,9 +73,12 @@ public class PathAction extends Action {
 	}
 
 	public byte[] privateToBytes() {
-		ByteArrayBuffer baf = new ByteArrayBuffer(4 + x_history.size()
+		ByteArrayBuffer baf = new ByteArrayBuffer(6 + x_history.size()
 				+ y_history.size());
 		byte[] bytes = intToBytes(color);
+		baf.append(bytes, 0, bytes.length);
+		
+		bytes = shortToBytes((short) (strokeWidth / Display.screen_width * Short.MAX_VALUE));
 		baf.append(bytes, 0, bytes.length);
 
 		for (int i = 0; i < x_history.size(); i++) {
@@ -88,7 +94,8 @@ public class PathAction extends Action {
 
 	protected void bytesToPrivate(byte[] bytes) {
 		color = bytesToInt(bytes[0], bytes[1], bytes[2], bytes[3]);
-		for (int i = 4; i < bytes.length - 3; i += 4) {
+		strokeWidth = (float) bytesToShort(bytes[4], bytes[5]) / Short.MAX_VALUE * Display.screen_width;
+		for (int i = 6; i < bytes.length - 3; i += 4) {
 			x_history.add((float) (1.0 * bytesToShort(bytes[i], bytes[i + 1])
 					/ Short.MAX_VALUE * Display.screen_width));
 			y_history.add((float) (1.0

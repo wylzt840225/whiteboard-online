@@ -226,6 +226,10 @@ public class Display {
 				/ scaleFactor;
 		scaleFactor_Bmp = scaleFactor;
 	}
+	
+	public static float width_AbsoluteToRelative(float width_absolute) {
+		return width_absolute * scaleFactor;
+	}
 
 	public static float x_ScreenPosToBmpPos(float x_screenPos) {
 		return (x_RelativeToAbsolute(x_screenPos) - x_BmpPosToAbsolute(0))
