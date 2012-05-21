@@ -5,9 +5,9 @@ public class Display {
 	public final static float bmpScale = 2;
 	private final static int frameLength = 10;
 	private final static int frameInteveral = 10;
-	private final static float MAX_SCALEFACTOR = 10;
+	private final static float MAX_SCALEFACTOR = 15;
 	private final static float MIN_SCALEFACTOR = 1;
-	private final static float alpha = 10;
+	private final static float alpha = 15;
 	private final static float beta = 1;
 	private final static float gamma = (float) 0.8;
 	private final static float MAX_SCALEFACTOR_REAL = (float) 14.3928;

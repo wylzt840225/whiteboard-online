@@ -136,53 +136,57 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	class DrawView extends View {
-		
+
 		public DrawView(Context context) {
 			super(context);
 		}
 
 		public void onDraw(Canvas canvas) {
 			super.onDraw(canvas);
-			// if (Display.previousPointCount > 1) {
-			// // Rect srcRect = new Rect((int) Display.x_ScreenPosToBmpPos(0),
-			// // (int) Display.y_ScreenPosToBmpPos(0),
-			// // (int) Display.x_ScreenPosToBmpPos(Display.screen_width),
-			// // (int) Display.y_ScreenPosToBmpPos(Display.screen_height));
-			// // Rect dstRect = new Rect(0, 0, Display.screen_width,
-			// // Display.screen_height);
-			// // canvas.drawBitmap(bmp, srcRect, dstRect, null);
-			// Rect dstRect = new Rect((int) Display.x_BmpPosToScreenPos(0),
-			// (int) Display.y_BmpPosToScreenPos(0),
-			// (int) Display.x_BmpPosToScreenPos(Display.bmp_width),
-			// (int) Display.y_BmpPosToScreenPos(Display.bmp_height));
-			// canvas.drawBitmap(bmp, null, dstRect, null);
-			// } else {
-			// canvas.drawBitmap(bmp, (int) Display.x_BmpPosToScreenPos(0),
-			// Display.y_BmpPosToScreenPos(0), null);
-			// }
-			
-//			if (animate) {
-//				new Thread(new Runnable() {
-//					public void run() {
-//						animate = false;
-//						Display.animate(MainActivity.this);
-//					}
-//				}).start();
+			canvas.drawColor(Color.DKGRAY);
+
+//			int srcLeft = (int) Display.x_ScreenPosToBmpPos(0), 
+//				dstLeft = 0, 
+//				srcTop = (int) Display.y_ScreenPosToBmpPos(0), 
+//				dstTop = 0, 
+//				srcRight = (int) Display.x_ScreenPosToBmpPos(Display.screen_width), 
+//				dstRight = (int) Display.screen_width, 
+//				srcBottom = (int) Display.y_ScreenPosToBmpPos(Display.screen_height), 
+//				dstBottom = (int) Display.screen_height;
+//			if (Display.x_RelativeToAbsolute(0) < 0) {
+//				srcLeft = (int) Display.x_AbsoluteToBmpPos(0);
+//				dstLeft = (int) Display.x_AbsoluteToRelative(0);
 //			}
+//			if (Display.y_RelativeToAbsolute(0) < 0) {
+//				srcTop = (int) Display.y_AbsoluteToBmpPos(0);
+//				dstTop = (int) Display.y_AbsoluteToRelative(0);
+//			}
+//			if (Display.x_RelativeToAbsolute(Display.screen_width) > Display.screen_width) {
+//				srcRight = (int) Display.x_AbsoluteToBmpPos(Display.screen_width);
+//				dstRight = (int) Display.x_AbsoluteToRelative(Display.screen_width);
+//			}
+//			if (Display.y_RelativeToAbsolute(Display.screen_height) > Display.screen_height) {
+//				srcBottom = (int) Display.y_AbsoluteToBmpPos(Display.screen_height);
+//				dstBottom = (int) Display.y_AbsoluteToRelative(Display.screen_height);
+//			}
+//			
+//			Rect srcRect = new Rect(srcLeft, srcTop, srcRight, srcBottom), 
+//				 dstRect = new Rect(dstLeft, dstTop, dstRight, dstBottom);
+//			canvas.drawBitmap(bmp, srcRect, dstRect, null);
 			
-			Rect dstRect = new Rect((int) Display.x_BmpPosToScreenPos(0),
-					(int) Display.y_BmpPosToScreenPos(0),
-					(int) Display.x_BmpPosToScreenPos(Display.bmp_width),
-					(int) Display.y_BmpPosToScreenPos(Display.bmp_height));
+			 Rect dstRect = new Rect((int) Display.x_BmpPosToScreenPos(0),
+			 (int) Display.y_BmpPosToScreenPos(0),
+			 (int) Display.x_BmpPosToScreenPos(Display.bmp_width),
+			 (int) Display.y_BmpPosToScreenPos(Display.bmp_height));
 			canvas.drawBitmap(bmp, null, dstRect, null);
-			
+
 			if (acting != null) {
 				acting.act(MainActivity.this, canvas);
 				FlushCanvas();
 			}
 		}
 	}
-	
+
 	public void FlushCanvas() {
 		if (dw != null) {
 			dw.postInvalidate();
@@ -206,14 +210,15 @@ public class MainActivity extends ActionBarActivity {
 			}
 			return true;
 		case R.id.colorss:
-			final MyListener listener=new MyListener();
-			ColorPickerDialog colorPickerDialog=new ColorPickerDialog(MainActivity.this, listener, 1);
+			final MyListener listener = new MyListener();
+			ColorPickerDialog colorPickerDialog = new ColorPickerDialog(
+					MainActivity.this, listener, 1);
 			colorPickerDialog.show();
 			return true;
 		}
-		
+
 		return false;
-		
+
 	}
 
 	@Override
@@ -268,9 +273,9 @@ public class MainActivity extends ActionBarActivity {
 		sender = new Sender();
 
 		setContentView(R.layout.canvas);
-		
+
 		animate = false;
-		
+
 		wm = (WindowManager) getApplicationContext().getSystemService("window");
 		// wmParams = new WindowManager.LayoutParams();
 		floatview = getLayoutInflater().inflate(R.layout.chat_dialog, null);
@@ -303,7 +308,7 @@ public class MainActivity extends ActionBarActivity {
 						return true;
 					}
 				});
-		
+
 		send.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
 				MsgAction msg = new MsgAction();
@@ -318,7 +323,7 @@ public class MainActivity extends ActionBarActivity {
 			}
 
 		});
-		
+
 		floatview.findViewById(R.id.close).setOnClickListener(
 				new OnClickListener() {
 
@@ -361,7 +366,7 @@ public class MainActivity extends ActionBarActivity {
 									}
 								}).start();
 								FlushCanvas();
-								//reSize();
+								// reSize();
 							}
 							switch (event.getAction()) {
 							case MotionEvent.ACTION_UP:
@@ -411,11 +416,11 @@ public class MainActivity extends ActionBarActivity {
 
 						}
 
-						 ////for testing point count
-//						 android.util.Log.v("pre",
-//						 Integer.toString(Display.previousPointCount));
-//						 android.util.Log.v("now",
-//						 Integer.toString(pointCount));
+						// //for testing point count
+						// android.util.Log.v("pre",
+						// Integer.toString(Display.previousPointCount));
+						// android.util.Log.v("now",
+						// Integer.toString(pointCount));
 
 						Display.previousPointCount = pointCount;
 						FlushCanvas();
@@ -424,7 +429,7 @@ public class MainActivity extends ActionBarActivity {
 				});
 				// registerForContextMenu(dw);
 
-				dw.setBackgroundColor(Color.WHITE);
+				// dw.setBackgroundColor(Color.WHITE);
 			}
 		});
 	}
@@ -433,6 +438,7 @@ public class MainActivity extends ActionBarActivity {
 		bmp = Bitmap.createBitmap(Display.bmp_width, Display.bmp_height,
 				Bitmap.Config.ARGB_8888);
 		canvas = new Canvas(bmp);
+		canvas.drawColor(Color.WHITE);
 		Display.reSize();
 		MyData.getInstance().actionList.actAll(MainActivity.this, canvas);
 		FlushCanvas();
@@ -447,11 +453,9 @@ public class MainActivity extends ActionBarActivity {
 	}
 }
 
-class MyListener implements OnColorChangedListener
-{
+class MyListener implements OnColorChangedListener {
 
-	public void colorChanged(int color)
-	{
+	public void colorChanged(int color) {
 		MainActivity.paint.setColor(color);
 	}
 }
