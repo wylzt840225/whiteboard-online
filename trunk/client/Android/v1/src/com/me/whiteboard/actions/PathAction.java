@@ -42,6 +42,10 @@ public class PathAction extends Action {
 		if (x_history.size() == 0 || x_history.size() != y_history.size()) {
 			return;
 		}
+		
+		if (time < Display.minDisplayTime) {
+			return;
+		}
 
 		Paint paint = new Paint(MainActivity.paint);
 		paint.setColor(color);

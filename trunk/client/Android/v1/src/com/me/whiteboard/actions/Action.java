@@ -16,6 +16,8 @@ public abstract class Action {
 	public static final short TYPE_NAME = 0;
 	public static final short TYPE_PATH = 1;
 	public static final short TYPE_MSG = 2;
+	public static final short TYPE_CLEAR = 3;
+	
 	public short type;
 	public short usr_ID;
 	public short local_ID;
@@ -91,6 +93,9 @@ public abstract class Action {
 			break;
 		case TYPE_NAME:
 			action = new NameAction();
+			break;
+		case TYPE_CLEAR:
+			action = new ClearAction();
 			break;
 		}
 		if (action != null) {

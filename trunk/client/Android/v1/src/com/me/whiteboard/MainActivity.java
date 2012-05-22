@@ -342,7 +342,7 @@ public class MainActivity extends ActionBarActivity {
 				lp.height = Display.screen_height;
 
 				dw = new DrawView(MainActivity.this);
-				reSize();
+				rePaint();
 
 				((ViewGroup) findViewById(R.id.draw)).addView(dw, lp);
 				paint = new Paint();
@@ -362,7 +362,7 @@ public class MainActivity extends ActionBarActivity {
 									public void run() {
 										Display.animate(MainActivity.this);
 										animate = false;
-										reSize();
+										rePaint();
 									}
 								}).start();
 								FlushCanvas();
@@ -434,7 +434,7 @@ public class MainActivity extends ActionBarActivity {
 		});
 	}
 
-	private void reSize() {
+	public void rePaint() {
 		bmp = Bitmap.createBitmap(Display.bmp_width, Display.bmp_height,
 				Bitmap.Config.ARGB_8888);
 		canvas = new Canvas(bmp);

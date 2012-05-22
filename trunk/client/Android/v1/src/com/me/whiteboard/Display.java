@@ -17,6 +17,9 @@ public class Display {
 	public static int screen_height;
 	public static int bmp_width;
 	public static int bmp_height;
+	public static int previousPointCount = 0;
+	public static long minDisplayTime;
+	
 	private static float screen_pos_x;
 	private static float screen_pos_y;
 	private static float scaleFactor_real;
@@ -24,7 +27,6 @@ public class Display {
 	private static float screen_pos_x_Bmp;
 	private static float screen_pos_y_Bmp;
 	private static float scaleFactor_Bmp;
-	public static int previousPointCount = 0;
 	// private static float x_mean;
 	// private static float y_mean;
 	private static float sumOfLength;
@@ -40,6 +42,7 @@ public class Display {
 		scaleFactor = scaleFactorRealToDisplay(scaleFactor_real);
 		screen_pos_x = 0;
 		screen_pos_y = 0;
+		minDisplayTime = 0;
 
 		if (((float) screen_width) / screen_height > 4.0 / 3.0) {
 			screen_width = screen_height * 4 / 3;
