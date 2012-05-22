@@ -57,17 +57,17 @@ public class PathAction extends Action {
 		} else {
 			Path path = new Path();
 			path.reset();
-			path.moveTo(Display.x_AbsoluteToBmpPos(x_history.get(0)),
-					Display.y_AbsoluteToBmpPos(y_history.get(0)));
+			path.moveTo(Display.x_AbsolutePosToBmpPos(x_history.get(0)),
+					Display.y_AbsolutePosToBmpPos(y_history.get(0)));
 
 			float x1, y1, x2, y2;
-			x2 = Display.x_AbsoluteToBmpPos(x_history.get(0));
-			y2 = Display.y_AbsoluteToBmpPos(y_history.get(0));
+			x2 = Display.x_AbsolutePosToBmpPos(x_history.get(0));
+			y2 = Display.y_AbsolutePosToBmpPos(y_history.get(0));
 			for (int i = 0; i < x_history.size() - 1; i++) {
 				x1 = x2;
 				y1 = y2;
-				x2 = Display.x_AbsoluteToBmpPos(x_history.get(i + 1));
-				y2 = Display.y_AbsoluteToBmpPos(y_history.get(i + 1));
+				x2 = Display.x_AbsolutePosToBmpPos(x_history.get(i + 1));
+				y2 = Display.y_AbsolutePosToBmpPos(y_history.get(i + 1));
 				path.quadTo(x1, y1, (x1 + x2) / 2, (y1 + y2) / 2);
 			}
 			path.lineTo(x2, y2);
@@ -109,8 +109,8 @@ public class PathAction extends Action {
 	}
 
 	public void addPoint(float x_relative, float y_relative) {
-		float x_absolute = Display.x_RelativeToAbsolute(x_relative);
-		float y_absolute = Display.y_RelativeToAbsolute(y_relative);
+		float x_absolute = Display.x_ScreenPosToAbsolutePos(x_relative);
+		float y_absolute = Display.y_ScreenPosToAbsolutePos(y_relative);
 
 		x_absolute = x_absolute < 0 ? 0 : x_absolute;
 		x_absolute = x_absolute > Display.screen_width ? Display.screen_width
