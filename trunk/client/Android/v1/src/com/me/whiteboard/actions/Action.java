@@ -107,9 +107,13 @@ public abstract class Action {
 	public String toBase64() {
 		baf.clear();
 		byte[] bytes = publicToBytes();
-		baf.append(bytes, 0, bytes.length);
+		if (bytes != null) {
+			baf.append(bytes, 0, bytes.length);
+		}
 		bytes = privateToBytes();
-		baf.append(bytes, 0, bytes.length);
+		if (bytes != null) {
+			baf.append(bytes, 0, bytes.length);
+		}
 		return new String(Base64Coder.encode(baf.toByteArray()));
 	}
 

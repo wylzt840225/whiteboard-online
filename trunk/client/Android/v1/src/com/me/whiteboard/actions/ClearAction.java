@@ -20,7 +20,8 @@ public class ClearAction extends Action {
 	@Override
 	public void act(MainActivity activity, Canvas canvas) {
 		Display.minDisplayTime = System.currentTimeMillis();
-		activity.rePaint();
+		activity.clear();
+		activity.FlushCanvas();
 	}
 
 	@Override
