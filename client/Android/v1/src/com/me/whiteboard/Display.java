@@ -60,8 +60,8 @@ public class Display {
 	private static void reset(float x_mean, float y_mean, float sumOfLength) {
 		// Display.x_mean = x_mean;
 		// Display.y_mean = y_mean;
-		Display.x_mean_absolute = x_RelativeToAbsolute(x_mean);
-		Display.y_mean_absolute = y_RelativeToAbsolute(y_mean);
+		Display.x_mean_absolute = x_ScreenPosToAbsolutePos(x_mean);
+		Display.y_mean_absolute = y_ScreenPosToAbsolutePos(y_mean);
 		// Display.x_mean_bmpPos = x_ScreenPosToBmpPos(x_mean);
 		// Display.y_mean_bmpPos = y_ScreenPosToBmpPos(y_mean);
 		Display.sumOfLength = sumOfLength;
@@ -83,8 +83,8 @@ public class Display {
 		
 		scaleFactor_real *= sumOfLength / Display.sumOfLength;
 		scaleFactor = scaleFactorRealToDisplay(scaleFactor_real);
-		screen_pos_x += x_mean_absolute - x_RelativeToAbsolute(x_mean);
-		screen_pos_y += y_mean_absolute - y_RelativeToAbsolute(y_mean);
+		screen_pos_x += x_mean_absolute - x_ScreenPosToAbsolutePos(x_mean);
+		screen_pos_y += y_mean_absolute - y_ScreenPosToAbsolutePos(y_mean);
 
 		// android.util.Log.v("scaleFactor", Float.toString(scaleFactor));
 
@@ -98,8 +98,8 @@ public class Display {
 				|| screen_pos_y < 0
 				|| screen_pos_y > screen_height - screen_height / scaleFactor) {
 
-			float x_mean = x_AbsoluteToRelative(x_mean_absolute);
-			float y_mean = y_AbsoluteToRelative(y_mean_absolute);
+			float x_mean = x_AbsolutePosToScreenPos(x_mean_absolute);
+			float y_mean = y_AbsolutePosToScreenPos(y_mean_absolute);
 			float scaleFactorAnimation[] = new float[frameLength];
 			float screen_pos_x_animation[] = new float[frameLength];
 			float screen_pos_y_animation[] = new float[frameLength];
@@ -126,12 +126,12 @@ public class Display {
 
 			for (int i = 0; i < frameLength; i++) {
 				scaleFactor = scaleFactorAnimation[i];
-				screen_pos_x += x_mean_absolute - x_RelativeToAbsolute(x_mean);
-				screen_pos_y += y_mean_absolute - y_RelativeToAbsolute(y_mean);
+				screen_pos_x += x_mean_absolute - x_ScreenPosToAbsolutePos(x_mean);
+				screen_pos_y += y_mean_absolute - y_ScreenPosToAbsolutePos(y_mean);
 				screen_pos_x_animation[i] = screen_pos_x;
 				screen_pos_y_animation[i] = screen_pos_y;
-				x_mean_absolute = x_RelativeToAbsolute(x_mean);
-				y_mean_absolute = y_RelativeToAbsolute(y_mean);
+				x_mean_absolute = x_ScreenPosToAbsolutePos(x_mean);
+				y_mean_absolute = y_ScreenPosToAbsolutePos(y_mean);
 			}
 
 			if (screen_pos_x < 0) {
@@ -187,52 +187,52 @@ public class Display {
 	}
 
 	public static float x_ScreenPosToBmpPos(float x_screenPos) {
-		return (x_RelativeToAbsolute(x_screenPos) - x_BmpPosToAbsolute(0))
+		return (x_ScreenPosToAbsolutePos(x_screenPos) - x_BmpPosToAbsolutePos(0))
 				* scaleFactor_Bmp;
 	}
 
 	public static float y_ScreenPosToBmpPos(float y_screenPos) {
-		return (y_RelativeToAbsolute(y_screenPos) - y_BmpPosToAbsolute(0))
+		return (y_ScreenPosToAbsolutePos(y_screenPos) - y_BmpPosToAbsolutePos(0))
 				* scaleFactor_Bmp;
 	}
 
 	public static float x_BmpPosToScreenPos(float x_BmpPos) {
-		return (x_BmpPosToAbsolute(x_BmpPos) - screen_pos_x) * scaleFactor;
+		return (x_BmpPosToAbsolutePos(x_BmpPos) - screen_pos_x) * scaleFactor;
 	}
 
 	public static float y_BmpPosToScreenPos(float y_BmpPos) {
-		return (y_BmpPosToAbsolute(y_BmpPos) - screen_pos_y) * scaleFactor;
+		return (y_BmpPosToAbsolutePos(y_BmpPos) - screen_pos_y) * scaleFactor;
 	}
 
-	public static float x_AbsoluteToRelative(float x_absolute) {
+	public static float x_AbsolutePosToScreenPos(float x_absolute) {
 		return (x_absolute - screen_pos_x) * scaleFactor;
 	}
 
-	public static float y_AbsoluteToRelative(float y_absolute) {
+	public static float y_AbsolutePosToScreenPos(float y_absolute) {
 		return (y_absolute - screen_pos_y) * scaleFactor;
 	}
 
-	public static float x_RelativeToAbsolute(float x_relative) {
+	public static float x_ScreenPosToAbsolutePos(float x_relative) {
 		return screen_pos_x + x_relative / scaleFactor;
 	}
 
-	public static float y_RelativeToAbsolute(float y_relative) {
+	public static float y_ScreenPosToAbsolutePos(float y_relative) {
 		return screen_pos_y + y_relative / scaleFactor;
 	}
 
-	public static float x_AbsoluteToBmpPos(float x_absolute) {
+	public static float x_AbsolutePosToBmpPos(float x_absolute) {
 		return (x_absolute - screen_pos_x_Bmp) * scaleFactor_Bmp;
 	}
 
-	public static float y_AbsoluteToBmpPos(float y_absolute) {
+	public static float y_AbsolutePosToBmpPos(float y_absolute) {
 		return (y_absolute - screen_pos_y_Bmp) * scaleFactor_Bmp;
 	}
 
-	private static float x_BmpPosToAbsolute(float x_relative_Bmp) {
+	public static float x_BmpPosToAbsolutePos(float x_relative_Bmp) {
 		return screen_pos_x_Bmp + x_relative_Bmp / scaleFactor_Bmp;
 	}
 
-	private static float y_BmpPosToAbsolute(float y_relative_Bmp) {
+	public static float y_BmpPosToAbsolutePos(float y_relative_Bmp) {
 		return screen_pos_y_Bmp + y_relative_Bmp / scaleFactor_Bmp;
 	}
 }
