@@ -447,12 +447,16 @@ public class MainActivity extends ActionBarActivity {
 			}
 		});
 	}
-
-	public void rePaint() {
+	
+	public void clear() {
 		bmp = Bitmap.createBitmap(Display.bmp_width, Display.bmp_height,
 				Bitmap.Config.ARGB_8888);
 		canvas = new Canvas(bmp);
 		canvas.drawColor(Color.WHITE);
+	}
+
+	public void rePaint() {
+		clear();
 		Display.reSize();
 		MyData.getInstance().actionList.actAll(MainActivity.this, canvas);
 		FlushCanvas();
