@@ -13,8 +13,8 @@ public class ClearAction extends Action {
 	public ClearAction() {
 	}
 
-	public ClearAction(short type, short usr_ID, short local_ID) {
-		super(type, usr_ID, local_ID);
+	public ClearAction(short usr_ID, short local_ID) {
+		super(Action.TYPE_CLEAR, usr_ID, local_ID);
 	}
 
 	@Override

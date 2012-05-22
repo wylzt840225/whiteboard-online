@@ -28,6 +28,7 @@ import android.widget.RelativeLayout;
 
 import com.me.whiteboard.ChatActivity.MsgSend;
 import com.me.whiteboard.actions.Action;
+import com.me.whiteboard.actions.ClearAction;
 import com.me.whiteboard.actions.MsgAction;
 import com.me.whiteboard.actions.PathAction;
 import com.me.whiteboard.compat.ActionBarActivity;
@@ -145,39 +146,47 @@ public class MainActivity extends ActionBarActivity {
 			super.onDraw(canvas);
 			canvas.drawColor(Color.DKGRAY);
 
-//			int srcLeft = (int) Display.x_ScreenPosToBmpPos(0), 
-//				dstLeft = 0, 
-//				srcTop = (int) Display.y_ScreenPosToBmpPos(0), 
-//				dstTop = 0, 
-//				srcRight = (int) Display.x_ScreenPosToBmpPos(Display.screen_width), 
-//				dstRight = (int) Display.screen_width, 
-//				srcBottom = (int) Display.y_ScreenPosToBmpPos(Display.screen_height), 
-//				dstBottom = (int) Display.screen_height;
-//			if (Display.x_RelativeToAbsolute(0) < 0) {
-//				srcLeft = (int) Display.x_AbsoluteToBmpPos(0);
-//				dstLeft = (int) Display.x_AbsoluteToRelative(0);
-//			}
-//			if (Display.y_RelativeToAbsolute(0) < 0) {
-//				srcTop = (int) Display.y_AbsoluteToBmpPos(0);
-//				dstTop = (int) Display.y_AbsoluteToRelative(0);
-//			}
-//			if (Display.x_RelativeToAbsolute(Display.screen_width) > Display.screen_width) {
-//				srcRight = (int) Display.x_AbsoluteToBmpPos(Display.screen_width);
-//				dstRight = (int) Display.x_AbsoluteToRelative(Display.screen_width);
-//			}
-//			if (Display.y_RelativeToAbsolute(Display.screen_height) > Display.screen_height) {
-//				srcBottom = (int) Display.y_AbsoluteToBmpPos(Display.screen_height);
-//				dstBottom = (int) Display.y_AbsoluteToRelative(Display.screen_height);
-//			}
-//			
-//			Rect srcRect = new Rect(srcLeft, srcTop, srcRight, srcBottom), 
-//				 dstRect = new Rect(dstLeft, dstTop, dstRight, dstBottom);
-//			canvas.drawBitmap(bmp, srcRect, dstRect, null);
-			
-			 Rect dstRect = new Rect((int) Display.x_BmpPosToScreenPos(0),
-			 (int) Display.y_BmpPosToScreenPos(0),
-			 (int) Display.x_BmpPosToScreenPos(Display.bmp_width),
-			 (int) Display.y_BmpPosToScreenPos(Display.bmp_height));
+			// int srcLeft = (int) Display.x_ScreenPosToBmpPos(0),
+			// dstLeft = 0,
+			// srcTop = (int) Display.y_ScreenPosToBmpPos(0),
+			// dstTop = 0,
+			// srcRight = (int)
+			// Display.x_ScreenPosToBmpPos(Display.screen_width),
+			// dstRight = (int) Display.screen_width,
+			// srcBottom = (int)
+			// Display.y_ScreenPosToBmpPos(Display.screen_height),
+			// dstBottom = (int) Display.screen_height;
+			// if (Display.x_RelativeToAbsolute(0) < 0) {
+			// srcLeft = (int) Display.x_AbsoluteToBmpPos(0);
+			// dstLeft = (int) Display.x_AbsoluteToRelative(0);
+			// }
+			// if (Display.y_RelativeToAbsolute(0) < 0) {
+			// srcTop = (int) Display.y_AbsoluteToBmpPos(0);
+			// dstTop = (int) Display.y_AbsoluteToRelative(0);
+			// }
+			// if (Display.x_RelativeToAbsolute(Display.screen_width) >
+			// Display.screen_width) {
+			// srcRight = (int)
+			// Display.x_AbsoluteToBmpPos(Display.screen_width);
+			// dstRight = (int)
+			// Display.x_AbsoluteToRelative(Display.screen_width);
+			// }
+			// if (Display.y_RelativeToAbsolute(Display.screen_height) >
+			// Display.screen_height) {
+			// srcBottom = (int)
+			// Display.y_AbsoluteToBmpPos(Display.screen_height);
+			// dstBottom = (int)
+			// Display.y_AbsoluteToRelative(Display.screen_height);
+			// }
+			//
+			// Rect srcRect = new Rect(srcLeft, srcTop, srcRight, srcBottom),
+			// dstRect = new Rect(dstLeft, dstTop, dstRight, dstBottom);
+			// canvas.drawBitmap(bmp, srcRect, dstRect, null);
+
+			Rect dstRect = new Rect((int) Display.x_BmpPosToScreenPos(0),
+					(int) Display.y_BmpPosToScreenPos(0),
+					(int) Display.x_BmpPosToScreenPos(Display.bmp_width),
+					(int) Display.y_BmpPosToScreenPos(Display.bmp_height));
 			canvas.drawBitmap(bmp, null, dstRect, null);
 
 			if (acting != null) {
@@ -214,6 +223,11 @@ public class MainActivity extends ActionBarActivity {
 			ColorPickerDialog colorPickerDialog = new ColorPickerDialog(
 					MainActivity.this, listener, 1);
 			colorPickerDialog.show();
+			return true;
+		case R.id.clearss:
+			ClearAction clearAction = new ClearAction(MyData.getInstance().usr_ID,
+					MyData.getInstance().local_ID);
+			addAction(clearAction);
 			return true;
 		}
 
@@ -371,7 +385,7 @@ public class MainActivity extends ActionBarActivity {
 							switch (event.getAction()) {
 							case MotionEvent.ACTION_UP:
 								if (acting != null) {
-									addAction();
+									addAction(acting);
 									acting = null;
 								}
 								break;
@@ -393,7 +407,7 @@ public class MainActivity extends ActionBarActivity {
 							if (acting != null) {
 								if (((PathAction) acting).x_history.size() > 1
 										&& (System.currentTimeMillis() - acting.time) > 1000) {
-									addAction();
+									addAction(acting);
 								}
 								acting = null;
 							}
@@ -444,10 +458,10 @@ public class MainActivity extends ActionBarActivity {
 		FlushCanvas();
 	}
 
-	private void addAction() {
+	private void addAction(Action acting) {
 		MyData.getInstance().local_ID++;
 		acting.act(MainActivity.this, canvas);
-		MyData.getInstance().actionList.add(acting);
+		acting.addMeToList();
 		sender.add(acting);
 		sender.Flush();
 	}
