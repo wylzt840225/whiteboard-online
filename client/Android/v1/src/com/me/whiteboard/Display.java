@@ -2,6 +2,7 @@ package com.me.whiteboard;
 
 public class Display {
 
+	private final static float SCREEN_SCALE = (float) (16.0 / 9.0);
 	private final static float bmpScale = 2;
 	private final static int frameLength = 10;
 	private final static int frameInteveral = 10;
@@ -44,10 +45,10 @@ public class Display {
 		screen_pos_y = 0;
 		minDisplayTime = 0;
 
-		if (((float) screen_width) / screen_height > 4.0 / 3.0) {
-			screen_width = screen_height * 4 / 3;
+		if (((float) screen_width) / screen_height > SCREEN_SCALE) {
+			screen_width = (int) (screen_height * SCREEN_SCALE);
 		} else {
-			screen_height = screen_width * 3 / 4;
+			screen_height = (int) (screen_width / SCREEN_SCALE);
 		}
 
 		bmp_width = (int) (screen_width * bmpScale);
