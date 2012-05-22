@@ -78,7 +78,6 @@ public abstract class Action {
 		default:
 			MyData.getInstance().actionList.add(this);
 		}
-
 	}
 
 	public static Action base64ToAction(String base64String) {
