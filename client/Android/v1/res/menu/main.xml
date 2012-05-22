@@ -25,17 +25,9 @@
         android:icon="@drawable/ic_action_refresh"
         android:showAsAction="always"
         android:title=""/>
-    <item
-        android:id="@+id/rect"
-        android:icon="@drawable/ic_action_refresh"
-        android:showAsAction="never"
-        android:title="矩形"/>
+  
     
-    <item
-        android:id="@+id/free"
-        android:icon="@drawable/ic_action_refresh"
-        android:showAsAction="never"
-        android:title="随手画"/>
+  
     <item
         android:id="@+id/colorss"
         android:icon="@drawable/palette"
