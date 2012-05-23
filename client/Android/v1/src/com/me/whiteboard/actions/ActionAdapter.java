@@ -15,9 +15,9 @@ public class ActionAdapter extends BaseAdapter {
 	protected int mResource;
 	List<Action> list;
 
-	public ActionAdapter(int resouce, ActionList l) {
+	public ActionAdapter(int resouce) {
 		this.mResource = resouce;
-		this.list = l.list;
+		this.list = ActionList.list;
 	}
 
 	public int getCount() {

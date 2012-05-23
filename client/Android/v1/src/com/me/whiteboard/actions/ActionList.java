@@ -12,7 +12,8 @@ import android.widget.BaseAdapter;
 
 public class ActionList {
 	protected HashMap<Integer, ActionAdapter> adapterList;
-	public ArrayList<Action> list;
+	public static ArrayList<Action> list;
+	public static int minDisplayIndex;
 
 	protected boolean refreshing = false;
 
@@ -22,11 +23,11 @@ public class ActionList {
 	}
 
 	public void clear() {
-		this.list.clear();
+		list.clear();
 	}
 
 	public void add(Action action) {
-		this.list.add(action);
+		list.add(action);
 	}
 
 	public void notifyAllAdapter() {
@@ -42,7 +43,7 @@ public class ActionList {
 
 	public void createAdapter(int tag, int resource) {
 		if (!adapterList.containsKey(tag)) {
-			ActionAdapter adapter = new ActionAdapter(resource, this);
+			ActionAdapter adapter = new ActionAdapter(resource);
 			adapterList.put(tag, adapter);
 		}
 	}
@@ -64,8 +65,12 @@ public class ActionList {
 		if (list == null) {
 			return;
 		}
-		for (int i = 0; i < list.size(); i++) {
+		for (int i = minDisplayIndex; i < list.size(); i++) {
 			list.get(i).act(activity, canvas);
 		}
+	}
+	
+	public static void setMinDisplayIndex(ClearAction clearAct) {
+		minDisplayIndex = list.indexOf(clearAct) + 1;
 	}
 }
