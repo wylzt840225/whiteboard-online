@@ -229,12 +229,18 @@ public class MainActivity extends ActionBarActivity {
 					MyData.getInstance().local_ID);
 			addAction(clearAction);
 			return true;
+		case R.id.exit:
+			exitRoom();
+			return true;
 		}
 
 		return false;
 
 	}
-
+	public void exitRoom()
+	{
+		finish();
+	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater menuInflater = getMenuInflater();
