@@ -43,9 +43,9 @@ public class PathAction extends Action {
 			return;
 		}
 		
-		if (time < Display.minDisplayTime) {
-			return;
-		}
+//		if (time < Display.minDisplayTime) {
+//			return;
+//		}
 
 		Paint paint = new Paint(MainActivity.paint);
 		paint.setColor(color);
