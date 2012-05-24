@@ -8,8 +8,10 @@ import android.view.ViewGroup;
 import com.me.whiteboard.MainActivity;
 
 public class ClearAction extends Action {
-
+	
 	public ClearAction() {
+		super();
+		type = Action.TYPE_CLEAR;
 	}
 
 	public ClearAction(short usr_ID, short local_ID) {
@@ -19,7 +21,7 @@ public class ClearAction extends Action {
 	@Override
 	public void act(MainActivity activity, Canvas canvas) {
 		//Display.minDisplayTime = System.currentTimeMillis();
-		ActionList.setMinDisplayIndex(this);
+		ActionList.setMinDisplayIndex(usr_ID, local_ID);
 		activity.clear();
 		activity.FlushCanvas();
 	}
