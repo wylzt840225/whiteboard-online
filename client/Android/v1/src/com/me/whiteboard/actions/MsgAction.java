@@ -13,11 +13,16 @@ import com.me.whiteboard.R;
 public class MsgAction extends Action {
 
 	// static Charset utf8 = Charset.forName("UTF-8");
-	public String Msg;
+	public String msg;
 
 	public MsgAction() {
 		super();
 		this.type = TYPE_MSG;
+	}
+
+	public MsgAction(short usr_ID, short local_ID, String msg) {
+		super(TYPE_MSG, usr_ID, local_ID);
+		this.msg = msg;
 	}
 
 	@Override
@@ -26,12 +31,12 @@ public class MsgAction extends Action {
 
 	@Override
 	public byte[] privateToBytes() {
-		return Msg.getBytes();
+		return msg.getBytes();
 	}
 
 	@Override
 	protected void bytesToPrivate(byte[] bytes) {
-		Msg = new String(bytes);
+		msg = new String(bytes);
 	}
 
 	@Override
@@ -43,7 +48,7 @@ public class MsgAction extends Action {
 			name = "User" + usr_ID;
 		}
 		((TextView) v.findViewById(R.id.msg_item_who_tv)).setText(name);
-		((TextView) v.findViewById(R.id.msg_item_content_tv)).setText(Msg);
+		((TextView) v.findViewById(R.id.msg_item_content_tv)).setText(msg);
 		return v;
 	}
 }

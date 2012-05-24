@@ -19,7 +19,7 @@ public abstract class Action {
 	public static final short TYPE_CLEAR = 3;
 	public static final short TYPE_UNDO = 4;
 	public static final short TYPE_TEXT = 5;
-	
+
 	public short type;
 	public short usr_ID;
 	public short local_ID;
@@ -39,7 +39,7 @@ public abstract class Action {
 
 	public Action() {
 		this.time = System.currentTimeMillis();
-//		this.usr_ID = MyData.getInstance().usr_ID;
+		// this.usr_ID = MyData.getInstance().usr_ID;
 		this.valid = true;
 	}
 
@@ -77,7 +77,8 @@ public abstract class Action {
 			MyData.getInstance().msgList.notifyAllAdapter();
 			break;
 		case Action.TYPE_NAME:
-			MyData.getInstance().nametable.put(usr_ID, ((NameAction) (this)).Name);
+			MyData.getInstance().nametable.put(usr_ID,
+					((NameAction) (this)).name);
 			break;
 		default:
 			MyData.getInstance().actionList.add(this);

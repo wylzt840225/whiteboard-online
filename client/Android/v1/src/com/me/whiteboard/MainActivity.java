@@ -338,11 +338,10 @@ public class MainActivity extends ActionBarActivity {
 
 		send.setOnClickListener(new OnClickListener() {
 			public void onClick(View v) {
-				MsgAction msg = new MsgAction();
-				msg.usr_ID = MyData.getInstance().usr_ID;
-				msg.Msg = ((EditText) floatview
-						.findViewById(R.id.msg_content_et)).getText()
-						.toString();
+				MsgAction msg = new MsgAction(MyData.getInstance().usr_ID,
+						MyData.getInstance().local_ID, ((EditText) floatview
+								.findViewById(R.id.msg_content_et)).getText()
+								.toString());
 				Client.SendData(MyData.getInstance().room, msg.toBase64(),
 						new MsgSend(msg));
 				((EditText) floatview.findViewById(R.id.msg_content_et))
