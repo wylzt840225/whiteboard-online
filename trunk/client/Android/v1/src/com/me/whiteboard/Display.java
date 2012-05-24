@@ -19,8 +19,8 @@ public class Display {
 	public static int bmp_width;
 	public static int bmp_height;
 	public static int previousPointCount = 0;
-	//public static long minDisplayTime;
-	
+	// public static long minDisplayTime;
+
 	private static float screen_pos_x;
 	private static float screen_pos_y;
 	private static float scaleFactor_real;
@@ -43,7 +43,7 @@ public class Display {
 		scaleFactor = scaleFactorRealToDisplay(scaleFactor_real);
 		screen_pos_x = 0;
 		screen_pos_y = 0;
-		//minDisplayTime = 0;
+		// minDisplayTime = 0;
 
 		if (((float) screen_width) / screen_height > SCREEN_SCALE) {
 			screen_width = (int) (screen_height * SCREEN_SCALE);
@@ -66,9 +66,10 @@ public class Display {
 		// Display.y_mean_bmpPos = y_ScreenPosToBmpPos(y_mean);
 		Display.sumOfLength = sumOfLength;
 	}
-	
+
 	private static float scaleFactorRealToDisplay(float x) {
-		return (float) (alpha * Math.atan((x-beta)/alpha)+beta+gamma*(Math.exp(-x)-Math.exp(-1)));
+		return (float) (alpha * Math.atan((x - beta) / alpha) + beta + gamma
+				* (Math.exp(-x) - Math.exp(-1)));
 	}
 
 	public static void update(int pointCount, float x_mean, float y_mean,
@@ -80,7 +81,7 @@ public class Display {
 
 		// screen_pos_x += (Display.x_mean - x_mean) / scaleFactor;
 		// screen_pos_y += (Display.y_mean - y_mean) / scaleFactor;
-		
+
 		scaleFactor_real *= sumOfLength / Display.sumOfLength;
 		scaleFactor = scaleFactorRealToDisplay(scaleFactor_real);
 		screen_pos_x += x_mean_absolute - x_ScreenPosToAbsolutePos(x_mean);
@@ -126,8 +127,10 @@ public class Display {
 
 			for (int i = 0; i < frameLength; i++) {
 				scaleFactor = scaleFactorAnimation[i];
-				screen_pos_x += x_mean_absolute - x_ScreenPosToAbsolutePos(x_mean);
-				screen_pos_y += y_mean_absolute - y_ScreenPosToAbsolutePos(y_mean);
+				screen_pos_x += x_mean_absolute
+						- x_ScreenPosToAbsolutePos(x_mean);
+				screen_pos_y += y_mean_absolute
+						- y_ScreenPosToAbsolutePos(y_mean);
 				screen_pos_x_animation[i] = screen_pos_x;
 				screen_pos_y_animation[i] = screen_pos_y;
 				x_mean_absolute = x_ScreenPosToAbsolutePos(x_mean);
@@ -181,7 +184,7 @@ public class Display {
 				/ scaleFactor;
 		scaleFactor_Bmp = scaleFactor;
 	}
-	
+
 	public static float width_AbsoluteToScreen(float width_absolute) {
 		return width_absolute * scaleFactor;
 	}

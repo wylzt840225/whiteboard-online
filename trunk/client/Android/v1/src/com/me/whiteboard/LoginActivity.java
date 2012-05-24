@@ -52,16 +52,17 @@ public class LoginActivity extends Activity {
 
 		loginInit();
 
-////		  /*以下为单机测试用*/
-//		 Intent intent = new Intent();
-//		 intent.setClass(LoginActivity.this, MainActivity.class);
-//		 MyData.getInstance().room = "zyl5";
-//		 MyData.getInstance().usr_ID = (short) (System.currentTimeMillis() % Short.MAX_VALUE);
-//		 NameAction db = new NameAction();
-//		 db.local_ID = MyData.getInstance().local_ID;
-//		 db.Name = "skysniper";
-//		 startActivity(intent);
-//		 LoginActivity.this.finish();
+		// // /*以下为单机测试用*/
+		// Intent intent = new Intent();
+		// intent.setClass(LoginActivity.this, MainActivity.class);
+		// MyData.getInstance().room = "zyl5";
+		// MyData.getInstance().usr_ID = (short) (System.currentTimeMillis() %
+		// Short.MAX_VALUE);
+		// NameAction db = new NameAction();
+		// db.local_ID = MyData.getInstance().local_ID;
+		// db.Name = "skysniper";
+		// startActivity(intent);
+		// LoginActivity.this.finish();
 	}
 
 	void loginInit() {
@@ -152,12 +153,13 @@ public class LoginActivity extends Activity {
 					MyData.getInstance().room = tmproom;
 					MyData.getInstance().usr_ID = tmpnum;
 
-					NameAction db = new NameAction();
-
-					// note!!
-					db.local_ID = MyData.getInstance().local_ID;
-
-					db.Name = username;
+					NameAction db = new NameAction(MyData.getInstance().usr_ID,
+							MyData.getInstance().local_ID, username);
+					//
+					// // note!!
+					// db.local_ID = MyData.getInstance().local_ID;
+					//
+					// db.name = username;
 
 					Client.SendData(tmproom, db.toBase64(), null);
 					startActivity(intent);

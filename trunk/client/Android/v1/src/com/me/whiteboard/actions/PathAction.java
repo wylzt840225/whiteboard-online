@@ -26,7 +26,7 @@ public class PathAction extends Action {
 
 	public PathAction() {
 		super();
-		type = Action.TYPE_PATH;
+		type = TYPE_PATH;
 		x_history = new ArrayList<Float>();
 		y_history = new ArrayList<Float>();
 	}
@@ -44,10 +44,10 @@ public class PathAction extends Action {
 		if (x_history.size() == 0 || x_history.size() != y_history.size()) {
 			return;
 		}
-		
-//		if (time < Display.minDisplayTime) {
-//			return;
-//		}
+
+		// if (time < Display.minDisplayTime) {
+		// return;
+		// }
 
 		Paint paint = new Paint(MainActivity.paint);
 		paint.setColor(color);
@@ -75,7 +75,7 @@ public class PathAction extends Action {
 			path.lineTo(x2, y2);
 			canvas.drawPath(path, paint);
 		}
-		//activity.FlushCanvas();
+		// activity.FlushCanvas();
 	}
 
 	public byte[] privateToBytes() {
@@ -83,7 +83,7 @@ public class PathAction extends Action {
 				+ y_history.size());
 		byte[] bytes = intToBytes(color);
 		baf.append(bytes, 0, bytes.length);
-		
+
 		bytes = shortToBytes((short) (strokeWidth / Display.screen_width * Short.MAX_VALUE));
 		baf.append(bytes, 0, bytes.length);
 
@@ -100,7 +100,8 @@ public class PathAction extends Action {
 
 	protected void bytesToPrivate(byte[] bytes) {
 		color = bytesToInt(bytes[0], bytes[1], bytes[2], bytes[3]);
-		strokeWidth = (float) bytesToShort(bytes[4], bytes[5]) / Short.MAX_VALUE * Display.screen_width;
+		strokeWidth = (float) bytesToShort(bytes[4], bytes[5])
+				/ Short.MAX_VALUE * Display.screen_width;
 		for (int i = 6; i < bytes.length - 3; i += 4) {
 			x_history.add((float) (1.0 * bytesToShort(bytes[i], bytes[i + 1])
 					/ Short.MAX_VALUE * Display.screen_width));

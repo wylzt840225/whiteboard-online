@@ -25,13 +25,15 @@ public class ChatActivity extends ActionBarActivity {
 		MyData.getInstance().msgList.createAdapter(0, R.layout.msg_item);
 		lv.setAdapter(MyData.getInstance().msgList.getAdapter(0, this));
 		Button send = (Button) findViewById(R.id.send);
+		
 		send.setOnClickListener(new OnClickListener() {
 
 			public void onClick(View v) {
-				MsgAction msg = new MsgAction();
-				msg.usr_ID = MyData.getInstance().usr_ID;
-				msg.Msg = ((EditText) findViewById(R.id.msg_content_et))
-						.getText().toString();
+				MsgAction msg = new MsgAction(MyData.getInstance().usr_ID,
+						MyData.getInstance().local_ID,
+						((EditText) findViewById(R.id.msg_content_et))
+								.getText().toString());
+				MyData.getInstance().local_ID++;
 				msg.addMeToList();
 				((EditText) findViewById(R.id.msg_content_et)).setText("");
 				Client.SendData(MyData.getInstance().room, msg.toBase64(),
@@ -69,17 +71,15 @@ public class ChatActivity extends ActionBarActivity {
 		g = Client.setOnDataRecv(MyData.getInstance().room,
 				new onNewDataRecv() {
 					public void onRecv(final String[] datas) {
-
 						Action action;
 						for (int i = 0; i < datas.length; i++) {
 							action = Action.base64ToAction(datas[i]);
 							if (action.usr_ID != MyData.getInstance().usr_ID) {
 								action.addMeToList();
 							}
-
 						}
-
 					}
 				});
+		android.util.Log.v("msgCount", Integer.toString(MyData.getInstance().msgList.size()));
 	}
 }

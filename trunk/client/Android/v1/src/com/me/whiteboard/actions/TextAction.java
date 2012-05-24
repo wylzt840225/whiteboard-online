@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import com.me.whiteboard.MainActivity;
 
 public class TextAction extends Action {
-	
+
 	private String text;
 
 	public TextAction() {

@@ -9,11 +9,16 @@ import com.me.whiteboard.MainActivity;
 
 public class NameAction extends Action {
 
-	public String Name;
+	public String name;
 
 	public NameAction() {
 		super();
-		type = Action.TYPE_NAME;
+		type = TYPE_NAME;
+	}
+
+	public NameAction(short usr_ID, short local_ID, String name) {
+		super(TYPE_NAME, usr_ID, local_ID);
+		this.name = name;
 	}
 
 	@Override
@@ -22,12 +27,12 @@ public class NameAction extends Action {
 
 	@Override
 	public byte[] privateToBytes() {
-		return Name.getBytes();
+		return name.getBytes();
 	}
 
 	@Override
 	protected void bytesToPrivate(byte[] bytes) {
-		Name = new String(bytes);
+		name = new String(bytes);
 	}
 
 	@Override
