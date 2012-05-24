@@ -34,7 +34,7 @@ public class ChatActivity extends ActionBarActivity {
 						((EditText) findViewById(R.id.msg_content_et))
 								.getText().toString());
 				MyData.getInstance().local_ID++;
-				msg.addMeToList();
+				//msg.addMeToList();
 				((EditText) findViewById(R.id.msg_content_et)).setText("");
 				Client.SendData(MyData.getInstance().room, msg.toBase64(),
 						new MsgSend(msg));
@@ -74,12 +74,9 @@ public class ChatActivity extends ActionBarActivity {
 						Action action;
 						for (int i = 0; i < datas.length; i++) {
 							action = Action.base64ToAction(datas[i]);
-							if (action.usr_ID != MyData.getInstance().usr_ID) {
-								action.addMeToList();
-							}
+							action.addMeToList();
 						}
 					}
 				});
-		android.util.Log.v("msgCount", Integer.toString(MyData.getInstance().msgList.size()));
 	}
 }
