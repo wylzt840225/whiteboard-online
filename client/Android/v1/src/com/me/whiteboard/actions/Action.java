@@ -81,7 +81,9 @@ public abstract class Action {
 					((NameAction) (this)).name);
 			break;
 		default:
-			MyData.getInstance().actionList.add(this);
+			if (usr_ID != MyData.getInstance().usr_ID) {
+				MyData.getInstance().actionList.add(this);
+			}
 			break;
 		}
 	}
