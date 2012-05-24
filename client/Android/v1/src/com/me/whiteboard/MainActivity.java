@@ -31,6 +31,7 @@ import com.me.whiteboard.actions.Action;
 import com.me.whiteboard.actions.ClearAction;
 import com.me.whiteboard.actions.MsgAction;
 import com.me.whiteboard.actions.PathAction;
+import com.me.whiteboard.actions.UndoAction;
 import com.me.whiteboard.compat.ActionBarActivity;
 import com.me.whiteboard.compat.ColorPickerDialog;
 import com.me.whiteboard.compat.ColorPickerDialog.OnColorChangedListener;
@@ -225,9 +226,14 @@ public class MainActivity extends ActionBarActivity {
 			colorPickerDialog.show();
 			return true;
 		case R.id.clearss:
-			ClearAction clearAction = new ClearAction(MyData.getInstance().usr_ID,
-					MyData.getInstance().local_ID);
+			ClearAction clearAction = new ClearAction(
+					MyData.getInstance().usr_ID, MyData.getInstance().local_ID);
 			addAction(clearAction);
+			return true;
+		case R.id.undoss:
+			UndoAction undoAction = new UndoAction(MyData.getInstance().usr_ID,
+					MyData.getInstance().local_ID);
+			addAction(undoAction);
 			return true;
 		case R.id.exit:
 			exitRoom();
@@ -237,10 +243,11 @@ public class MainActivity extends ActionBarActivity {
 		return false;
 
 	}
-	public void exitRoom()
-	{
+
+	public void exitRoom() {
 		finish();
 	}
+
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		MenuInflater menuInflater = getMenuInflater();
@@ -453,7 +460,7 @@ public class MainActivity extends ActionBarActivity {
 			}
 		});
 	}
-	
+
 	public void clear() {
 		bmp = Bitmap.createBitmap(Display.bmp_width, Display.bmp_height,
 				Bitmap.Config.ARGB_8888);

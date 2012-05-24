@@ -33,6 +33,11 @@
         android:icon="@drawable/palette"
         android:showAsAction="always|withText"
         android:title="颜色"/>
+    <item
+        android:id="@+id/undoss"
+        android:icon="@drawable/ic_action_refresh"
+        android:showAsAction="never"
+        android:title="撤销"/>
      <item
         android:id="@+id/clearss"
         android:icon="@drawable/ic_action_refresh"
