@@ -66,11 +66,25 @@ public class ActionList {
 			return;
 		}
 		for (int i = minDisplayIndex; i < list.size(); i++) {
-			list.get(i).act(activity, canvas);
+			if (list.get(i).valid) {
+				list.get(i).act(activity, canvas);
+			}
 		}
 	}
 	
-	public static void setMinDisplayIndex(ClearAction clearAct) {
-		minDisplayIndex = list.indexOf(clearAct) + 1;
+	public static int findIndex(short usr_ID, short local_ID) {
+		if (list == null) {
+			return -1;
+		}
+		for (int i = 0; i < list.size(); i++) {
+			if (list.get(i).usr_ID == usr_ID && list.get(i).local_ID == local_ID) {
+				return i;
+			}
+		}
+		return -1;
+	}
+	
+	public static void setMinDisplayIndex(short usr_ID, short local_ID) {
+		minDisplayIndex = findIndex(usr_ID, local_ID) + 1;
 	}
 }

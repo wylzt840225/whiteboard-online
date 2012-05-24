@@ -16,6 +16,7 @@ public class MsgAction extends Action {
 	public String Msg;
 
 	public MsgAction() {
+		super();
 		this.type = TYPE_MSG;
 	}
 

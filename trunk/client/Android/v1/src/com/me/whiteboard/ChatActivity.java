@@ -32,9 +32,10 @@ public class ChatActivity extends ActionBarActivity {
 				msg.usr_ID = MyData.getInstance().usr_ID;
 				msg.Msg = ((EditText) findViewById(R.id.msg_content_et))
 						.getText().toString();
+				msg.addMeToList();
+				((EditText) findViewById(R.id.msg_content_et)).setText("");
 				Client.SendData(MyData.getInstance().room, msg.toBase64(),
 						new MsgSend(msg));
-				((EditText) findViewById(R.id.msg_content_et)).setText("");
 			}
 
 		});
@@ -72,7 +73,9 @@ public class ChatActivity extends ActionBarActivity {
 						Action action;
 						for (int i = 0; i < datas.length; i++) {
 							action = Action.base64ToAction(datas[i]);
-							action.addMeToList();
+							if (action.usr_ID != MyData.getInstance().usr_ID) {
+								action.addMeToList();
+							}
 
 						}
 

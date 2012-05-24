@@ -25,6 +25,8 @@ public class PathAction extends Action {
 	private static float x_relative, y_relative;
 
 	public PathAction() {
+		super();
+		type = Action.TYPE_PATH;
 		x_history = new ArrayList<Float>();
 		y_history = new ArrayList<Float>();
 	}
