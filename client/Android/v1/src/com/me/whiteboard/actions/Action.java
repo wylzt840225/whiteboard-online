@@ -82,6 +82,7 @@ public abstract class Action {
 			break;
 		default:
 			MyData.getInstance().actionList.add(this);
+			break;
 		}
 	}
 

@@ -12,7 +12,7 @@ import android.widget.BaseAdapter;
 
 public class ActionList {
 	protected HashMap<Integer, ActionAdapter> adapterList;
-	public static ArrayList<Action> list;
+	public ArrayList<Action> list;
 	public static int minDisplayIndex;
 
 	protected boolean refreshing = false;
@@ -72,7 +72,7 @@ public class ActionList {
 		}
 	}
 
-	public static int findIndex(short usr_ID, short local_ID) {
+	public int findIndex(short usr_ID, short local_ID) {
 		if (list == null) {
 			return -1;
 		}
@@ -85,7 +85,7 @@ public class ActionList {
 		return -1;
 	}
 
-	public static void setMinDisplayIndex(short usr_ID, short local_ID) {
+	public void setMinDisplayIndex(short usr_ID, short local_ID) {
 		minDisplayIndex = findIndex(usr_ID, local_ID) + 1;
 	}
 }

@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.me.whiteboard.MainActivity;
+import com.me.whiteboard.MyData;
 
 public class UndoAction extends Action {
 
@@ -32,13 +33,13 @@ public class UndoAction extends Action {
 
 	@Override
 	public void act(MainActivity activity, Canvas canvas) {
-		int undoIndex = ActionList.findIndex(usr_ID, undo_local_ID);
+		int undoIndex = MyData.getInstance().actionList.findIndex(usr_ID, undo_local_ID);
 		if (undoIndex > 0) {
-			ActionList.list.get(undoIndex).valid = false;
+			MyData.getInstance().actionList.list.get(undoIndex).valid = false;
 		}
 		valid = false;// 只执行一遍，增加效率
 
-		if (ActionList.list.get(undoIndex).type == TYPE_CLEAR) {
+		if (MyData.getInstance().actionList.list.get(undoIndex).type == TYPE_CLEAR) {
 			ActionList.minDisplayIndex = 0;
 		}
 
