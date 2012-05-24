@@ -66,17 +66,13 @@ public class MainActivity extends ActionBarActivity {
 		g = Client.setOnDataRecv(MyData.getInstance().room,
 				new onNewDataRecv() {
 					public void onRecv(final String[] datas) {
-
 						Action action;
 						for (int i = 0; i < datas.length; i++) {
 							action = Action.base64ToAction(datas[i]);
-							if (action.usr_ID != MyData.getInstance().usr_ID) {
-								action.addMeToList();
-								action.act(MainActivity.this, canvas);
-								FlushCanvas();
-							}
+							action.addMeToList();
+							action.act(MainActivity.this, canvas);
+							FlushCanvas();
 						}
-
 					}
 				});
 	}

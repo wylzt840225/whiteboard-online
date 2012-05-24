@@ -134,14 +134,14 @@ public class Client {
 
 	public static class GetData extends AsyncTask<Void, String[], Void> {
 		String room;
-		int fromid;
+		static int fromid = 0;
 		boolean running = true;
 		onNewDataRecv o;
 
 		public GetData(String r, onNewDataRecv onl) {
 			super();
 			room = r;
-			fromid = 0;
+			//fromid = 0;
 			o = onl;
 
 		}
