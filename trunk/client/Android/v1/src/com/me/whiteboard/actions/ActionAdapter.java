@@ -2,6 +2,8 @@ package com.me.whiteboard.actions;
 
 import java.util.List;
 
+import com.me.whiteboard.MyData;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +19,7 @@ public class ActionAdapter extends BaseAdapter {
 
 	public ActionAdapter(int resouce) {
 		this.mResource = resouce;
-		this.list = ActionList.list;
+		this.list = MyData.getInstance().msgList.list;
 	}
 
 	public int getCount() {
