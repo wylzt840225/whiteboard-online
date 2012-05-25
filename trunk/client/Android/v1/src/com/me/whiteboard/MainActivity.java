@@ -31,6 +31,7 @@ import com.me.whiteboard.actions.Action;
 import com.me.whiteboard.actions.ClearAction;
 import com.me.whiteboard.actions.MsgAction;
 import com.me.whiteboard.actions.PathAction;
+import com.me.whiteboard.actions.TextAction;
 import com.me.whiteboard.actions.UndoAction;
 import com.me.whiteboard.compat.ActionBarActivity;
 import com.me.whiteboard.compat.ColorPickerDialog;
@@ -384,7 +385,21 @@ public class MainActivity extends ActionBarActivity {
 						
 						switch (type) {
 						case TYPE_TEXT:
-							
+							float x_mean_text = 0, y_mean_text = 0, sumOfLength_text = 0;
+							for (int i = 0; i < pointCount; i++) {
+								x_mean_text += event.getX(i);
+								y_mean_text += event.getY(i);
+							}
+							x_mean_text /= pointCount;
+							y_mean_text /= pointCount;
+							for (int i = 0; i < pointCount; i++) {
+								sumOfLength_text += Math.sqrt(Math.pow(event.getX(i)
+										- x_mean_text, 2)
+										+ Math.pow(event.getY(i) - y_mean_text, 2));
+							}
+
+							((TextAction) acting).update(pointCount, x_mean_text, y_mean_text,
+									sumOfLength_text);
 							break;
 						default:
 							if (pointCount == 1) {
@@ -430,22 +445,21 @@ public class MainActivity extends ActionBarActivity {
 									acting = null;
 								}
 
-								float x_mean = 0, y_mean = 0, sumOfLength = 0;
+								float x_mean_path = 0, y_mean_path = 0, sumOfLength_path = 0;
 								for (int i = 0; i < pointCount; i++) {
-									x_mean += event.getX(i);
-									y_mean += event.getY(i);
+									x_mean_path += event.getX(i);
+									y_mean_path += event.getY(i);
 								}
-								x_mean /= pointCount;
-								y_mean /= pointCount;
+								x_mean_path /= pointCount;
+								y_mean_path /= pointCount;
 								for (int i = 0; i < pointCount; i++) {
-									sumOfLength += Math.sqrt(Math.pow(event.getX(i)
-											- x_mean, 2)
-											+ Math.pow(event.getY(i) - y_mean, 2));
+									sumOfLength_path += Math.sqrt(Math.pow(event.getX(i)
+											- x_mean_path, 2)
+											+ Math.pow(event.getY(i) - y_mean_path, 2));
 								}
 
-								Display.update(pointCount, x_mean, y_mean,
-										sumOfLength);
-
+								Display.update(pointCount, x_mean_path, y_mean_path,
+										sumOfLength_path);
 							}
 							break;
 						}
