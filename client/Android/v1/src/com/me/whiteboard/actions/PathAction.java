@@ -52,7 +52,7 @@ public class PathAction extends Action {
 
 		Paint paint = new Paint(MainActivity.paint);
 		paint.setColor(color);
-		paint.setStrokeWidth(Display.width_AbsoluteToScreen(strokeWidth));
+		paint.setStrokeWidth(Display.length_AbsoluteToScreen(strokeWidth));
 
 		if (usr_ID == MyData.getInstance().usr_ID
 				&& local_ID == MyData.getInstance().local_ID) {

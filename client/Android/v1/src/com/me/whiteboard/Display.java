@@ -185,8 +185,12 @@ public class Display {
 		scaleFactor_Bmp = scaleFactor;
 	}
 
-	public static float width_AbsoluteToScreen(float width_absolute) {
-		return width_absolute * scaleFactor;
+	public static float length_AbsoluteToScreen(float length_absolute) {
+		return length_absolute * scaleFactor;
+	}
+	
+	public static float length_ScreenToAbsulute(float length_screen) {
+		return length_screen / scaleFactor;
 	}
 
 	public static float x_ScreenPosToBmpPos(float x_screenPos) {

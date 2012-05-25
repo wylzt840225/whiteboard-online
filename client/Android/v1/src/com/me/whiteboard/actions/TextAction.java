@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings.TextSize;
 
 import com.me.whiteboard.Display;
 import com.me.whiteboard.MainActivity;
@@ -17,21 +18,28 @@ public class TextAction extends Action {
 	private float textSize;
 	private float x, y;
 	private String text;
+	
+	private static int previousPointCount = 0;
+	private static float sumOfLength;
+	private static float x_mean_absolute;
+	private static float y_mean_absolute;
 
 	public TextAction() {
 		super();
 		type = TYPE_TEXT;
 	}
 
-	public TextAction(short usr_ID, short local_ID) {
+	public TextAction(short usr_ID, short local_ID, Paint paint) {
 		super(TYPE_TEXT, usr_ID, local_ID);
+		color = paint.getColor();
+		textSize = paint.getTextSize();
 	}
 
 	@Override
 	public void act(MainActivity activity, Canvas canvas) {
 		Paint paint = new Paint(MainActivity.paint);
 		paint.setColor(color);
-		paint.setTextSize(Display.width_AbsoluteToScreen(textSize));
+		paint.setTextSize(Display.length_AbsoluteToScreen(textSize));
 		canvas.drawText(text, x, y, paint);
 	}
 
@@ -74,5 +82,24 @@ public class TextAction extends Action {
 			View convertView, ViewGroup parent, boolean selected) {
 		return null;
 	}
+	
+	public void update(int pointCount, float x_mean, float y_mean,
+			float sumOfLength) {
+		if (pointCount != previousPointCount) {
+			reset(x_mean, y_mean, sumOfLength);
+			return;
+		}
 
+		textSize *= sumOfLength / TextAction.sumOfLength;
+		x += x_mean_absolute - Display.x_ScreenPosToAbsolutePos(x_mean);
+		y += y_mean_absolute - Display.y_ScreenPosToAbsolutePos(y_mean);
+
+		reset(x_mean, y_mean, sumOfLength);
+	}
+	
+	private void reset(float x_mean, float y_mean, float sumOfLength) {
+		TextAction.x_mean_absolute = Display.x_ScreenPosToAbsolutePos(x_mean);
+		TextAction.y_mean_absolute = Display.y_ScreenPosToAbsolutePos(y_mean);
+		TextAction.sumOfLength = sumOfLength;
+	}
 }
