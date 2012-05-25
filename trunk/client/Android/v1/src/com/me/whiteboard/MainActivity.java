@@ -41,12 +41,16 @@ import com.me.whiteboard.http.Client.onNewDataRecv;
 import com.me.whiteboard.http.Client.onSend;
 
 public class MainActivity extends ActionBarActivity {
+	
+	public static final int TYPE_LINE = 1;
+	public static final int TYPE_TEXT = 2;
+	public static final int TYPE_ERASER = 3;
 
 	Bitmap bmp;
 	Canvas canvas;
 	public static Paint paint;
 	DrawView dw;
-	int type = 1;
+	int type = TYPE_LINE;
 	Action acting;
 	WindowManager wm;
 	// WindowManager.LayoutParams wmParams;
@@ -377,65 +381,73 @@ public class MainActivity extends ActionBarActivity {
 				dw.setOnTouchListener(new OnTouchListener() {
 					public boolean onTouch(View v, MotionEvent event) {
 						int pointCount = event.getPointerCount();
-						if (pointCount == 1) {
-							if (Display.previousPointCount > 1) {
-								animate = true;
-								new Thread(new Runnable() {
-									public void run() {
-										Display.animate(MainActivity.this);
-										animate = false;
-										rePaint();
+						
+						switch (type) {
+						case TYPE_TEXT:
+							
+							break;
+						default:
+							if (pointCount == 1) {
+								if (Display.previousPointCount > 1) {
+									animate = true;
+									new Thread(new Runnable() {
+										public void run() {
+											Display.animate(MainActivity.this);
+											animate = false;
+											rePaint();
+										}
+									}).start();
+									FlushCanvas();
+									// reSize();
+								}
+								switch (event.getAction()) {
+								case MotionEvent.ACTION_UP:
+									if (acting != null) {
+										addAction(acting);
+										acting = null;
 									}
-								}).start();
-								FlushCanvas();
-								// reSize();
-							}
-							switch (event.getAction()) {
-							case MotionEvent.ACTION_UP:
+									break;
+								case MotionEvent.ACTION_DOWN:
+									acting = new PathAction(
+											MyData.getInstance().usr_ID, MyData
+													.getInstance().local_ID, paint);
+									((PathAction) acting).addPoint(event.getX(),
+											event.getY());
+									break;
+								case MotionEvent.ACTION_MOVE:
+									if (acting != null) {
+										((PathAction) acting).addPoint(
+												event.getX(), event.getY());
+									}
+									break;
+								}
+							} else {
 								if (acting != null) {
-									addAction(acting);
+									if (((PathAction) acting).getHistoryCount() > 1
+											&& (System.currentTimeMillis() - acting.time) > 1000) {
+										addAction(acting);
+									}
 									acting = null;
 								}
-								break;
-							case MotionEvent.ACTION_DOWN:
-								acting = new PathAction(
-										MyData.getInstance().usr_ID, MyData
-												.getInstance().local_ID, paint);
-								((PathAction) acting).addPoint(event.getX(),
-										event.getY());
-								break;
-							case MotionEvent.ACTION_MOVE:
-								if (acting != null) {
-									((PathAction) acting).addPoint(
-											event.getX(), event.getY());
+
+								float x_mean = 0, y_mean = 0, sumOfLength = 0;
+								for (int i = 0; i < pointCount; i++) {
+									x_mean += event.getX(i);
+									y_mean += event.getY(i);
 								}
-								break;
-							}
-						} else {
-							if (acting != null) {
-								if (((PathAction) acting).x_history.size() > 1
-										&& (System.currentTimeMillis() - acting.time) > 1000) {
-									addAction(acting);
+								x_mean /= pointCount;
+								y_mean /= pointCount;
+								for (int i = 0; i < pointCount; i++) {
+									sumOfLength += Math.sqrt(Math.pow(event.getX(i)
+											- x_mean, 2)
+											+ Math.pow(event.getY(i) - y_mean, 2));
 								}
-								acting = null;
-							}
 
-							float x_mean = 0, y_mean = 0, sumOfLength = 0;
-							for (int i = 0; i < pointCount; i++) {
-								x_mean += event.getX(i);
-								y_mean += event.getY(i);
-							}
-							x_mean /= pointCount;
-							y_mean /= pointCount;
-							for (int i = 0; i < pointCount; i++) {
-								sumOfLength += Math.sqrt(Math.pow(event.getX(i)
-										- x_mean, 2)
-										+ Math.pow(event.getY(i) - y_mean, 2));
-							}
+								Display.update(pointCount, x_mean, y_mean,
+										sumOfLength);
 
-							Display.update(pointCount, x_mean, y_mean,
-									sumOfLength);
-
+							}
+							break;
 						}
 
 						// //for testing point count

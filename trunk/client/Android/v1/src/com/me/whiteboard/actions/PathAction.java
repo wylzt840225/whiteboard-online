@@ -16,10 +16,11 @@ import com.me.whiteboard.MainActivity;
 import com.me.whiteboard.MyData;
 
 public class PathAction extends Action {
-	public int color;
-	public float strokeWidth;
-	public ArrayList<Float> x_history;
-	public ArrayList<Float> y_history;
+	
+	private int color;
+	private float strokeWidth;
+	private ArrayList<Float> x_history;
+	private ArrayList<Float> y_history;
 
 	private static Path path;
 	private static float x_relative, y_relative;
@@ -135,6 +136,10 @@ public class PathAction extends Action {
 		y_history.add(y_absolute);
 		PathAction.x_relative = x_relative;
 		PathAction.y_relative = y_relative;
+	}
+	
+	public int getHistoryCount() {
+		return x_history.size() == y_history.size() ? x_history.size() : -1;
 	}
 
 	@Override
