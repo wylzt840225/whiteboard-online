@@ -76,6 +76,9 @@ public class ActionList {
 		if (list == null) {
 			return -1;
 		}
+		if (usr_ID < 0 || local_ID < 0) {
+			return -1;
+		}
 		for (int i = 0; i < list.size(); i++) {
 			if (list.get(i).usr_ID == usr_ID
 					&& list.get(i).local_ID == local_ID) {

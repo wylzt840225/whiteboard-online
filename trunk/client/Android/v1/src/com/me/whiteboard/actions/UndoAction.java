@@ -23,6 +23,9 @@ public class UndoAction extends Action {
 	public UndoAction(short usr_ID, short local_ID) {
 		super(TYPE_UNDO, usr_ID, local_ID);
 		undo_local_ID = (short) (local_ID - 1);
+		while (! ifCanUndo(undo_local_ID) && undo_local_ID >= 0) {
+			undo_local_ID --;
+		}
 	}
 
 	// 撤销指定动作
@@ -33,14 +36,17 @@ public class UndoAction extends Action {
 
 	@Override
 	public void act(MainActivity activity, Canvas canvas) {
+		valid = false;// 只执行一遍
+		if (undo_local_ID < 0) {
+			return;
+		}
 		int undoIndex = MyData.getInstance().actionList.findIndex(usr_ID, undo_local_ID);
-		if (undoIndex > 0) {
+		if (undoIndex >= 0) {
 			MyData.getInstance().actionList.list.get(undoIndex).valid = false;
 			if (MyData.getInstance().actionList.list.get(undoIndex).type == TYPE_CLEAR) {
 				ActionList.minDisplayIndex = 0;
 			}
 		}
-		valid = false;// 只执行一遍，增加效率
 		activity.rePaint();
 	}
 
@@ -61,6 +67,27 @@ public class UndoAction extends Action {
 	public View getView(LayoutInflater mLayoutInflater, int mResource,
 			View convertView, ViewGroup parent, boolean selected) {
 		return null;
+	}
+	
+	private boolean ifCanUndo(short local_ID) {
+		int index = MyData.getInstance().actionList.findIndex(usr_ID, local_ID);
+		
+		if (index < 0) {
+			return false;
+		}
+		
+		switch (MyData.getInstance().actionList.list.get(index).type) {
+		case Action.TYPE_PATH:
+		case Action.TYPE_CLEAR:
+		case Action.TYPE_TEXT:
+			if (MyData.getInstance().actionList.list.get(index).valid) {
+				return true;
+			} else {
+				return false;
+			}
+		default:
+			return false;
+		}
 	}
 
 }
