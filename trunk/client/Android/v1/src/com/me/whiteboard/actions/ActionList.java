@@ -14,6 +14,7 @@ public class ActionList {
 	protected HashMap<Integer, ActionAdapter> adapterList;
 	public ArrayList<Action> list;
 	public static int minDisplayIndex;
+	public static short minRedoLocalID;
 
 	protected boolean refreshing = false;
 
