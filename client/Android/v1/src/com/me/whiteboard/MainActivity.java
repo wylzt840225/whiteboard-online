@@ -513,6 +513,7 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	public void rePaint() {
+		Display.reScaleBmp();
 		clear();
 		Display.reSize();
 		MyData.getInstance().actionList.actAll(MainActivity.this, canvas);
