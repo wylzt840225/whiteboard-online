@@ -112,6 +112,12 @@ public abstract class Action {
 		case TYPE_UNDO:
 			action = new UndoAction();
 			break;
+		case TYPE_REDO:
+			action = new RedoAction();
+			break;
+		case TYPE_TEXT:
+			action = new TextAction();
+			break;
 		}
 		if (action != null) {
 			bytes = action.bytesToPublic(bytes);
