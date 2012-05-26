@@ -7,8 +7,6 @@ import android.graphics.Paint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebSettings.TextSize;
-
 import com.me.whiteboard.Display;
 import com.me.whiteboard.MainActivity;
 
@@ -19,27 +17,30 @@ public class TextAction extends Action {
 	private float x, y;
 	private String text;
 	
-	private static int previousPointCount = 0;
 	private static float sumOfLength;
 	private static float x_mean_absolute;
 	private static float y_mean_absolute;
+	private static Paint paint = new Paint(MainActivity.paint);
 
 	public TextAction() {
 		super();
 		type = TYPE_TEXT;
 	}
 
-	public TextAction(short usr_ID, short local_ID, Paint paint) {
+	public TextAction(short usr_ID, short local_ID, String text, Paint paint) {
 		super(TYPE_TEXT, usr_ID, local_ID);
+		this.text = text;
 		color = paint.getColor();
 		textSize = paint.getTextSize();
+		x = Display.screen_width / 2;
+		y = Display.screen_height / 2;
 	}
 
 	@Override
 	public void act(MainActivity activity, Canvas canvas) {
-		Paint paint = new Paint(MainActivity.paint);
 		paint.setColor(color);
 		paint.setTextSize(Display.length_AbsoluteToScreen(textSize));
+		paint.setStrokeWidth(0);
 		canvas.drawText(text, x, y, paint);
 	}
 
@@ -85,14 +86,30 @@ public class TextAction extends Action {
 	
 	public void update(int pointCount, float x_mean, float y_mean,
 			float sumOfLength) {
-		if (pointCount != previousPointCount) {
+		if (pointCount != Display.previousPointCount) {
 			reset(x_mean, y_mean, sumOfLength);
 			return;
 		}
 
-		textSize *= sumOfLength / TextAction.sumOfLength;
-		x += x_mean_absolute - Display.x_ScreenPosToAbsolutePos(x_mean);
-		y += y_mean_absolute - Display.y_ScreenPosToAbsolutePos(y_mean);
+		if (sumOfLength * TextAction.sumOfLength != 0) {
+			textSize *= sumOfLength / TextAction.sumOfLength;
+		}
+		
+		x -= x_mean_absolute - Display.x_ScreenPosToAbsolutePos(x_mean);
+		y -= y_mean_absolute - Display.y_ScreenPosToAbsolutePos(y_mean);
+		
+		float textWidth = paint.measureText(text);
+		if (x < - textWidth / 2) {
+			x = - textWidth / 2;
+		} else if (x > Display.screen_width + textWidth / 2) {
+			x = Display.screen_width + textWidth / 2;
+		}
+		
+		if (y < 0) {
+			y = 0;
+		} else if (y > Display.screen_height + textSize) {
+			y = Display.screen_height + textSize;
+		}
 
 		reset(x_mean, y_mean, sumOfLength);
 	}
