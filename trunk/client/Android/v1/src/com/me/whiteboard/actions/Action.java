@@ -86,7 +86,9 @@ public abstract class Action {
 				if (MyData.getInstance().actionList.findIndex(usr_ID, local_ID) >= 0) {
 					return;
 				}
-				ActionList.minRedoLocalID = local_ID;
+				if (type != TYPE_UNDO && type != TYPE_REDO) {
+					ActionList.minRedoLocalID = local_ID;
+				}
 			}
 			MyData.getInstance().actionList.add(this);
 			break;

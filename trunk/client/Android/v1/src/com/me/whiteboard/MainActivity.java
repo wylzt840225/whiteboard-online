@@ -242,13 +242,13 @@ public class MainActivity extends ActionBarActivity {
 					MyData.getInstance().local_ID);
 			addAction(redoAction);
 			return true;
-		case R.id.textss:
-			type = TYPE_TEXT;
-			acting = new TextAction(MyData.getInstance().usr_ID, 
-									MyData.getInstance().local_ID, 
-									"Text", paint);
-			FlushCanvas();
-			return true;
+//		case R.id.textss:
+//			type = TYPE_TEXT;
+//			acting = new TextAction(MyData.getInstance().usr_ID, 
+//									MyData.getInstance().local_ID, 
+//									"Text", paint);
+//			FlushCanvas();
+//			return true;
 		case R.id.exit:
 			exitRoom();
 			return true;
@@ -390,7 +390,7 @@ public class MainActivity extends ActionBarActivity {
 				paint.setAntiAlias(true);
 				paint.setStyle(Paint.Style.STROKE);
 				paint.setStrokeCap(Paint.Cap.ROUND);
-				paint.setStrokeWidth(5);
+				paint.setStrokeWidth((float) (Display.screen_width * 0.005));
 				paint.setTextSize((float) (Display.screen_width * 0.1));
 				paint.setTextAlign(Paint.Align.CENTER);
 
