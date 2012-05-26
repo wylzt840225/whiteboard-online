@@ -36,13 +36,11 @@ public class UndoAction extends Action {
 		int undoIndex = MyData.getInstance().actionList.findIndex(usr_ID, undo_local_ID);
 		if (undoIndex > 0) {
 			MyData.getInstance().actionList.list.get(undoIndex).valid = false;
+			if (MyData.getInstance().actionList.list.get(undoIndex).type == TYPE_CLEAR) {
+				ActionList.minDisplayIndex = 0;
+			}
 		}
 		valid = false;// 只执行一遍，增加效率
-
-		if (MyData.getInstance().actionList.list.get(undoIndex).type == TYPE_CLEAR) {
-			ActionList.minDisplayIndex = 0;
-		}
-
 		activity.rePaint();
 	}
 
