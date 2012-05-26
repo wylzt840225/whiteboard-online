@@ -2,22 +2,23 @@ package com.me.whiteboard;
 
 public class Display {
 
-	private final static float SCREEN_SCALE = (float) (16.0 / 9.0);
-	private final static float bmpScale = 2;
+	private final static float SCREEN_SCALE = 16.0f / 9;
+	private final static float MaxBmpScale = 2.0f;
 	private final static int frameLength = 10;
 	private final static int frameInteveral = 10;
 	private final static float MAX_SCALEFACTOR = 15;
 	private final static float MIN_SCALEFACTOR = 1;
 	private final static float alpha = 15;
 	private final static float beta = 1;
-	private final static float gamma = (float) 0.8;
-	private final static float MAX_SCALEFACTOR_REAL = (float) 14.3928;
+	private final static float gamma = 0.8f;
+	private final static float MAX_SCALEFACTOR_REAL = 14.3928f;
 	private final static float MIN_SCALEFACTOR_REAL = 1;
 
 	public static int screen_width;
 	public static int screen_height;
-	public static int bmp_width;
-	public static int bmp_height;
+	public static float bmpScale;
+//	public static int bmp_width;
+//	public static int bmp_height;
 	public static int previousPointCount = 0;
 	// public static long minDisplayTime;
 
@@ -37,8 +38,12 @@ public class Display {
 	private static float y_mean_absolute;
 
 	public Display(int width, int height) {
-		screen_width = width;
-		screen_height = height;
+		if (screen_width == 0) {
+			screen_width = width;
+		}
+		if (screen_height == 0) {
+			screen_height = height;
+		}
 		scaleFactor_real = 1;
 		scaleFactor = scaleFactorRealToDisplay(scaleFactor_real);
 		screen_pos_x = 0;
@@ -51,8 +56,9 @@ public class Display {
 			screen_height = (int) (screen_width / SCREEN_SCALE);
 		}
 
-		bmp_width = (int) (screen_width * bmpScale);
-		bmp_height = (int) (screen_height * bmpScale);
+//		bmp_width = (int) (screen_width * bmpScale);
+//		bmp_height = (int) (screen_height * bmpScale);
+		bmpScale = MaxBmpScale;
 
 		reSize();
 	}
