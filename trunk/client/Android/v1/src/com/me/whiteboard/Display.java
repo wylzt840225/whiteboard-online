@@ -62,6 +62,10 @@ public class Display {
 
 		reSize();
 	}
+	
+	public static void reScaleBmp() {
+		bmpScale = scaleFactor > MaxBmpScale ? MaxBmpScale : scaleFactor;
+	}
 
 	private static void reset(float x_mean, float y_mean, float sumOfLength) {
 		// Display.x_mean = x_mean;
