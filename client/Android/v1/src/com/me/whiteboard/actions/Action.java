@@ -19,6 +19,7 @@ public abstract class Action {
 	public static final short TYPE_CLEAR = 3;
 	public static final short TYPE_UNDO = 4;
 	public static final short TYPE_TEXT = 5;
+	public static final short TYPE_REDO = 6;
 
 	public short type;
 	public short usr_ID;
@@ -85,6 +86,7 @@ public abstract class Action {
 				if (MyData.getInstance().actionList.findIndex(usr_ID, local_ID) >= 0) {
 					return;
 				}
+				ActionList.minRedoLocalID = local_ID;
 			}
 			MyData.getInstance().actionList.add(this);
 			break;

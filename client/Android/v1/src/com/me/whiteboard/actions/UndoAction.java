@@ -46,6 +46,9 @@ public class UndoAction extends Action {
 			if (MyData.getInstance().actionList.list.get(undoIndex).type == TYPE_CLEAR) {
 				ActionList.minDisplayIndex = 0;
 			}
+			if (usr_ID == MyData.getInstance().usr_ID) {
+				ActionList.minRedoLocalID = undo_local_ID;
+			}
 		}
 		activity.rePaint();
 	}

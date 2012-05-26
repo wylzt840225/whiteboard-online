@@ -38,6 +38,11 @@
         android:icon="@drawable/ic_action_refresh"
         android:showAsAction="never"
         android:title="撤销"/>
+    <item
+        android:id="@+id/redoss"
+        android:icon="@drawable/ic_action_refresh"
+        android:showAsAction="never"
+        android:title="恢复"/>
      <item
         android:id="@+id/clearss"
         android:icon="@drawable/ic_action_refresh"

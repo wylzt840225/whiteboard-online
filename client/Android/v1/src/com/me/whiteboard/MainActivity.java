@@ -31,6 +31,7 @@ import com.me.whiteboard.actions.Action;
 import com.me.whiteboard.actions.ClearAction;
 import com.me.whiteboard.actions.MsgAction;
 import com.me.whiteboard.actions.PathAction;
+import com.me.whiteboard.actions.RedoAction;
 import com.me.whiteboard.actions.TextAction;
 import com.me.whiteboard.actions.UndoAction;
 import com.me.whiteboard.compat.ActionBarActivity;
@@ -236,6 +237,11 @@ public class MainActivity extends ActionBarActivity {
 					MyData.getInstance().local_ID);
 			addAction(undoAction);
 			return true;
+		case R.id.redoss:
+			RedoAction redoAction = new RedoAction(MyData.getInstance().usr_ID,
+					MyData.getInstance().local_ID);
+			addAction(redoAction);
+			return true;
 		case R.id.exit:
 			exitRoom();
 			return true;
@@ -418,7 +424,9 @@ public class MainActivity extends ActionBarActivity {
 								switch (event.getAction()) {
 								case MotionEvent.ACTION_UP:
 									if (acting != null) {
-										addAction(acting);
+										if (((PathAction) acting).getHistoryCount() > 1) {
+											addAction(acting);
+										}
 										acting = null;
 									}
 									break;
