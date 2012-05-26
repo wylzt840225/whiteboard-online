@@ -188,8 +188,10 @@ public class MainActivity extends ActionBarActivity {
 
 			Rect dstRect = new Rect((int) Display.x_BmpPosToScreenPos(0),
 					(int) Display.y_BmpPosToScreenPos(0),
-					(int) Display.x_BmpPosToScreenPos(Display.bmp_width),
-					(int) Display.y_BmpPosToScreenPos(Display.bmp_height));
+					(int) Display.x_BmpPosToScreenPos((int) 
+							(Display.screen_width * Display.bmpScale)),
+					(int) Display.y_BmpPosToScreenPos((int) 
+							(Display.screen_height * Display.bmpScale)));
 			canvas.drawBitmap(bmp, null, dstRect, null);
 
 			if (acting != null) {
@@ -503,7 +505,8 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	public void clear() {
-		bmp = Bitmap.createBitmap(Display.bmp_width, Display.bmp_height,
+		bmp = Bitmap.createBitmap((int) (Display.screen_width * Display.bmpScale), 
+				(int) (Display.screen_height * Display.bmpScale),
 				Bitmap.Config.ARGB_8888);
 		canvas = new Canvas(bmp);
 		canvas.drawColor(Color.WHITE);
