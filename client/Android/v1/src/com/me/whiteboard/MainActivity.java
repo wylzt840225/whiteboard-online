@@ -531,7 +531,8 @@ public class MainActivity extends ActionBarActivity {
 
 class MyListener implements OnColorChangedListener {
 
-	public void colorChanged(int color) {
+	public void colorChanged(int color,int alpha) {
 		MainActivity.paint.setColor(color);
+		MainActivity.paint.setAlpha(alpha);
 	}
 }
