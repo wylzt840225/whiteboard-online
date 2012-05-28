@@ -19,14 +19,15 @@ public class ColorPickerDialog extends Dialog
 
 	private OnColorChangedListener mListener;
 	private int mInitialColor;
-
+	private int mInitialAlpha;
 	private static class ColorPickerView extends View
 	{
 		private Paint mPaint,bwPaint;
 		private Paint mCenterPaint;
 		private final int[] mColors,bwColors;
 		private OnColorChangedListener mListener;
-		ColorPickerView(Context c,OnColorChangedListener l,int color)
+		static int PAINT_WIDTH=40;
+		ColorPickerView(Context c,OnColorChangedListener l,int color, int alpha)
 		{
 			super(c);
 			CENTER_X=dm.widthPixels/2;
@@ -45,16 +46,17 @@ public class ColorPickerDialog extends Dialog
 			bwPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 			bwPaint.setShader(bw);
 			bwPaint.setStyle(Paint.Style.STROKE);
-			bwPaint.setStrokeWidth(32);
+			bwPaint.setStrokeWidth(PAINT_WIDTH);
 			bwPaint.setAlpha(255);
 			
 			mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 			mPaint.setShader(s);
 			mPaint.setStyle(Paint.Style.STROKE);
-			mPaint.setStrokeWidth(40);
+			mPaint.setStrokeWidth(PAINT_WIDTH);
 
 			mCenterPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 			mCenterPaint.setColor(color);
+			mCenterPaint.setAlpha(alpha);
 			mCenterPaint.setStrokeWidth(5);
 			
 		}
@@ -192,7 +194,7 @@ public class ColorPickerDialog extends Dialog
 			
 			float x = event.getX()-(float)CENTER_X;
 			float y = event.getY()-(float)CENTER_Y;
-			boolean inCenter = java.lang.Math.sqrt(x*x+y*y)<=CENTER_RANGE;
+			boolean inCenter = java.lang.Math.sqrt(x*x+y*y)<=(CENTER_RANGE+PAINT_WIDTH);
 			boolean bw = (boolean)(event.getY()<CENTER_RADIUS);
 			switch (event.getAction())
 			{
@@ -242,7 +244,7 @@ public class ColorPickerDialog extends Dialog
 			case MotionEvent.ACTION_UP:
 				if (mTrackingCenter)
 				{
-					if (inCenter)
+					if (java.lang.Math.sqrt(x*x+y*y)<=CENTER_RADIUS)
 					{
 						mListener.colorChanged(mCenterPaint.getColor(),mCenterPaint.getAlpha());
 					}
@@ -262,12 +264,13 @@ public class ColorPickerDialog extends Dialog
 	}
 
 	public ColorPickerDialog(Context context,OnColorChangedListener listener,
-			int initialColor)
+			int initialColor,int alpha)
 	{
 		super(context);
 
 		mListener = listener;
 		mInitialColor = initialColor;
+		mInitialAlpha= alpha;
 	}
 
 	static private DisplayMetrics dm=new DisplayMetrics();
@@ -284,8 +287,9 @@ public class ColorPickerDialog extends Dialog
 			}
 		};
 		LayoutParams params=getWindow().getAttributes(); 
-		setContentView(new ColorPickerView(getContext(), l, mInitialColor));
 		getWindow().getWindowManager().getDefaultDisplay().getMetrics(dm);
+		setContentView(new ColorPickerView(getContext(), l, mInitialColor,mInitialAlpha));
+		
         params.height =dm.heightPixels;
         params.width = dm.widthPixels;   
         

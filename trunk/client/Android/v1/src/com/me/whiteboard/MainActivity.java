@@ -226,7 +226,7 @@ public class MainActivity extends ActionBarActivity {
 		case R.id.colorss:
 			final MyListener listener = new MyListener();
 			ColorPickerDialog colorPickerDialog = new ColorPickerDialog(
-					MainActivity.this, listener, 1);
+					MainActivity.this, listener,MainActivity.paint.getColor(), MainActivity.paint.getAlpha());
 			colorPickerDialog.show();
 			return true;
 		case R.id.clearss:
