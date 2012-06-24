@@ -17,7 +17,7 @@ import com.me.whiteboard.MyData;
 
 public class PathAction extends Action {
 	
-	private int color;
+	protected int color;
 	private float strokeWidth;
 	private ArrayList<Float> x_history;
 	private ArrayList<Float> y_history;

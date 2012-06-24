@@ -29,6 +29,7 @@ import android.widget.RelativeLayout;
 import com.me.whiteboard.ChatActivity.MsgSend;
 import com.me.whiteboard.actions.Action;
 import com.me.whiteboard.actions.ClearAction;
+import com.me.whiteboard.actions.EraserAction;
 import com.me.whiteboard.actions.MsgAction;
 import com.me.whiteboard.actions.PathAction;
 import com.me.whiteboard.actions.RedoAction;
@@ -43,7 +44,7 @@ import com.me.whiteboard.http.Client.onNewDataRecv;
 import com.me.whiteboard.http.Client.onSend;
 
 public class MainActivity extends ActionBarActivity {
-	
+
 	public static final int TYPE_LINE = 1;
 	public static final int TYPE_TEXT = 2;
 	public static final int TYPE_ERASER = 3;
@@ -186,12 +187,13 @@ public class MainActivity extends ActionBarActivity {
 			// dstRect = new Rect(dstLeft, dstTop, dstRight, dstBottom);
 			// canvas.drawBitmap(bmp, srcRect, dstRect, null);
 
-			Rect dstRect = new Rect((int) Display.x_BmpPosToScreenPos(0),
+			Rect dstRect = new Rect(
+					(int) Display.x_BmpPosToScreenPos(0),
 					(int) Display.y_BmpPosToScreenPos(0),
-					(int) Display.x_BmpPosToScreenPos((int) 
-							(Display.screen_width * Display.bmpScale)),
-					(int) Display.y_BmpPosToScreenPos((int) 
-							(Display.screen_height * Display.bmpScale)));
+					(int) Display
+							.x_BmpPosToScreenPos((int) (Display.screen_width * Display.bmpScale)),
+					(int) Display
+							.y_BmpPosToScreenPos((int) (Display.screen_height * Display.bmpScale)));
 			canvas.drawBitmap(bmp, null, dstRect, null);
 
 			if (acting != null) {
@@ -226,7 +228,8 @@ public class MainActivity extends ActionBarActivity {
 		case R.id.colorss:
 			final MyListener listener = new MyListener();
 			ColorPickerDialog colorPickerDialog = new ColorPickerDialog(
-					MainActivity.this, listener,MainActivity.paint.getColor(), MainActivity.paint.getAlpha());
+					MainActivity.this, listener, MainActivity.paint.getColor(),
+					MainActivity.paint.getAlpha());
 			colorPickerDialog.show();
 			return true;
 		case R.id.clearss:
@@ -244,13 +247,13 @@ public class MainActivity extends ActionBarActivity {
 					MyData.getInstance().local_ID);
 			addAction(redoAction);
 			return true;
-//		case R.id.textss:
-//			type = TYPE_TEXT;
-//			acting = new TextAction(MyData.getInstance().usr_ID, 
-//									MyData.getInstance().local_ID, 
-//									"Text", paint);
-//			FlushCanvas();
-//			return true;
+			// case R.id.textss:
+			// type = TYPE_TEXT;
+			// acting = new TextAction(MyData.getInstance().usr_ID,
+			// MyData.getInstance().local_ID,
+			// "Text", paint);
+			// FlushCanvas();
+			// return true;
 		case R.id.exit:
 			exitRoom();
 			return true;
@@ -399,13 +402,16 @@ public class MainActivity extends ActionBarActivity {
 				dw.setOnTouchListener(new OnTouchListener() {
 					public boolean onTouch(View v, MotionEvent event) {
 						int pointCount = event.getPointerCount();
-						
+
 						switch (type) {
 						case TYPE_TEXT:
-							if (pointCount == 1 && event.getAction() == MotionEvent.ACTION_DOWN) {
+							if (pointCount == 1
+									&& event.getAction() == MotionEvent.ACTION_DOWN) {
 								Display.previousPointCount = 0;
 							}
-							float x_mean_text = 0, y_mean_text = 0, sumOfLength_text = 0;
+							float x_mean_text = 0,
+							y_mean_text = 0,
+							sumOfLength_text = 0;
 							for (int i = 0; i < pointCount; i++) {
 								x_mean_text += event.getX(i);
 								y_mean_text += event.getY(i);
@@ -413,13 +419,14 @@ public class MainActivity extends ActionBarActivity {
 							x_mean_text /= pointCount;
 							y_mean_text /= pointCount;
 							for (int i = 0; i < pointCount; i++) {
-								sumOfLength_text += Math.sqrt(Math.pow(event.getX(i)
-										- x_mean_text, 2)
-										+ Math.pow(event.getY(i) - y_mean_text, 2));
+								sumOfLength_text += Math.sqrt(Math.pow(
+										event.getX(i) - x_mean_text, 2)
+										+ Math.pow(event.getY(i) - y_mean_text,
+												2));
 							}
 
-							((TextAction) acting).update(pointCount, x_mean_text, y_mean_text,
-									sumOfLength_text);
+							((TextAction) acting).update(pointCount,
+									x_mean_text, y_mean_text, sumOfLength_text);
 							break;
 						default:
 							if (pointCount == 1) {
@@ -438,18 +445,25 @@ public class MainActivity extends ActionBarActivity {
 								switch (event.getAction()) {
 								case MotionEvent.ACTION_UP:
 									if (acting != null) {
-										if (((PathAction) acting).getHistoryCount() > 1) {
+										if (((PathAction) acting)
+												.getHistoryCount() > 1) {
 											addAction(acting);
 										}
 										acting = null;
 									}
 									break;
 								case MotionEvent.ACTION_DOWN:
-									acting = new PathAction(
-											MyData.getInstance().usr_ID, MyData
-													.getInstance().local_ID, paint);
-									((PathAction) acting).addPoint(event.getX(),
-											event.getY());
+									if (type == TYPE_LINE) {
+										acting = new PathAction(MyData
+												.getInstance().usr_ID, MyData
+												.getInstance().local_ID, paint);
+									} else {
+										acting = new EraserAction(MyData
+												.getInstance().usr_ID, MyData
+												.getInstance().local_ID, paint);
+									}
+									((PathAction) acting).addPoint(
+											event.getX(), event.getY());
 									break;
 								case MotionEvent.ACTION_MOVE:
 									if (acting != null) {
@@ -475,13 +489,14 @@ public class MainActivity extends ActionBarActivity {
 								x_mean_path /= pointCount;
 								y_mean_path /= pointCount;
 								for (int i = 0; i < pointCount; i++) {
-									sumOfLength_path += Math.sqrt(Math.pow(event.getX(i)
-											- x_mean_path, 2)
-											+ Math.pow(event.getY(i) - y_mean_path, 2));
+									sumOfLength_path += Math.sqrt(Math.pow(
+											event.getX(i) - x_mean_path, 2)
+											+ Math.pow(event.getY(i)
+													- y_mean_path, 2));
 								}
 
-								Display.update(pointCount, x_mean_path, y_mean_path,
-										sumOfLength_path);
+								Display.update(pointCount, x_mean_path,
+										y_mean_path, sumOfLength_path);
 							}
 							break;
 						}
@@ -505,7 +520,8 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	public void clear() {
-		bmp = Bitmap.createBitmap((int) (Display.screen_width * Display.bmpScale), 
+		bmp = Bitmap.createBitmap(
+				(int) (Display.screen_width * Display.bmpScale),
 				(int) (Display.screen_height * Display.bmpScale),
 				Bitmap.Config.ARGB_8888);
 		canvas = new Canvas(bmp);
@@ -531,7 +547,7 @@ public class MainActivity extends ActionBarActivity {
 
 class MyListener implements OnColorChangedListener {
 
-	public void colorChanged(int color,int alpha) {
+	public void colorChanged(int color, int alpha) {
 		MainActivity.paint.setColor(color);
 		MainActivity.paint.setAlpha(alpha);
 	}
