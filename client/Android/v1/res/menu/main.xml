@@ -20,21 +20,21 @@
         android:icon="@drawable/ic_menu_share"
         android:showAsAction="always|withText"
         android:title="Chat"/>
-	<item
-        android:id="@+id/menu_refresh"
-        android:icon="@drawable/ic_action_refresh"
-        android:showAsAction="always"
-        android:title=""/>
+    <item
+        android:id="@+id/pencilss"
+        android:icon="@drawable/pencil"
+        android:showAsAction="always|withText"
+        android:title="画笔"/>
     <item
         android:id="@+id/colorss"
         android:icon="@drawable/palette"
         android:showAsAction="always|withText"
         android:title="颜色"/>
-<!--     <item -->
-<!--         android:id="@+id/textss" -->
-<!--         android:icon="@drawable/ic_action_refresh" -->
-<!--         android:showAsAction="never" -->
-<!--         android:title="文本"/> -->
+    <item
+        android:id="@+id/textss"
+        android:icon="@drawable/ic_action_refresh"
+        android:showAsAction="never"
+        android:title="文本"/>
     <item
         android:id="@+id/undoss"
         android:icon="@drawable/undo"
@@ -50,12 +50,15 @@
         android:icon="@drawable/ic_action_refresh"
         android:showAsAction="never"
         android:title="清除"/>
-    
     <item
         android:id="@+id/exit"
         android:icon="@drawable/ic_action_refresh"
         android:showAsAction="never"
         android:title="退出"/>
-   
+    <item
+        android:id="@+id/menu_refresh"
+        android:icon="@drawable/ic_action_refresh"
+        android:showAsAction="always"
+        android:title=""/>
 
 </menu>

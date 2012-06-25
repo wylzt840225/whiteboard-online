@@ -2,13 +2,19 @@ package com.me.whiteboard.actions;
 
 import org.apache.http.util.ByteArrayBuffer;
 
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Paint.FontMetrics;
+import android.graphics.Rect;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import com.me.whiteboard.Display;
 import com.me.whiteboard.MainActivity;
+import com.me.whiteboard.R;
 
 public class TextAction extends Action {
 
@@ -16,24 +22,30 @@ public class TextAction extends Action {
 	private float textSize;
 	private float x, y;
 	private String text;
+	public boolean temp = false;
 	
 	private static float sumOfLength;
 	private static float x_mean_absolute;
 	private static float y_mean_absolute;
 	private static Paint paint = new Paint(MainActivity.paint);
+	
+	private static Bitmap confimBmp;
+	private static Bitmap cancelBmp;
 
 	public TextAction() {
 		super();
 		type = TYPE_TEXT;
 	}
 
-	public TextAction(short usr_ID, short local_ID, String text, Paint paint) {
+	public TextAction(short usr_ID, short local_ID, String text, Paint paint, Context context) {
 		super(TYPE_TEXT, usr_ID, local_ID);
 		this.text = text;
 		color = paint.getColor();
 		textSize = paint.getTextSize();
 		x = Display.screen_width / 2;
 		y = Display.screen_height / 2;
+		confimBmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.confirm);
+		cancelBmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.cancel);
 	}
 
 	@Override
@@ -42,6 +54,37 @@ public class TextAction extends Action {
 		paint.setTextSize(Display.length_AbsoluteToScreen(textSize));
 		paint.setStrokeWidth(0);
 		canvas.drawText(text, x, y, paint);
+		
+		if (temp) {
+			FontMetrics fm = paint.getFontMetrics();
+			float h = (float) (0.25 * Math.ceil(fm.descent - fm.top));
+			Rect confirmRect = new Rect((int) (x - 40), (int) (y + h),
+					(int) (x - 8), (int) (y + h + 32));
+			Rect cancelRect = new Rect((int) (x + 8), (int) (y + h),
+					(int) (x + 40), (int) (y + h + 32));
+			canvas.drawBitmap(confimBmp, null, confirmRect, paint);
+			canvas.drawBitmap(cancelBmp, null, cancelRect, paint);
+		}
+	}
+	
+	public boolean inConfirm(float eventX, float eventY) {
+		FontMetrics fm = paint.getFontMetrics();
+		float h = (float) (0.25 * Math.ceil(fm.descent - fm.top));
+		
+		if (eventX > x - 40 && eventX < x - 8 && eventY > y + h && eventY < y + h +32) {
+			return true;
+		}
+		return false;
+	}
+	
+	public boolean inCancel(float eventX, float eventY) {
+		FontMetrics fm = paint.getFontMetrics();
+		float h = (float) (0.25 * Math.ceil(fm.descent - fm.top));
+		
+		if (eventX > x + 8 && eventX < x + 40 && eventY > y + h && eventY < y + h +32) {
+			return true;
+		}
+		return false;
 	}
 
 	@Override
@@ -99,16 +142,19 @@ public class TextAction extends Action {
 		y -= y_mean_absolute - Display.y_ScreenPosToAbsolutePos(y_mean);
 		
 		float textWidth = paint.measureText(text);
-		if (x < - textWidth / 2) {
-			x = - textWidth / 2;
-		} else if (x > Display.screen_width + textWidth / 2) {
-			x = Display.screen_width + textWidth / 2;
+		FontMetrics fm = paint.getFontMetrics();
+		float textHeight = (float) (0.75 * Math.ceil(fm.descent - fm.top));
+		
+		if (x < textWidth / 2) {
+			x = textWidth / 2;
+		} else if (x > Display.screen_width - textWidth / 2) {
+			x = Display.screen_width - textWidth / 2;
 		}
 		
-		if (y < 0) {
-			y = 0;
-		} else if (y > Display.screen_height + textSize) {
-			y = Display.screen_height + textSize;
+		if (y < textHeight) {
+			y = textHeight;
+		} else if (y > Display.screen_height) {
+			y = Display.screen_height;
 		}
 
 		reset(x_mean, y_mean, sumOfLength);

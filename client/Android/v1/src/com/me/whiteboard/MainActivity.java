@@ -2,7 +2,9 @@ package com.me.whiteboard;
 
 import java.util.ArrayList;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -45,15 +47,16 @@ import com.me.whiteboard.http.Client.onSend;
 
 public class MainActivity extends ActionBarActivity {
 
-	public static final int TYPE_LINE = 1;
+	public static final int TYPE_LINE = 0;
+	public static final int TYPE_ERASER = 1;
 	public static final int TYPE_TEXT = 2;
-	public static final int TYPE_ERASER = 3;
 
 	Bitmap bmp;
 	Canvas canvas;
 	public static Paint paint;
 	DrawView dw;
 	int type = TYPE_LINE;
+	int type_backup;
 	Action acting;
 	WindowManager wm;
 	// WindowManager.LayoutParams wmParams;
@@ -213,6 +216,25 @@ public class MainActivity extends ActionBarActivity {
 		switch (item.getItemId()) {
 		case android.R.id.home:
 			return true;
+		case R.id.pencilss:
+		    new AlertDialog.Builder(this).setTitle("请选择画笔")
+		    .setSingleChoiceItems(new String[] {"铅笔", "橡皮"}, 
+		    		(type == TYPE_TEXT ? type_backup : type), 
+		    		new DialogInterface.OnClickListener() {
+						public void onClick(DialogInterface dialog, int which) {
+							acting = null;
+							switch (which) {
+							case 0:
+								type = TYPE_LINE;
+								break;
+							case 1:
+								type = TYPE_ERASER;
+								break;
+							}
+							dialog.dismiss();
+						}
+					}).show();
+			return true;
 		case R.id.chat:
 			DisplayMetrics metrics = new DisplayMetrics();
 			wm.getDefaultDisplay().getMetrics(metrics);
@@ -247,13 +269,29 @@ public class MainActivity extends ActionBarActivity {
 					MyData.getInstance().local_ID);
 			addAction(redoAction);
 			return true;
-			// case R.id.textss:
-			// type = TYPE_TEXT;
-			// acting = new TextAction(MyData.getInstance().usr_ID,
-			// MyData.getInstance().local_ID,
-			// "Text", paint);
-			// FlushCanvas();
-			// return true;
+		case R.id.textss:
+			final EditText text = new EditText(this);
+		    new AlertDialog.Builder(this).setTitle("请输入文本").setView(text)
+		    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+				public void onClick(DialogInterface dialog, int which) {
+					if (text.length() > 0) {
+						if (type != TYPE_TEXT) {
+							type_backup = type;
+							type = TYPE_TEXT;
+						}
+						acting = new TextAction(MyData.getInstance().usr_ID,
+								MyData.getInstance().local_ID, text.getText().toString(), 
+								paint, MainActivity.this);
+						((TextAction) acting).temp = true;
+						FlushCanvas();
+					} else {
+						new AlertDialog.Builder(MainActivity.this).setTitle("请输入文本")
+						.setMessage("文本不能为空！").setPositiveButton("确定", null)
+						.show();
+					}
+				}
+			}).setNegativeButton("取消", null).show();
+			return true;
 		case R.id.exit:
 			exitRoom();
 			return true;
@@ -408,6 +446,20 @@ public class MainActivity extends ActionBarActivity {
 							if (pointCount == 1
 									&& event.getAction() == MotionEvent.ACTION_DOWN) {
 								Display.previousPointCount = 0;
+								
+								if (((TextAction) acting).
+										inConfirm(event.getX(), event.getY())) {
+									((TextAction) acting).temp = false;
+									addAction(acting);
+									acting = null;
+									type = type_backup;
+									break;
+								} else if (((TextAction) acting).
+										inCancel(event.getX(), event.getY())) {
+									acting = null;
+									type = type_backup;
+									break;
+								}
 							}
 							float x_mean_text = 0,
 							y_mean_text = 0,
@@ -425,8 +477,10 @@ public class MainActivity extends ActionBarActivity {
 												2));
 							}
 
-							((TextAction) acting).update(pointCount,
-									x_mean_text, y_mean_text, sumOfLength_text);
+							if (acting != null) {
+								((TextAction) acting).update(pointCount,
+										x_mean_text, y_mean_text, sumOfLength_text);
+							}
 							break;
 						default:
 							if (pointCount == 1) {
