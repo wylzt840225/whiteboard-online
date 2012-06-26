@@ -13,6 +13,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -79,6 +80,12 @@ public class MainActivity extends ActionBarActivity {
 						Action action;
 						for (int i = 0; i < datas.length; i++) {
 							action = Action.base64ToAction(datas[i]);
+							if(action==null)
+								{
+									
+									Log.w("base64decodeerror", datas[i]);
+									continue;
+								}
 							action.addMeToList();
 							action.act(MainActivity.this, canvas);
 							FlushCanvas();
@@ -302,6 +309,10 @@ public class MainActivity extends ActionBarActivity {
 	}
 
 	public void exitRoom() {
+		bmp=null;
+		canvas=null;
+		MyData.clear();
+		
 		finish();
 	}
 
