@@ -96,7 +96,10 @@ public abstract class Action {
 	}
 
 	public static Action base64ToAction(String base64String) {
+		try
+		{
 		byte[] bytes = Base64Coder.decode(base64String);
+		
 		Action action = null;
 		switch (bytesToShort(bytes[0], bytes[1])) {
 		case TYPE_PATH:
@@ -126,6 +129,11 @@ public abstract class Action {
 			action.bytesToPrivate(bytes);
 		}
 		return action;
+		}
+		catch(Exception e)
+		{
+			return null;
+		}
 	}
 
 	public String toBase64() {

@@ -25,4 +25,8 @@ public class MyData {
 		actionList = new ActionList();
 	}
 
+	public static  void clear() {
+		instance=null;
+	}
+
 }
