@@ -11,6 +11,7 @@ function MsgPool()
     this.next_id=0;
     this.msg=[];
     this.n=0;
+    this.wl=[];
 }
 MsgPool.prototype.AppendMsg=function(msg)
 {
@@ -45,6 +46,12 @@ Storage.prototype.GetMsg=function(pool,fromid)
     }
     return [];
 }
+Storage.prototype.GetWait=function(pool)
+{
+    if(!this.HasMsgPool(pool))
+        return [];
+    return this[pool].wl;
+}
 Storage.prototype.AppendMsg=function(pool,msg)
 {
     if(!this.HasMsgPool(pool))
@@ -55,6 +62,13 @@ Storage.prototype.AddPool=function(pool)
 {
     if(!this.HasMsgPool(pool))
         this[pool]=new MsgPool();
+}
+Storage.prototype.AddWait=function(wait,from,pool)
+{
+    if(!this.HasMsgPool(pool))
+        return;
+        log("AddWait:"+from+pool);
+    this[pool].wl.push({r:wait,f:from});
 }
 Storage.prototype.removePool=function(pool)
 {
@@ -81,8 +95,14 @@ function log(s)
 }
 function outputmsg(name,fromid,r2)
 {
-    r2.write(""+storage.GetMsg(name,fromid));
-    //log();
+    var pp=storage.GetMsg(name,fromid);
+    if(pp.length==0)
+    {
+        storage.AddWait(r2,fromid,name);
+        return;
+    }
+    r2.write(""+pp);
+
     r2.end();
 }
 function getmsg(r1,r2,querys)
@@ -94,13 +114,17 @@ function getmsg(r1,r2,querys)
 }
 function getmsg_loop(r2,name,fromid,ttv)
 {
-    if(ttv===0)return;
+    //if(ttv===0)return;
         if(storage.HasNewMsg(name,fromid))
         {  
             outputmsg(name,fromid,r2);
             return;
         }
-    setTimeout(function(){getmsg_loop(r2,name,fromid,ttv-1);},800);   
+        else
+        {
+            storage.AddWait(r2,fromid,name);
+        }
+    //setTimeout(function(){getmsg_loop(r2,name,fromid,ttv-1);},800);   
     
 }
 function savemsg(r1,r2,querys)
@@ -113,6 +137,12 @@ function savemsg(r1,r2,querys)
                 storage.AppendMsg(querys['name'],msgs[i]);
         }
         r2.write('saved');
+        var wl=storage.GetWait(querys['name']).slice(0);
+        while(wl.length>0)
+        {
+            var ff=wl.pop();
+            outputmsg(querys['name'],ff.f,ff.r);
+        }
         r2.end();
         });
     
