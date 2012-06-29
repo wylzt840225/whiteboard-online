@@ -1,0 +1,127 @@
+\documentclass{article}
+\usepackage{ctex}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{cases}
+\usepackage{diagbox}
+\usepackage[CJKbookmarks=true,colorlinks,linkcolor=blue,anchorcolor=red,citecolor=green]{hyperref}
+
+\renewcommand{\tablename}{表}
+\renewcommand{\figurename}{图}
+\renewcommand{\contentsname}{\centerline{目~~录}}
+
+\geometry{left=3cm,right=3cm,top=3.5cm,bottom=3.5cm}
+
+\pagestyle{fancy}
+\lhead{}
+\rhead{}
+\chead{Whiteboard-Online 使用说明}
+\renewcommand{\headrulewidth}{0.4pt}
+
+\title{\Huge{\textbf{Whiteboard-Online 使用说明}}}
+\author{刘冰雁~~~~~~00904151\\张逸伦~~~~~~00904159\\陈雨禾~~~~~~00948222\\潘楚中~~1000010314}
+
+\begin{document}
+
+\maketitle
+
+\fontsize{11pt}{1\baselineskip}
+\selectfont
+
+\tableofcontents
+
+\newpage
+
+\section{登录界面}
+
+输入房间号可以进入房间，如图~\ref{p1}.
+
+\begin{figure}[!htp]\centering
+  \includegraphics[width=10cm]{1.png}\\
+  \caption{进入房间}\label{p1}
+\end{figure}
+
+房间可以自己创建，也可以进入别人创建的房间。房间号唯一，若创建已存在的房间则会弹出提示。同一个房间内的用户共享同一张电子白板， 房间内所有人可以实时看到白板的更新。
+
+登录的时候可以输入自己的昵称，便于在房内聊天的时候识别各人身份，如图~\ref{p2}.
+
+\begin{figure}[!htp]\centering
+  \includegraphics[width=10cm]{2.png}\\
+  \caption{输入昵称}\label{p2}
+\end{figure}
+
+\section{绘制界面}
+
+进入后绘制界面如图，直接在屏幕上涂抹即可以进行随意涂鸦，如图~\ref{p3}.
+
+\begin{figure}[!htp]\centering
+  \includegraphics[width=10cm]{3.png}\\
+  \caption{涂鸦}\label{p3}
+\end{figure}
+
+按下menu键可以显示菜单，如图~\ref{p4}.
+
+\begin{figure}[!htp]\centering
+  \includegraphics[width=10cm]{4.png}\\
+  \caption{菜单}\label{p4}
+\end{figure}
+
+下面介绍绘制界面的各个功能。
+
+\subsection{聊天}
+
+点击该图标进行房间内聊天。
+
+聊天室界面具有对屏幕的自动适应性。对于手机等小屏幕Android系统，聊天窗口会全部屏幕，如图~\ref{p5}.
+
+\begin{figure}[!htp]\centering
+  \includegraphics[width=10cm]{5.png}\\
+  \caption{小屏幕聊天界面}\label{p5}
+\end{figure}
+
+对于平板等大屏幕Android系统，聊天窗口会自动成为可以拖动的浮动窗口浮动于绘画界面上，如图~\ref{p6}.
+
+\begin{figure}[!htp]\centering
+  \includegraphics[width=10cm]{6.png}\\
+  \caption{大屏幕聊天界面}\label{p6}
+\end{figure}
+
+\subsection{选择铅笔/橡皮}
+
+铅笔进行图形绘制，橡皮可以擦去以前绘制的图形。为了避免不同屏幕大小对于画笔的粗细调整不同，导致小屏幕上绘制出来的图形在大屏幕上显示非常粗， 本系统对画笔粗细实现了适应屏幕大小的功能，线条的粗细会自动根据屏幕分辨率进行调整，使图形在各种大小的屏幕上看上去都比较舒适。
+
+\subsection{颜色选择}
+
+我们的调色板可以在周边的颜色环上选择各种颜色，选定的颜色会显示在中间的圆圈内进行预览。选定颜色后直接点击中间预览的圆圈即为选定颜色，如图~\ref{p7}.
+
+\begin{figure}[!htp]\centering
+  \includegraphics[width=10cm]{7.png}\\
+  \caption{选择颜色}\label{p7}
+\end{figure}
+
+\subsection{撤消/重做}
+
+客户端会保留在画布上进行的所有改变，用户可以进行撤消、重做。支持无限步的撤消、重做功能。
+
+\subsection{手动更新}
+
+软件自动发送绘制和聊天内容到服务器，进行实时更新。也可以选择按右上角的刷新功能手动同步更新。
+
+\subsection{缩放功能}
+
+支持多点触控，可以用手指滑动来实现缩放。
+
+\subsection{文本插入}
+
+在menu中点击“文本”可以进行文本输入界面，输入任何想要输入的文字，然后可以利用多点触控改变文字的位置和大小。 文字显示颜色与当前画笔颜色相同，如图~\ref{p8}.
+
+\begin{figure}[!htp]\centering
+  \includegraphics[width=10cm]{8.png}\\
+  \caption{输入文字}\label{p8}
+\end{figure}
+
+插入前可以触控挪动文本框放置想要显示的位置。放置完毕后，点击对勾代表确定插入文字，点击叉代表撤消插入。
+
+\end{document}
