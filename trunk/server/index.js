@@ -205,6 +205,11 @@ log("parsed");
     rmroom(response,querys.query);
   else if(querys.pathname=="/enter")
     enterroom(response,querys.query);
+   else if(querys.pathname=="/")
+    {
+        response.write("Whiteboard-Online Server OK");
+        response.end();
+     }
 log("done");
   
 }).listen(10080);
